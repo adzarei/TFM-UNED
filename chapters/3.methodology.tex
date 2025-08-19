@@ -1,26 +1,100 @@
 \chapter{Materials and Methods}\label{chap:materials-methods}
 
-\section{Data description}\label{sec:data-description}
+\section{Data and Materials}\label{sec:method-data-materials}
+-- Explain the starting point, what does the paper provide?
 
-\section{Analysis objective}\label{sec:analysis-objective}
+\subsection{Dataset Description}\label{subsec:method-dataset-description}
+-- # sessions, provenance, format, variables (angles/velocities per joint and side), available metadata.
 
-\section{Data extraction and modeling pipeline}\label{sec:data-pipeline}
+\subsection{Code Description}\label{subsec:method-code-description}
+-- Matlab code provided by the source paper.
 
-\section{Exploratory Data Analysis (EDA)}\label{sec:eda}
-\subsection{Exploration}\label{subsec:eda-exploration}
-\subsection{Extraction (curation and signal derivation)}\label{subsec:eda-extraction}
-\subsection{Preparation (cleaning, splits, normalization, class imbalance handling)}\label{subsec:eda-preparation}
+%  TBD, already part of EDA
+% \subsection{Inclusion/Exclusion \& Data Quality}\label{subsec:method-data-quality}
+% -- curation, discarded sessions, missing values handling.
 
-\section{Baseline models (definition and rationale)}\label{sec:baseline-models}
+% \subsection{Pre-processing}\label{subsec:method-preprocessing}
+% -- filtering, cycle alignment, normalisation/standardisation, bilateral engineering.
 
-\section{Improvements over baseline models (tuning and feature engineering)}\label{sec:improvements}
+\subsection{Ethics and Privacy}\label{subsec:method-ethics}
+-- Optional, we can mention what the source paper says...
 
-\section{Dimensionality reduction (motivation, methods, validation)}\label{sec:dim-reduction}
+\section{Exploratory Data Analysis (EDA)}\label{sec:method-eda}
+-- Exploration → Extraction → Preparation, with concrete checks and figures:
+-- Tabular data Exploration (sanity & distributions)
+-- Dataset inventory (sessions per runner, class prevalence per runner, cycles/session).
+-- Missingness map (metadata & signals); strategy preview (drop/impute).
+-- Outliers: per-joint angle/velocity ranges, z-score >3 heatmap by runner (flag sensors/markers).
+-- Dimensionality previews: PCA/t-SNE to see separability.
 
-\section{Data enrichment (additional sources or transformations)}\label{sec:data-enrichment}
 
-\section{Advanced techniques}\label{sec:advanced-techniques}
-\subsection{Deep Learning: architecture, rationale, expectations; comparison with baselines}\label{subsec:deep-learning}
+-- Timeseries data Exploration:
+-- Visuals: overlay of 20 random stance cycles per class; Markers, Angles, Velocities, ...
+-- Analysis of curves
+-- Extraction (curve-level descriptors)
 
-\section{Evaluation protocol (metrics, validation, ablations, data leakage control)}\label{sec:evaluation-protocol}
 
+-- Preparation (decisions fixed before modelling)
+
+-- Group-aware split policy (runner-level), ensuring no cycle leakage across folds.
+-- Class-imbalance diagnostics (AUC-PR baseline, per-runner prevalence plots).
+-- Filtering rules for cycles/sessions (min cycles per session, quality thresholds).
+
+-- Final feature set(s) to carry forward (e.g., summaries, PC scores, raw curves for DL)
+
+\section{Feature Engineering}\label{sec:method-feature-engineering}
+-- Transformations & feature extraction
+-- Feature selection
+
+\subsection{Tabular Data}\label{subsec:method-tabular-data}
+-- Correlations mutual information, ...
+-- Collinearity: PCA, VIF, ...
+-- Left-right features - Dominant leg extraction
+-- Collinearity reduction
+
+\subsection{Timeseries Data}\label{subsec:method-timeseries-data}
+-- Segmentation: TD/TO, stance, swing, ...
+-- Normalisation/standardisation
+
+\subsection{Final Feature Sets}\label{subsec:method-final-feature-sets}
+-- Summary of the feature by dataset.
+
+\section{Models}\label{sec:method-models}
+\subsection{Baseline (Tabular)}\label{subsec:baselines}
+\subsection{Dominant Leg, extended features}\label{subsec:baselines-timeseries}  % Rename....
+\subsection{Deep Learning}\label{subsec:advanced-models}
+-- Unilateral LSTM
+-- Bilateral LSTM
+-- Multimodal
+-- TMAG
+-- MC DCNN
+
+-- Add special tuning for class imbalance, etc...
+-- Architecture choices (hyperparameters, etc...)
+-- class imbalance, oversampling, etc... TBD Where to put this?
+
+
+% TBD if dedicated section or part of EDA
+% \section{Dimensionality Reduction \& Feature Engineering}\label{sec:dim-reduction-feature-eng}
+
+
+\section{Evaluation Protocol}\label{sec:evaluation-protocol}
+-- The blueprint before we run anything.
+-- Questions/Hipothesis, grouping, leakage, validation scheme (group-aware train/val/test)
+-- Evaluation protocol -> Measurements, statistics. How are we scoring the experimentriment. (Primary, Secondary metric, Threshold rule, ...). Oversampling. Significance Tests. How do we know something is "Better"?
+-- Research questions (RQs), validation scheme (group-aware train/val/test), splits, primary/secondary metrics.
+-- Justify the choices , but do not present any results yet...
+
+\subsection{Training and Validation Strategy}\label{subsec:method-training-validation-strategy}
+-- Train, test, validation split.
+-- Group-aware split policy (runner-level), ensuring no cycle leakage across folds.
+-- Class-imbalance diagnostics (AUC-PR baseline, prevalence).
+
+\subsection{Hyperparameter Tuning}\label{subsec:method-hyperparameter-tuning}
+-- Grid search, random search, ...
+-- Cross-validation, nested cross-validation, ...
+-- Early stopping, ...
+-- Hyperparameter tuning strategy.
+
+\section{Reproducibility Assets}\label{sec:method-reproducibility}
+-- code repository structure, libraries, etc...
