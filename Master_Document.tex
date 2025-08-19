@@ -1,7 +1,7 @@
 \documentclass[12pt,a4paper]{book}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[spanish,es-tabla]{babel}
+\usepackage[main=english,spanish,es-tabla]{babel}
 
 % \usepackage{hyphenat}
 % \hyphenation{apren-di-zaje pro-fun-do}
@@ -74,7 +74,7 @@
 
 % Glosarios y nomenclaturas
 \usepackage[toc,nonumberlist]{glossaries}
-\input{otros/glosario}
+\input{otros/glossary}
 
 
 \begin{document}
@@ -86,7 +86,7 @@
 \include{otros/agradecimientos}
 
 \cleardoublepage{}
-\include{otros/resumen}
+\include{otros/summary}
 
 \cleardoublepage{}
 \include{otros/abstract}
@@ -97,7 +97,7 @@
 
 \tableofcontents
 \listoffigures
-\renewcommand{\listtablename}{Índice de tablas}
+\renewcommand{\listtablename}{List of Tables}
 \listoftables
 
 
@@ -105,15 +105,16 @@
 \mainmatter
 \pagestyle{fancy}
 
-\include{capitulos/1.intro}
+\include{capitulos/1.introduction}
 \include{capitulos/2.state_of_the_art}
-\include{capitulos/3.materiales_y_metodos}
-\include{capitulos/4.resultados}
-\include{capitulos/5.conclusiones}
+\include{capitulos/3.methodology}
+\include{capitulos/4.results}
+\include{capitulos/5.conclusions}
+\include{capitulos/6.limitations}
 
 
 \newpage
-\addcontentsline{toc}{chapter}{Bibliografía y referencias} %Para 
+\addcontentsline{toc}{chapter}{Bibliography and references}
 
 \bibliography{bibliografia}
 % \printbibliography
