@@ -40,32 +40,13 @@ Proof that MAchine learning has been used successfully in the field of biomechan
 %     - Longitudinal analysis
 %     - Follow-up on subjects to track evolution of the injury.
 %     - Temporal information about the injury (chronic, not chronic, recent, coping, etc...)
-Objectives:
-O1: The primary objective is to evaluate how well do 4 classical ML models trained on the biomechanical variables provided in the running-injury dataset (N=1402 runners) detect injury status, and determine whether any achieves AUC-ROC > 0.7.
+Objectives:\\
 
-O2: Assess whether advanced deep learning models (Unilateral LSTM, Bilateral LSTM, MC-DCNN) trained on time-series kinematic data significantly (p \le 0.05) outperforms the best baseline by \(\delta\) > 0.05 on the primary metric (AUC-ROC) with 95\% Confidence Interval over 5-fold cross-validation.
+O1: The primary objective is to evaluate 4 classical ML models trained on the biomechanical features provided in the running-injury dataset (N=1402 runners) to classify injury status (injured vs. non-injured), and determine whether any achieves AUC-ROC > 0.7.\\
 
-O3: Apply post-hoc interpretability techniques (SHAP and saliency maps) to interpret black-box models and identify key kinematic features that contribute most to injury detection.
+O2: Assess whether advanced deep learning models (Unilateral LSTM, Bilateral LSTM, MC-DCNN) trained on time-series kinematic data significantly outperforms the best baseline by $\Delta$AUC-ROC > 0.05 (95\% CI, p $\le$ 0.05).\\
 
-
-
-
-
-
-
-
-
-
-
-
-- to develop a model that can detect running injuries from kinematic data.
-- to build on top of the work done by the source paper.
-- To use Machine Learning to solve 
-
-
-Hypothesis:
-- Can we detect running injuries using kinematic data (without force data) without longitudinal data?
-- We learn from AI system to 
+O3: Apply post-hoc interpretability techniques (SHAP and saliency maps) to identify key kinematic features that contribute most to injury detection.
 
 \section{Contributions}\label{sec:intro-contributions}
 -- What is the value of the research?
