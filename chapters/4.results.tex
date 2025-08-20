@@ -10,7 +10,13 @@
 
 \section{Deep Learning models}\label{sec:results-deep-learning}
 
+
+
 \section{Comparison}\label{sec:results-comparison}
+... Accross the CV, the best advanced model achieved AUC-ROC 0.54 (95\% CI) %TODO: Accross CV folds
+, compared with the best baseline (0.76). The DeLong's test yielded p = 0.xx, indicating no statistical significant improvement.
+
+The lack of Deep Learning improvement suggests the dataset may be too small or too noisy for more complex models to help (intra-session variability). Strong handcrafted features (peaks, etc..) likely already capture most of the useful information. In addition, results are strongly influenced by who the runner is due to variability between runners, which makes it harder to generalise across people.
 
 \section{Interpretability}\label{sec:results-interpretability}
 -- Saliencey maps, feature importance, ...
