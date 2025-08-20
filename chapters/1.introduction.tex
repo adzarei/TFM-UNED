@@ -1,4 +1,18 @@
 \chapter{Introduction}\label{chap:introduction}
+%Motion analysis is the systematic study of human movement, and it is a key component of many fields, including biomecanics, medicine and sports science.
+%Kinematics is the study of the motion of objects without considering the forces causing the motion.
+-- To populate after objectives.
+
+Can we detect running injuries using kinematic data? -> Lots of research exists that relates injuries to training load, physiological factors that require logitudinal data to be collected during a long period of time
+
+Lots of research into injury risk prediction, but not much into injury detection.
+% Research in the domain of ML for injury risk prediction in sports has grown steadily over the last 10 years (https://bjsm.bmj.com/content/59/7/491)
+
+
+Proof that MAchine learning has been used successfully in the field of biomechanics 
+
+
+
 
 \section{Motivation}\label{sec:intro-motivation}
 -- Why? Why are we here?
@@ -15,20 +29,43 @@
     -- Limitations, assumptions, etc..
 
 \section{Problem Statement \& Hypotheses}\label{sec:intro-problem-hypotheses}
--- clear and verifiable
+-- Clear and verifiable
 -- Detection of running injury from kinematic data. (Rephrase better)
 
 
 \section{Objectives an Scope}\label{sec:intro-objectives-scope}
--- concise, measurable, and testable
--- Scope, limits, and assumptions
--- What does the source study not cover? What is out of scope for us?
-    - Longitudinal analysis
-    - Follow-up on subjects to track evolution of the injury.
-    - Temporal information about the injury (chronic, not chronic, recent, coping, etc...)
--- Deep Learning over kinematic data better results than classical feature-based approaches.
--- Explainability of the models -> Attempt to interpret what helps detect the injury.
+% -- concise, measurable, and testable
+% -- Scope, limits, and assumptions
+% -- What does the source study not cover? What is out of scope for us?
+%     - Longitudinal analysis
+%     - Follow-up on subjects to track evolution of the injury.
+%     - Temporal information about the injury (chronic, not chronic, recent, coping, etc...)
+Objectives:
+O1: The primary objective is to evaluate how well do 4 classical ML models trained on the biomechanical variables provided in the running-injury dataset (N=1402 runners) detect injury status, and determine whether any achieves AUC-ROC > 0.7.
 
+O2: Assess whether advanced deep learning models (Unilateral LSTM, Bilateral LSTM, MC-DCNN) trained on time-series kinematic data significantly (p \le 0.05) outperforms the best baseline by \(\delta\) > 0.05 on the primary metric (AUC-ROC) with 95\% Confidence Interval over 5-fold cross-validation.
+
+O3: Apply post-hoc interpretability techniques (SHAP and saliency maps) to interpret black-box models and identify key kinematic features that contribute most to injury detection.
+
+
+
+
+
+
+
+
+
+
+
+
+- to develop a model that can detect running injuries from kinematic data.
+- to build on top of the work done by the source paper.
+- To use Machine Learning to solve 
+
+
+Hypothesis:
+- Can we detect running injuries using kinematic data (without force data) without longitudinal data?
+- We learn from AI system to 
 
 \section{Contributions}\label{sec:intro-contributions}
 -- What is the value of the research?
