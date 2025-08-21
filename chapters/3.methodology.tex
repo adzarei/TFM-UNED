@@ -2,26 +2,29 @@
 
 \section{Data and Materials}\label{sec:method-data-materials}
 -- Explain the starting point, what does the paper provide?
+-- Data two types, code, paper, etc...
 
 \subsection{Dataset Description}\label{subsec:method-dataset-description}
 -- No sessions, provenance, format, variables (angles/velocities per joint and side), available metadata.
+-- Feature description
 
 \subsection{Code Description}\label{subsec:method-code-description}
 -- Matlab code provided by the source paper.
+-- My code and repo (high level + refernce to Anex 1)
 
-%  TBD, already part of EDA
-% \subsection{Inclusion/Exclusion \& Data Quality}\label{subsec:method-data-quality}
-% -- curation, discarded sessions, missing values handling.
+\subsection{Kinematic Data Extraction}\label{subsec:kinematic-data-extraction}
+-- How Kinematic variables are derived.
+-- How we obtained angles, anglular velocities from matlab and events...
+-- Internal processing assumptions
+-- Axis reconstruction
+-- Estimations
 
-% \subsection{Pre-processing}\label{subsec:method-preprocessing}
-% -- filtering, cycle alignment, normalisation/standardisation, bilateral engineering.
+% TODO: How to integrate EDA and Preprocessing, since it is realted...
 
-\subsection{Ethics and Privacy}\label{subsec:method-ethics}
--- Optional, we can mention what the source paper says...
 
 \section{Exploratory Data Analysis (EDA)}\label{sec:method-eda}
 -- Exploration → Extraction → Preparation, with concrete checks and figures:
--- Tabular data Exploration (sanity \& distributions)
+-- Tabular data Exploration (sanity and distributions)
 -- Dataset inventory (sessions per runner, class prevalence per runner, cycles/session).
 -- Missingness map (metadata \& signals); strategy preview (drop/impute).
 -- Outliers: per-joint angle/velocity ranges, z-score >3 heatmap by runner (flag sensors/markers).
@@ -42,27 +45,54 @@
 
 -- Final feature set(s) to carry forward (e.g., summaries, PC scores, raw curves for DL)
 
-\section{Feature Engineering}\label{sec:method-feature-engineering}
--- Transformations \& feature extraction
--- Feature selection
+% TODO: Maybe we keep outliers and filering here?
 
-\subsection{Tabular Data}\label{subsec:method-tabular-data}
--- Correlations mutual information, ...
--- Collinearity: PCA, VIF, ...
--- Left-right features - Dominant leg extraction
--- Collinearity reduction
 
-\subsection{Timeseries Data}\label{subsec:method-timeseries-data}
--- Segmentation: TD/TO, stance, swing, ...
--- Normalisation/standardisation
+\section{Pre-processing}\label{sec:method-preprocessing}
+-- Tabular:
+    -- filtering, subject identification, outliers, cleaning, etc..
+    -- Final dataset creation -> Give name to track
+
+-- Timeseries:
+    -- Extraction of angles and angular velocities as mentioned in literature.
+    -- Extraction of events
+    -- Combination of events and TS
+    -- Cycle Segmentation and normalization -> Reference papers either here or in SOTA.
+
+\subsection{Feature Engineering}\label{subsec:method-feature-engineering}
+-- Transformations and feature extraction
+    -- Dominant Leg -> VIF reduction
+    -- Obtaining a representative curve
+        -- Curve registration attempt and Actual result
+
+-- Feature selection:
+    -- MRMR for feature selection
+
+\subsection{Feature Selection}\label{subsec:method-feature-selection}
+-- Transformations and feature extraction
+    -- Dominant Leg -> VIF reduction
+    -- Obtaining a representative curve
+        -- Curve registration attempt and Actual result
+
+-- Feature selection:
+    -- MRMR for feature selection
+
+% \subsection{Tabular Data}\label{subsec:method-tabular-data}
+% -- Correlations mutual information, ...
+% -- Collinearity: PCA, VIF, ...
+% -- Left-right features - Dominant leg extraction
+% -- Collinearity reduction
+
+% \subsection{Timeseries Data}\label{subsec:method-timeseries-data}
+% -- Segmentation: TD/TO, stance, swing, ...
+% -- Normalisation/standardisation
 
 \subsection{Final Feature Sets}\label{subsec:method-final-feature-sets}
 -- Summary of the feature by dataset.
 
 \section{Models}\label{sec:method-models}
-\subsection{Baseline (Tabular)}\label{subsec:baselines}
-\subsection{Dominant Leg, extended features}\label{subsec:baselines-timeseries}  % Rename....
-\subsection{Deep Learning}\label{subsec:advanced-models}
+\subsection{Baseline (Tabular)}\label{subsec:method-baselines}
+\subsection{Deep Learning}\label{subsec:method-deep-learning}
 -- Unilateral LSTM
 -- Bilateral LSTM
 -- Multimodal
@@ -71,19 +101,19 @@
 
 -- Add special tuning for class imbalance, etc...
 -- Architecture choices (hyperparameters, etc...)
--- class imbalance, oversampling, etc... TBD Where to put this?
+-- class imbalance, oversampling, etc... TBD Where to put this? -> Explain in the models that used it. We will give results for each option individually.
 
-
-% TBD if dedicated section or part of EDA
-% \section{Dimensionality Reduction \& Feature Engineering}\label{sec:dim-reduction-feature-eng}
-
-
-\section{Evaluation Protocol}\label{sec:evaluation-protocol}
+\section{Evaluation Protocol}\label{sec:method-evaluation-protocol}
 -- The blueprint before we run anything.
 -- Questions/Hipothesis, grouping, leakage, validation scheme (group-aware train/val/test)
--- Evaluation protocol -> Measurements, statistics. How are we scoring the experimentriment. (Primary, Secondary metric, Threshold rule, ...). Oversampling. Significance Tests. How do we know something is "Better"?
+-- Evaluation protocol -> Measurements, statistics. How are we scoring the experimentriment. (Primary, Secondary metric, Threshold rule, ...).
+-- Significance Tests. How do we know something is "Better" (DeLong's test)?
+-- CI 95 \%
 -- Research questions (RQs), validation scheme (group-aware train/val/test), splits, primary/secondary metrics.
 -- Justify the choices , but do not present any results yet...
+
+\subsection{Evaluation Metrics}\label{subsec:method-evaluation-metrics}
+- AUC ROC + PR for class imbalance + Macro F1 score for threshold.
 
 \subsection{Training and Validation Strategy}\label{subsec:method-training-validation-strategy}
 -- Train, test, validation split.
@@ -96,5 +126,18 @@
 -- Early stopping, ...
 -- Hyperparameter tuning strategy.
 
-\section{Reproducibility Assets}\label{sec:method-reproducibility}
--- code repository structure, libraries, etc...
+
+\section{Explainability}\label{sec:method-explainability}
+
+\subsection{Intrinsic Explainability}\label{subsec:method-intrinsic-explainability}
+- Random Forest, linear regression, etc...
+-- Pros, Cons, etc..
+-- what affects them?
+
+\subsection{Post-hoc Explainability}\label{subsec:method-posthoc-explainability}
+-- SHAPs, Saliency maps
+
+
+
+% \section{Reproducibility Assets}\label{sec:method-reproducibility}
+% -- code repository structure, libraries, etc...
