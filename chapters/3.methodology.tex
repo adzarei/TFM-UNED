@@ -1,13 +1,36 @@
 \chapter{Materials and Methods}\label{chap:materials-methods}
-In this chapter we present the materials provided in the source paper (\cite{Ferber2024}), we describe the source datsets, the preprocessing and exploration process, the implementation, training and evaluation of the models and the explainability analysis of the models.
+This chapter introduces the materials and datasets provided in the source paper \citep{Ferber2024}. We then describe how the data were preprocessed and explored, explain how the models were implemented, trained, and evaluated, and finally present the methods used to analyse model explainability.
 
 \section{Data and Materials}\label{sec:method-data-materials}
--- Explain the starting point, what does the paper provide?
--- Data two types, code, paper, etc...
+As part of \citet{Ferber2024}, the authors have published a dataset of 1798 subjects running or walking on a treadmill captured using multi-camera 3D motion capture (\gls{mocapsys}) equipment. The dataset is composed of raw 3d marker data of each \gls{session}, kinematic variables derived from the marker data for each \gls{session} and demographic and antropometric metadata of the subjects. Additionally, the matlab code for the preprocessing of the data, the calculation of the kinematic variables and tutorial notebooks that help ilusatrate how to use their library and read the data from the folder structure are also provided.
+
+\subsection{Measurement protocol}\label{subsec:measurement-protocol}
+The complete measurement protocol is described in \citet{Ferber2024}. In this subsection, we provide a summary of the aspects that are most relevant for the methods and analyses presented in this thesis.
+
+The raw marker data was collected using high-speed optoelectronic infrared-based motion capture cameras (MX3/Bonita, Vicon, Oxford, UK) were used to record the position of 9mm spherical retro-reflective markers attached to anatomical landmarks of the subjects at either 120Hz or 200Hz. Depending on the lab, eight or three cameras were used.
+
+\begin{figure}[ht]
+    \includegraphics[width=0.5\columnwidth]{images/billateral_marker_position.png}
+    \caption{Position of markers on the subjects. Grey markers correspond to core set of markers set, black to additional set and white to the clusters set.}
+    \label{fig:marker_position}
+\end{figure}
+
+Three sets of markers were used:
+\begin{itemize}
+    \item Core: Markers attached to the following anatomical landmarks: medial and lateral malleoli, medial and lateral femoral condyles, and greater trochanters.
+    \item Additional: Markers attached to the following anatomical landmarks: bilateral 1st and 5th metatarsal heads, distal aspect of the shoe, tibial tuberosity, anterior superior iliac spines, and iliac crests;
+    \item Clusters: 3 or 4 markers placed on rigid shells attached to the following anatomical landmarks: sacrum, bilateral thigh and shank, and posterior aspect of both shoes.
+\end{itemize}
+
+During the recording of the \glspl{session}{sessions} of all 1798 subjects the 'core' and 'cluster' set of markers were used. The additional set was only used during the recording of the \glspl{session}{sessions} of 1082 subjects. Figure \ref{fig:marker_position} shows the lower body of a subject and the three sets of markers.
+
 
 \subsection{Dataset Description}\label{subsec:method-dataset-description}
--- No sessions, provenance, format, variables (angles/velocities per joint and side), available metadata.
--- Feature description
+% -- No sessions, provenance, format, variables (angles/velocities per joint and side), available metadata.
+% -- Feature description
+The source 
+
+
 
 \subsection{Code Description}\label{subsec:method-code-description}
 -- Matlab code provided by the source paper.
@@ -129,9 +152,9 @@ In this chapter we present the materials provided in the source paper (\cite{Fer
 
 
 \section{Explainability}\label{sec:method-explainability}
-<Draft> This project woukld have been set up and architected differently if our objective would've been the development and deployment of a injury detetion model alone. In such projects, model explainability is only a priority when debuging the model. On the other hand, one would put more attention to the easy of gathering the inputs, the model architecture and resource consumption. For our use case, model explainability is key to derive value from the work that has been done, as there is little value to society of having an AUC ROC of 0.7 on a black box Deep Learning model other than to prove that a good data science work has been done.
+<Draft> This project would have been set up differently if the sole goal had been to build and deploy an injury detection model. In that case, explainability would mostly be used just to debug the model, and the focus would shift toward making data collection easier, choosing an efficient architecture, and reducing resource use. In our case, though, explainability is central: a deep learning model with an AUC-ROC of 0.7 doesn't add much value if it remains a black box.
 
-To build on top of this and extract the maximum value out of the project, we have made use of intrinsic methods and Explainable AI (XAI) techniques, as seen in \cite{FuentesJimnez2025}, to add transparency to model's decisions.
+To get the most out of this work, we used both intrinsic methods and Explainable AI (XAI) techniques, as in \cite{FuentesJimnez2025}, to make the model's decisions more transparent.
 
 \subsection{Intrinsic Explainability}\label{subsec:method-intrinsic-explainability}
 - Random Forest, linear regression, etc...
