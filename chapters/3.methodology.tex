@@ -9,9 +9,9 @@ The complete measurement protocol is described in \citet{Ferber2024}. In this su
 
 The raw marker data was collected using high-speed optoelectronic infrared-based motion capture cameras (MX3/Bonita, Vicon, Oxford, UK) were used to record the position of 9mm spherical retro-reflective markers attached to anatomical landmarks of the subjects at either 120Hz or 200Hz. Depending on the lab, eight or three cameras were used. Below we list and describe the three sets of markers that were used.
 \begin{itemize}
-    \item Core: Markers attached to the following anatomical landmarks: medial and lateral malleoli, medial and lateral femoral condyles, and greater trochanters.
-    \item Additional: Markers attached to the following anatomical landmarks: bilateral 1st and 5th metatarsal heads, distal aspect of the shoe, tibial tuberosity, anterior superior iliac spines, and iliac crests;
-    \item Clusters: 3 or 4 markers placed on rigid shells attached to the following anatomical landmarks: sacrum, bilateral thigh and shank, and posterior aspect of both shoes.
+    \item \textbf{Core}: Markers attached to the following anatomical landmarks: medial and lateral malleoli, medial and lateral femoral condyles, and greater trochanters.
+    \item \textbf{Additional}: Markers attached to the following anatomical landmarks: bilateral 1st and 5th metatarsal heads, distal aspect of the shoe, tibial tuberosity, anterior superior iliac spines, and iliac crests;
+    \item \textbf{Clusters}: 3 or 4 markers placed on rigid shells attached to the following anatomical landmarks: sacrum, bilateral thigh and shank, and posterior aspect of both shoes.
 \end{itemize}
 
 During the recording of the sessions of all 1798 subjects the 'core' and 'cluster' set of markers were used. The additional set was only used during the recording of the sessions of 1082 subjects. Figure \ref{fig:marker_position} shows the lower body of a subject and the three sets of markers.
@@ -55,9 +55,9 @@ As described above, the dataset contains two complementary components: (i) sessi
 \paragraph{Marker and descriptive biomechanical data (Hierarchical)} For each session, 3D positions of reflective markers and descriptive variables derived from those markers are provided.
 \begin{itemize}
     \item \textbf{Recording frequency} Fequency of the recording in Herz (Hz). Either 120hz or 200hz depending on the lab.
-    \item \textbf{Joints}: 3D coordinates of the individual markers of the core and additional marker sets while the subject is standing in neutral position.
-    \item \textbf{Neutral}: 3D coordinates of the individual markers in the cluster marker set while the subject is standing in neutral position.
-    \item \textbf{Running}: 3D coordinates at each of the frames of the recording for the individual markers in the cluster marker set.
+    \item \textbf{Joint Marker Neutral}: 3D coordinates of the individual markers of the core and additional marker sets while the subject is standing in neutral position.
+    \item \textbf{Cluster Marker Neutral}: 3D coordinates of the individual markers in the cluster marker set while the subject is standing in neutral position.
+    \item \textbf{Dynamic Marker data}: 3D coordinates at each of the frames of the recording for the individual markers in the cluster marker set.
     \item \textbf{Descriptive biomechanical variables}: Set of 77 variables derived from the 3D coordinates Marker data. Calculated for Left and Right side of the body.
 \end{itemize}
 
@@ -116,8 +116,24 @@ All descriptive variables follow the interpretations described in \citet{Bartlet
 % TODO: Explain important biomechanical concepts like dorsiflexion, eversion, etc...
 
 \subsection{Code Description}\label{subsec:method-code-description}
--- Matlab code provided by the source paper.
--- My code and repo (high level + refernce to Anex 1)
+% -- Matlab code provided by the source paper.
+% -- My code and repo (high level + refernce to Anex 1)
+We have implemented an ad-hoc python library to orchestrate data extraction, preprocessing, feature engineering, modelling, and evaluation. All code developed for this project and used to produce the reported results has been made publicly available for reproducibility \cite{Zapater_Reig_Running_Injury_Clinic}. Additionally we have made use of the MATLAB reference implementation published with the dataset in \cite{Ferber2024}. The matlab scripts used have also been included in the repository in the \texttt{suplemental_material} folder which are available for consultation. Below we describe the most important scripts that we borrow from the paper:
+
+\paragraph{\texttt{gait\_kinematics.m}} Calculates joint angles and joint angle velocities from \texttt{Dynamic Marker Data}, \texttt{Join Marker Neutral} and \textt{Cluster Marker Neutral} data. It constructs anatomical segment coordinate systems from the neutral marker data, tracks segment motion during using the dynamic marker data and computes XYZ Cardan joint angles and angular velocities. It returns:
+\begin{itemize}
+    \item \texttt{Angles}: per-frame joint/segment angles for L/R ankle, knee, hip; foot and pelvis segments (degrees).
+    \item \texttt{Velocities}: per-frame angular velocities for the same structures (deg/s).
+    \item \texttt{jc}: Estimated joint centre positions (pelvis, hips, knees, ankles).
+\end{itemize}
+
+\paragraph{\texttt{gait\_steps.m}} Calculates the descriptive biomechanical variable set from \texttt{Dynamic Marker Data}, \textt{Cluster Marker Neutral} data, \textt{Angles} and \textt{Velocities}. It returns:
+\begin{itemize}
+    \item \texttt{event}: Gait cycle events by side: Touchdown, midstance, toe-off and heelwhip.
+    \item \texttt{Descriptive biomechanical variables}: Set of variables described in table \ref{tab:met-desc-variable-init}
+\end{itemize}
+
+Both script output additional variables, but are not of relevance for this project.
 
 \subsection{Kinematic Data Extraction}\label{subsec:kinematic-data-extraction}
 -- How Kinematic variables are derived.
