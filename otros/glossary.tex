@@ -1,8 +1,17 @@
 \makeglossaries
 
 % Introduzca de cada término del glosario su nombre y su descripción
-\newglossaryentry{latex}
-{
-    name={\LaTeX},
-    description={Sistema de composición de textos, formado mayoritariamente por macros en \TeX, que permite crear diferentes tipos de documento con una alta calidad tipográfica}
+\newglossaryentry{subject}{
+    name={Subject},
+    description={An individual runner included in the dataset. Each subject may contribute one or more running sessions.}
+}
+
+\newglossaryentry{session}{
+    name={Session},
+    description={A continuous treadmill run (approximately 60 seconds) recorded from a single subject. Each session yields multiple gait cycles.}
+}
+
+\newglossaryentry{cycle}{
+    name={Cycle},
+    description={A gait cycle defined as the interval between two successive foot touchdowns of the same foot, including both stance and swing phases.}
 }

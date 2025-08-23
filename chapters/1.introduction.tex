@@ -43,6 +43,13 @@ O2: Assess whether advanced deep learning models (Unilateral LSTM, Bilateral LST
 O3: Apply post-hoc interpretability techniques (SHAP and saliency maps) to identify key kinematic features that contribute most to injury detection.
 
 \section{Work Plan}\label{sec:intro-work-plan}
+
+4 phase project:
+    - Data Preparation
+    - Modelling
+    - Model interpretation
+
+Phase 1:
 - Data acquisition and Preparation
     - Source paper data
     - Preprocessing in matlab
@@ -66,6 +73,7 @@ O3: Apply post-hoc interpretability techniques (SHAP and saliency maps) to ident
         - MRMR to extract top 40 features
         - Select a representant Curve for all the segments of a trial: Curve Registration and Mean Curve.
 
+Phase 2:
 - Machine Learning modelling
     - Establish evaluation process: performance metrics, threshold selection process
     - Train classical ML models on handcrafted features
@@ -81,6 +89,7 @@ O3: Apply post-hoc interpretability techniques (SHAP and saliency maps) to ident
     - Compare the models using DeLongs test on the primary evaluation metric (ROC_AUC)
     - Analyse the results and discuss the outcomes
 
+Phase 3:
 - Model interpretation:
     - Calculate SHAP values for the best performing model of both categories.
     - Generate Saliency maps for the best performing Deep Learning model
@@ -88,11 +97,9 @@ O3: Apply post-hoc interpretability techniques (SHAP and saliency maps) to ident
         - What features are most important when detecting injury?
         - What part of the stance phase is more important when detecting injury?
 
-- Conclusions:
-    - Summarise key findings.
-    - Propose improvements and future lines of work.
-
 \section{Document Structure}\label{sec:intro-structure}
--- Overview of the document structure, chapters, sections, etc...
 
+The document is structured in 4 chapters. The first chapter sets the context and frames the injury detection problem. Chapter 2, summarises the current state of the field of Machine learning applied to biomechanics with a focus on the problem and delves deeper into the challenges, limitation that exists, setting this project appart from what currently exists. Chapter 3, 
+
+Chapter 1 Gives an introduction to the problem and frames the objective and project phases. In Chapter 2 summarises  
 
