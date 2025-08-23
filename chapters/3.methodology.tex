@@ -2,7 +2,7 @@
 This chapter introduces the materials and datasets provided in the source paper \citep{Ferber2024}. We then describe how the data were preprocessed and explored, explain how the models were implemented, trained, and evaluated, and finally present the methods used to analyse model explainability.
 
 \section{Data and Materials}\label{sec:method-data-materials}
-As part of \citet{Ferber2024}, the authors have published a dataset of 1798 subjects running or walking on a treadmill captured using multi-camera 3D motion capture (\gls{mocapsys}) equipment. The dataset is composed of raw 3d marker data of each \gls{session}, kinematic variables derived from the marker data for each \gls{session} and demographic and antropometric metadata of the subjects. Additionally, the matlab code for the preprocessing of the data, the calculation of the kinematic variables and tutorial notebooks that help ilusatrate how to use their library and read the data from the folder structure are also provided.
+As part of \citet{Ferber2024}, the authors have published a dataset of 1798 \glspl{subject} running or walking on a treadmill captured using multi-camera 3D motion capture (\gls{mocapsys}) equipment. The dataset is composed of raw 3d marker data of each \gls{session}, kinematic variables derived from the marker data for each session and demographic and antropometric metadata of the subjects. Additionally, the matlab code for the preprocessing of the data, the calculation of the kinematic variables and tutorial notebooks that help ilusatrate how to use their library and read the data from the folder structure are also provided.
 
 \subsection{Measurement protocol}\label{subsec:measurement-protocol}
 The complete measurement protocol is described in \citet{Ferber2024}. In this subsection, we provide a summary of the aspects that are most relevant for the methods and analyses presented in this thesis.
@@ -10,7 +10,9 @@ The complete measurement protocol is described in \citet{Ferber2024}. In this su
 The raw marker data was collected using high-speed optoelectronic infrared-based motion capture cameras (MX3/Bonita, Vicon, Oxford, UK) were used to record the position of 9mm spherical retro-reflective markers attached to anatomical landmarks of the subjects at either 120Hz or 200Hz. Depending on the lab, eight or three cameras were used.
 
 \begin{figure}[ht]
+    \begin{centering}
     \includegraphics[width=0.5\columnwidth]{images/billateral_marker_position.png}
+    \par\end{centering}
     \caption{Position of markers on the subjects. Grey markers correspond to core set of markers set, black to additional set and white to the clusters set.}
     \label{fig:marker_position}
 \end{figure}
@@ -22,7 +24,7 @@ Three sets of markers were used:
     \item Clusters: 3 or 4 markers placed on rigid shells attached to the following anatomical landmarks: sacrum, bilateral thigh and shank, and posterior aspect of both shoes.
 \end{itemize}
 
-During the recording of the \glspl{session}{sessions} of all 1798 subjects the 'core' and 'cluster' set of markers were used. The additional set was only used during the recording of the \glspl{session}{sessions} of 1082 subjects. Figure \ref{fig:marker_position} shows the lower body of a subject and the three sets of markers.
+During the recording of the sessions of all 1798 subjects the 'core' and 'cluster' set of markers were used. The additional set was only used during the recording of the sessions of 1082 subjects. Figure \ref{fig:marker_position} shows the lower body of a subject and the three sets of markers.
 
 
 \subsection{Dataset Description}\label{subsec:method-dataset-description}
