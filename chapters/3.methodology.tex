@@ -1,4 +1,5 @@
 \chapter{Materials and Methods}\label{chap:materials-methods}
+In this chapter we present the materials provided in the source paper (\cite{Ferber2024}), we describe the source datsets, the preprocessing and exploration process, the implementation, training and evaluation of the models and the explainability analysis of the models.
 
 \section{Data and Materials}\label{sec:method-data-materials}
 -- Explain the starting point, what does the paper provide?
@@ -128,6 +129,9 @@
 
 
 \section{Explainability}\label{sec:method-explainability}
+<Draft> This project woukld have been set up and architected differently if our objective would've been the development and deployment of a injury detetion model alone. In such projects, model explainability is only a priority when debuging the model. On the other hand, one would put more attention to the easy of gathering the inputs, the model architecture and resource consumption. For our use case, model explainability is key to derive value from the work that has been done, as there is little value to society of having an AUC ROC of 0.7 on a black box Deep Learning model other than to prove that a good data science work has been done.
+
+To build on top of this and extract the maximum value out of the project, we have made use of intrinsic methods and Explainable AI (XAI) techniques, as seen in \cite{FuentesJimnez2025}, to add transparency to model's decisions.
 
 \subsection{Intrinsic Explainability}\label{subsec:method-intrinsic-explainability}
 - Random Forest, linear regression, etc...
@@ -135,7 +139,7 @@
 -- what affects them?
 
 \subsection{Post-hoc Explainability}\label{subsec:method-posthoc-explainability}
--- SHAPs, Saliency maps
+-- SHAPs, Saliency maps, feature permutation?
 
 
 
