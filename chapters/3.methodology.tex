@@ -2,12 +2,12 @@
 This chapter introduces the materials and datasets provided in the source paper \citep{Ferber2024}. We then describe how the data were preprocessed and explored, explain how the models were implemented, trained, and evaluated, and finally present the methods used to analyse model explainability.
 
 \section{Data and Materials}\label{sec:method-data-materials}
-As part of \citet{Ferber2024}, the authors have published a dataset of 1798 \glspl{subject} running or walking on a treadmill captured using multi-camera 3D motion capture (\gls{mocapsys}) equipment. The dataset is composed of raw 3d marker data of each \gls{session}, kinematic variables derived from the marker data for each session and demographic and antropometric metadata of the subjects. Additionally, the matlab code for the preprocessing of the data, the calculation of the kinematic variables and tutorial notebooks that help ilusatrate how to use their library and read the data from the folder structure are also provided.
+As part of \citet{Ferber2024}, the authors have published a dataset of 1798 \glspl{subject} running or walking on a treadmill captured using multi-camera 3D motion capture (\gls{mocapsys}) equipment. The dataset is composed of raw 3d marker data of each \gls{session}, descriptive biomechanical variables derived from the marker data for each session and demographic and antropometric metadata of the subjects. Additionally, the matlab code for the preprocessing of the data, the calculation of the kinematic variables and tutorial notebooks that help ilustrate how to use their library and read the data from the folder structure are also provided. Although both walking and running data is provided, we have used exclusively running data. From this point onwards, walking data is ignored for brevity.
 
 \subsection{Measurement protocol}\label{subsec:measurement-protocol}
 The complete measurement protocol is described in \citet{Ferber2024}. In this subsection, we provide a summary of the aspects that are most relevant for the methods and analyses presented in this thesis.
 
-The raw marker data was collected using high-speed optoelectronic infrared-based motion capture cameras (MX3/Bonita, Vicon, Oxford, UK) were used to record the position of 9mm spherical retro-reflective markers attached to anatomical landmarks of the subjects at either 120Hz or 200Hz. Depending on the lab, eight or three cameras were used. Three sets of markers were used:
+The raw marker data was collected using high-speed optoelectronic infrared-based motion capture cameras (MX3/Bonita, Vicon, Oxford, UK) were used to record the position of 9mm spherical retro-reflective markers attached to anatomical landmarks of the subjects at either 120Hz or 200Hz. Depending on the lab, eight or three cameras were used. Below we list and describe the three sets of markers that were used.
 \begin{itemize}
     \item Core: Markers attached to the following anatomical landmarks: medial and lateral malleoli, medial and lateral femoral condyles, and greater trochanters.
     \item Additional: Markers attached to the following anatomical landmarks: bilateral 1st and 5th metatarsal heads, distal aspect of the shoe, tibial tuberosity, anterior superior iliac spines, and iliac crests;
@@ -24,12 +24,96 @@ During the recording of the sessions of all 1798 subjects the 'core' and 'cluste
     \label{fig:marker_position}
 \end{figure}
 
+% TODO: Explain the recording procedure: Warm up, duration, discard, etc...
+
 \subsection{Dataset Description}\label{subsec:method-dataset-description}
-% -- No sessions, provenance, format, variables (angles/velocities per joint and side), available metadata.
-% -- Feature description
+As described above, the dataset contains two complementary components: (i) session-level metadata stored as tabular files, and (ii) motion-capture marker data together with derived kinematic variables per session. Below we describe each component and list the variables that are available for analysis.
 
+\paragraph{Metadata (tabular)} Metada is provided as a CSV file: \texttt{run\_data\_meta.csv}. Each row corresponds to a single treadmill session recorded for a subject.
+\begin{itemize}
+    \item \texttt{sub\_id}: Unique subject identifier.
+    \item \texttt{datestring}: Session recording date.
+    \item \texttt{filename}: Session filename used to locate the marker json file for the session.
+    \item \texttt{speed\_r}: Treadmill belt speed (m/s).
+    \item \texttt{age}: Subject's age (years).
+    \item \texttt{Height}: Body height (cm).
+    \item \texttt{Weight}: Body weight (kg).
+    \item \texttt{Gender}: Subject gender.
+    \item \texttt{DominantLeg}: Dominant leg (Left/Right/Ambidextrous).
+    \item \texttt{InjDefn}: Injury severity reported by the subject choosing between 4 options: (1) No Injury, (2) Continuing to train in pain, (3) Training volume/intensity affected, (4) Minimum of two workouts missed in a row.
+    \item \texttt{InjJoint}, \texttt{InjSide}, \texttt{SpecInjury}, \texttt{InjDuration}: Primary injured joint, side (Left/Right), Specific injury diagnosis from medical professional, and for how long has the subject had the injury.
+    \item \texttt{InjJoint2}, \texttt{InjSide2}, \texttt{SpecInjury2}: Secondary injury information (if applicable).
+    \item \texttt{Activities}: Subject reported athletic activities performed on a regular basis.
+    \item \texttt{Level}: Self-reported level of athletic activity (recreational/competitive).
+    \item \texttt{YrsRunning}: Number of years subject has been running on a regular basis.
+    \item \texttt{RaceDistance}: Perferred race distance.
+    \item \texttt{RaceTimeHrs}, \texttt{RaceTimeMins}, \texttt{RaceTimeSecs}: Perferred race distance best time.
+    \item \texttt{YrPR}: Year of preferred race distance personal best time.
+    \item \texttt{NumRaces}: Number of races completed per year.
+\end{itemize}
 
+\paragraph{Marker and descriptive biomechanical data (Hierarchical)} For each session, 3D positions of reflective markers and descriptive variables derived from those markers are provided.
+\begin{itemize}
+    \item \textbf{Recording frequency} Fequency of the recording in Herz (Hz). Either 120hz or 200hz depending on the lab.
+    \item \textbf{Joints}: 3D coordinates of the individual markers of the core and additional marker sets while the subject is standing in neutral position.
+    \item \textbf{Neutral}: 3D coordinates of the individual markers in the cluster marker set while the subject is standing in neutral position.
+    \item \textbf{Running}: 3D coordinates at each of the frames of the recording for the individual markers in the cluster marker set.
+    \item \textbf{Descriptive biomechanical variables}: Set of 77 variables derived from the 3D coordinates Marker data. Calculated for Left and Right side of the body.
+\end{itemize}
 
+It must be noted that \texttt{Joints} and \texttt{Neutral} coordinates do not represent the true anatomical centers, only the centers of the markers on the skin of the subject.
+Only 33 of the 77 descriptive biomehanical variables are populated per side, the rest all contain 0 for all values of all sessions, this totals 66 populated descriptive variables in total. Table \ref{tab:met-desc-variable-init} describes the variable set per side.
+
+\begin{table}[ht]
+    \centering
+    \caption[Populated Descriptive Variables Summary]{Summary of the Descriptive Biomechanical Variables that are populated\label{tab:met-desc-variable-init}}
+    \begin{tabular}{lp{0.6\textwidth}}
+    \hline
+    Variable & Category \\
+    \hline
+    Step width (m) & Temporal-spatial \\
+    Stride rate (steps/min) & Temporal-spatial \\
+    Stride length (m) & Temporal-spatial \\
+    Swing time & Temporal-spatial \\
+    Stance time & Temporal-spatial \\
+    Peak drop angle & Pelvis kinematics \\
+    Drop excursion & Pelvis kinematics \\
+    Dorsiflexion peak angle & Ankle kinematics \\
+    Ankle Eversion peak angle & Ankle kinematics \\
+    Ankle Rotation peak angle & Ankle kinematics \\
+    Ankle Eversion excursion & Ankle kinematics \\
+    Ankle Rotation excursion & Ankle kinematics \\
+    Ankle Eversion \% of stance & Ankle kinematics \\
+    Knee Flexion peak angle & Knee kinematics \\
+    Knee Adduction/abduction peak angle & Knee kinematics \\
+    Knee Rotation peak angle & Knee kinematics \\
+    Knee Adduction/abduction excursion & Knee kinematics \\
+    Knee Rotation excursion & Knee kinematics \\
+    Hip Extension peak angle & Hip kinematics \\
+    Hip Adduction peak angle & Hip kinematics \\
+    Hip Rotation peak angle & Hip kinematics \\
+    Hip Adduction excursion & Hip kinematics \\
+    Hip Rotation excursion & Hip kinematics \\
+    Foot progression angle & Foot kinematics \\
+    Heel-strike angle & Foot kinematics \\
+    Medial heel whip excursion from toe-off & Foot kinematics \\
+    Ankle eversion peak velocity & Joint velocities \\
+    Ankle rotation peak velocity & Joint velocities \\
+    Knee adduction peak velocity & Joint velocities \\
+    Knee abduction peak velocity & Joint velocities \\
+    Hip abduction peak velocity & Joint velocities \\
+    Knee rotation peak velocity & Joint velocities \\
+    Hip rotation peak velocity & Joint velocities \\
+    Pelvic drop peak velocity & Joint velocities \\
+    Pronation onset \% of gait cycle & Foot timing \\
+    Pronation offset \% of gait cycle & Foot timing \\
+    Vertical oscillation (mm) & Vertical oscillation \\
+    \hline
+    \end{tabular}
+\end{table}
+
+All descriptive variables follow the interpretations described in \citet{Bartlett2014}. Unless specified explicitly in the table, the units are degrees for angles and excursions, and degrees/s for joint velocities. Excursions are also commonly known as range of motion (ROM) in the literature. 
+% TODO: Explain important biomechanical concepts like dorsiflexion, eversion, etc...
 
 \subsection{Code Description}\label{subsec:method-code-description}
 -- Matlab code provided by the source paper.
@@ -41,6 +125,7 @@ During the recording of the sessions of all 1798 subjects the 'core' and 'cluste
 -- Internal processing assumptions
 -- Axis reconstruction
 -- Estimations
+-- Focus on the Stance because computed variables are also focused there. Same reference paper. Or alternatively put in state of the art and justify here that we think it is better this way.
 
 % TODO: How to integrate EDA and Preprocessing, since it is realted...
 
