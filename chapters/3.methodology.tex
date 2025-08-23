@@ -118,18 +118,19 @@ All descriptive variables follow the interpretations described in \citet{Bartlet
 \subsection{Code Description}\label{subsec:method-code-description}
 % -- Matlab code provided by the source paper.
 % -- My code and repo (high level + refernce to Anex 1)
-We have implemented an ad-hoc python library to orchestrate data extraction, preprocessing, feature engineering, modelling, and evaluation. All code developed for this project and used to produce the reported results has been made publicly available for reproducibility \cite{Zapater_Reig_Running_Injury_Clinic}. Additionally we have made use of the MATLAB reference implementation published with the dataset in \cite{Ferber2024}. The matlab scripts used have also been included in the repository in the \texttt{suplemental_material} folder which are available for consultation. Below we describe the most important scripts that we borrow from the paper:
+We have implemented an ad-hoc python library to orchestrate data extraction, preprocessing, feature engineering, modelling, and evaluation. All code developed for this project and used to produce the reported results has been made publicly available for reproducibility \cite{Zapater_Reig_Running_Injury_Clinic}. Additionally we have made use of the MATLAB reference implementation published with the dataset in \cite{Ferber2024}.The matlab scripts used have also been included in the repository in the \texttt{supplemental\_material} folder which are available for consultation. Below we describe the most important scripts that we borrow from the paper:
 
-\paragraph{\texttt{gait\_kinematics.m}} Calculates joint angles and joint angle velocities from \texttt{Dynamic Marker Data}, \texttt{Join Marker Neutral} and \textt{Cluster Marker Neutral} data. It constructs anatomical segment coordinate systems from the neutral marker data, tracks segment motion during using the dynamic marker data and computes XYZ Cardan joint angles and angular velocities. It returns:
+\paragraph{\texttt{gait\_kinematics.m}} Calculates joint angles and joint angle velocities from \texttt{Dynamic Marker Data}, \texttt{Join Marker Neutral} and \texttt{Cluster Marker Neutral} data. It constructs anatomical segment coordinate systems from the neutral marker data, tracks segment motion during using the dynamic marker data and computes XYZ Cardan joint angles and angular velocities. It returns:
 \begin{itemize}
     \item \texttt{Angles}: per-frame joint/segment angles for L/R ankle, knee, hip; foot and pelvis segments (degrees).
     \item \texttt{Velocities}: per-frame angular velocities for the same structures (deg/s).
     \item \texttt{jc}: Estimated joint centre positions (pelvis, hips, knees, ankles).
 \end{itemize}
 
-\paragraph{\texttt{gait\_steps.m}} Calculates the descriptive biomechanical variable set from \texttt{Dynamic Marker Data}, \textt{Cluster Marker Neutral} data, \textt{Angles} and \textt{Velocities}. It returns:
+\paragraph{\texttt{gait\_steps.m}} Calculates the descriptive biomechanical variable set from \texttt{Dynamic Marker Data}, \texttt{Cluster Marker Neutral} data, \texttt{Angles} and \texttt{Velocities}. It returns:
+
 \begin{itemize}
-    \item \texttt{event}: Gait cycle events by side: Touchdown, midstance, toe-off and heelwhip.
+    \item \texttt{event}: Gait cycle events by side: Touchdown, mid-stance, toe-off and heel whip.
     \item \texttt{Descriptive biomechanical variables}: Set of variables described in table \ref{tab:met-desc-variable-init}
 \end{itemize}
 
