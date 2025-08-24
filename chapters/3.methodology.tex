@@ -195,13 +195,27 @@ Additionally to the time-series data, the script also generates the set of 33 de
 % -- Missing-ness map (metadata \& signals); strategy preview (drop/impute).
 % -- Outliers: per-joint angle/velocity ranges, z-score >3 heat-map by runner (flag sensors/markers).
 % -- Dimensionality previews: PCA/t-SNE to see separability.
+As discussed on the previous section, we have two main types of data available:
 
+\begin{itemize}
+    \item \textbf{Tabular datasets}
+    \begin{itemize}
+        \item Session metadata, a set of anthropometric and demographic variables.
+        \item Descriptive variables, a engineered set of biomechanical variables derived from the joint angles and angular velocities.
+    \end{itemize}
+    \item \textbf{Time-series datasets}
+    \begin{itemize}
+        \item Joint angles derived from the marker data.
+        \item Joint angular velocities derived from the marker data.
+    \end{itemize}
+\end{itemize}
+
+Given the difference in structure of both groups of datasets we need to apply different techniques and methods when working with the. Below we will discuss each of them separately.
 
 \subsection{Tabular dataset}\label{subsec:method-tabular-dataset}
-Tabular:
-1832 recordings of a sessions of 1402 distinct runners with 209 of them having more than 1 session.
+The tabular datasets contain a row for each of the 1832 recordings of running sessions. There are 1402 distinct runners within those sessions, with 209 of them having more than 1 session recorded. There are 19 more sessions compared to the time-series datasets due to the errors during data extraction. Still, we will use the full tabular dataset, for the tasks that require only tabular data, since there are no data quality issues with the tabular data of those sessions.
 
-Data Quality and standardisation:
+\paragraph{Standardisation of variables:}
 The values of nominal categorical variables with less than 100 categories have been mapped to a code that is easier to work with(no spaces, no special characters and restricted length), and we have consolidated categories that refer to the same code but were written slightly differently (i.e. meniscal tear-lateral and meniscal tear lateral).
 
 For nominal categorical variables with more than 100 categories that are likely a free text input for the subjects like \texttt{Activities}, we Convert to lowercase, remove leading and trailing spaces, replace non-standard separators with comma, replace multiple spaces with single space, replace multiple commas with single comma.
@@ -220,14 +234,12 @@ Things to highly of the distributions of the columns:
 
 TODO: Do we need a visualization to support?
 
-Edge cases:
+\paragraph{Data quality and outlier detection:}
 We comparing the sessions of the same subject we have found samples where the \texttt{Level} changes from competitive to recreational or the other way around, also we have found examples where the \texttt{DominantLeg} changes over time, and cases where both \texttt{SpecInjury} and \texttt{InjDefn} change. Since there is no indication in the source paper that makes us think that this is not possible, we will continue with assuming that this scenario is possible.
 
-Edge cases that indicate that there is a data quality problem and that we need to act:
-There is one case where the age gap between sessions is 10 years, which is longer than the duration of the study. We check the whole dataset by comparing the difference in reported age  between sessions and compare it with the time difference between sessions. Two samples show a significant difference: Subject 100234 reports 3 years older in less than 1 year between sessions. 200375 is clearly two different people: A 27 year old female and a 50 year old male.
-We override the age of the former to 41 and we create a new synthetic subject ID (300375) and assign the second session to the new subject.
+There is one case where the age gap between sessions is 10 years, which is longer than the duration of the study. We check the whole dataset by comparing the difference in reported age  between sessions and compare it with the time difference between sessions. Two samples show a significant difference: Subject 100234 reports 3 years older in less than 1 year between sessions. 200375 is clearly two different people: A 27 year old female and a 50 year old male. For the first case, we decided to override the age of the former and set it to 41. For the second case, we decided to create a new synthetic subject ID (300375) and assign the second session to the new subject. The number of sessions remains the same, but there is a new subject.
 
-In some samples we have detected that SpecInjury is empty, but SpecInjury2 has a value. For those cases, we assume that it is an input error and move the value from SpecInjury to SpecInjury2.
+In some samples we have observed that SpecInjury is empty, but SpecInjury2 has a value. For those cases, we assume that it is an input error and move the value from SpecInjury to SpecInjury2.
 
 % There are images in 04_eda..ipynb is needed
 Outliers -> Replace with NaN
@@ -238,16 +250,21 @@ Find outliers drawing a box-plot and visually identifying unrealistic values.
 - InjDuration of 30000 days (82 years) and 10000 (25 years), very high + very clean number - New Max InjDuration: 176.0, Min InjDuration: 42.5. Checked that the age was below the value. Clearly an error
 - YearsRunning of 999 - New Max YrsRunning: 54.0, Min YrsRunning: 42.5
 
-Lastly, we introduce a surrogate key "id" that can be used across datasets to identify each sample. One sample is a session. The surrogate key is the concatenation of subject id with the filename in uppercase i.e. \"100001\_20110531T161051\". This will be needed when working with both time-series and metadata.
+\paragraph{Merging metadata and biomechanical variables}
+We decided to introduce a surrogate key "id" that can be used across datasets to identify each sample uniquely. One sample is a session. The surrogate key is the concatenation of subject id with the filename in uppercase i.e. \"100001\_20110531T161051\". We use this column to join both datasets by "id".
 
-The dataset, which only had metadata variables is enriched with the descriptive variables extracted from the source json files. We join both datasets by "id".
+% TODO: List all variables available?
 
+
+\paragraph{Missing values:}
 Missing data:
 <table> Missing data, table with columns with most missing values after cleaning
 As expected \texttt{SpecInjury2}, \texttt{InjJoint2} and \texttt{InjSide2} has the most missing values, it is only populated when a subject has two injuries reported. If it only has 1, then it will be empty. There are data quality issues with those columns, because they missing values \% do not match.
 
 Columns with more than 30\% of missing values will not be used for modelling.
 
+
+\paragraph{Definition of Injury status}
 Definition of Injury: the dataset does not contain a column that marks injury, we have two columns with relevant information: \texttt{SpecInjury} and \texttt{InjDefn}. The former is the injury reported by a medical expert and the latter is the injury severity self-reported by the patient. Identifying a positive injury status should be easy, but we have found some edge cases where a runner reported no injury and the medical expert diagnosed an injury, and the inverse scenario too.
 
 <Image with distribution of InjDefn> 
@@ -258,6 +275,7 @@ TODO: What conclusions of the exploration of injury data can be derived?
 TODO: Healthy vs injured distribution.
 
 
+\subsection{Time-series dataset}\label{subsec:method-ts-dataset}
 
 % -- Time-series data Exploration:
 % -- Visuals: overlay of 20 random stance cycles per class; Markers, Angles, Velocities, ...
