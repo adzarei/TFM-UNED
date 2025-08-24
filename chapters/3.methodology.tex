@@ -152,11 +152,23 @@ Script implemented for this project to process the metadata file and marker-data
 % - Descriptive variables are derived in matlab code
 % - angles, angular velocities are derived in matlab code.
 
-\texttt{processing\_source\_data.m} was run. Out of the 2506 sessions (Some subjects have more than one session), 2487 were processed successfully and 1813 had running data. Sessions without valid running data, or those where MATLAB preprocessing failed, were excluded. 
+The script \texttt{processing\_source\_data.m} was executed to process the raw dataset. Out of 2506 recorded sessions (with some subjects contributing multiple sessions), 2487 were processed successfully, of which 1813 contained valid running data. Sessions without running data or those where MATLAB preprocessing failed were excluded.  
 
-The output contains time-series dataset of the markers, joint angles and joint angular velocities, and the detected events of the gait cycle and on what frame do they occour. The output was processed using \texttt{pandas} and \texttt{kinetics toolkit} packages.
-Figure \ref{fig:data-ext-marker-velo-angle-ts} shows an example of the raw marker data for 1 marker in the left shank cluster, and the joint angle and joint angular velocity for the left knee for one sample session. Figure \ref{fig:data-ext-l-knee-angle-events} shows fame 500 to 1000 for the left knee angle marked with the cycle events.
+The outputs consist of time-series data for markers, joint angles, joint angular velocities, and detected gait cycle events with their corresponding frame indices. The outputs were further processed using the \texttt{pandas} and \texttt{kinetics-toolkit} Python packages.  
 
+Figure \ref{fig:data-ext-marker-velo-angle-ts} illustrates an example from a single session, showing the raw marker data for one marker in the left shank cluster alongside the corresponding joint angle and angular velocity for the left knee. Figure \ref{fig:data-ext-l-knee-angle-events} shows frames 500-1000 of the left knee angle, annotated with the touchdown and toe-off events.
+
+
+% 3D Marker body
+\begin{figure}[ht]
+    \begin{centering}
+    \includegraphics[width=0.5\columnwidth]{images/ex_3d_marker.png}
+    \par\end{centering}
+    \caption{3D representation of a frame with all marker data. Connecting lines have been added between markers. The left foot has been painted in blue and the right foot in red. From top to botton: Pelvis, Left/Right Thigh, Left/Right Shank and Left/Right Foot.}
+    \label{fig:data-ext-marker-3d}
+\end{figure}
+
+% Marker, angles and velocities
 \begin{figure}[ht]
     \begin{centering}
     \includegraphics[width=0.5\columnwidth]{images/ex_marker_angle_vel_ts.png}
@@ -165,11 +177,12 @@ Figure \ref{fig:data-ext-marker-velo-angle-ts} shows an example of the raw marke
     \label{fig:data-ext-marker-velo-angle-ts}
 \end{figure}
 
+% Angle with events
 \begin{figure}[ht]
     \begin{centering}
-    \includegraphics[width=0.5\columnwidth]{images/ex_l_knee_angle_events.png.png}
+    \includegraphics[width=0.5\columnwidth]{images/ex_l_knee_angle_events.png}
     \par\end{centering}
-    \caption{Frames 500 to 1000 of the 3 axis: [0] X, [1] Y and [2] Z of the left knee angle annotated with touchdown (L_TD) and toe-off (L_TO) events.}
+    \caption{Frames 500 to 1000 of the 3 axis: \[0\] X, \[1\] Y and \[2\] Z of the left knee angle annotated with touchdown \(L_TD\) and toe-off \(L_TO\) events.}
     \label{fig:data-ext-l-knee-angle-events}
 \end{figure}
 
