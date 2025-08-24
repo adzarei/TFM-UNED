@@ -2,12 +2,12 @@
 This chapter introduces the materials and datasets provided in the source paper \citep{Ferber2024}. We then describe how the data were preprocessed and explored, explain how the models were implemented, trained, and evaluated, and finally present the methods used to analyse model explainability.
 
 \section{Data and Materials}\label{sec:method-data-materials}
-As part of \citet{Ferber2024}, the authors have published a dataset of 1798 \glspl{subject} running or walking on a treadmill captured using multi-camera 3D motion capture (\gls{mocapsys}) equipment. The dataset is composed of raw 3d marker data of each \gls{session}, descriptive biomechanical variables derived from the marker data for each session and demographic and antropometric metadata of the subjects. Additionally, the matlab code for the preprocessing of the data, the calculation of the kinematic variables and tutorial notebooks that help ilustrate how to use their library and read the data from the folder structure are also provided. Although both walking and running data is provided, we have used exclusively running data. From this point onwards, walking data is ignored for brevity.
+As part of \citet{Ferber2024}, the authors have published a dataset of 1798 \glspl{subject} running or walking on a treadmill captured using multi-camera 3D \gls{mocapsys}. The dataset is composed of raw 3D marker data of each \gls{session}, descriptive biomechanical variables derived from the marker data for each session and demographic and anthropometric metadata of the subjects. Additionally, the matlab code for the preprocessing of the data, the calculation of the kinematic variables and tutorial notebooks that help lustrate how to use their library and read the data from the folder structure are also provided. Although both walking and running data is provided, we have used exclusively running data. From this point onwards, walking data is ignored for brevity.
 
 \subsection{Measurement protocol}\label{subsec:measurement-protocol}
 The complete measurement protocol is described in \citet{Ferber2024}. In this subsection, we provide a summary of the aspects that are most relevant for the methods and analyses presented in this thesis.
 
-The raw marker data was collected using high-speed optoelectronic infrared-based motion capture cameras (MX3/Bonita, Vicon, Oxford, UK) were used to record the position of 9mm spherical retro-reflective markers attached to anatomical landmarks of the subjects at either 120Hz or 200Hz. Depending on the lab, eight or three cameras were used. Below we list and describe the three sets of markers that were used.
+The raw marker data was collected using high-speed optoelectronic infrared-based motion capture cameras (MX3/Bonita, Vicon, Oxford, UK) were used to record the position of 9 mm spherical retro-reflective markers attached to anatomical landmarks of the subjects at either 120 Hz or 200 Hz. Depending on the lab, eight or three cameras were used. Below we list and describe the three sets of markers that were used.
 \begin{itemize}
     \item \textbf{Core}: Markers attached to the following anatomical landmarks: medial and lateral malleoli, medial and lateral femoral condyles, and greater trochanters.
     \item \textbf{Additional}: Markers attached to the following anatomical landmarks: bilateral 1st and 5th metatarsal heads, distal aspect of the shoe, tibial tuberosity, anterior superior iliac spines, and iliac crests;
@@ -29,7 +29,7 @@ During the recording of the sessions of all 1798 subjects the 'core' and 'cluste
 \subsection{Dataset Description}\label{subsec:method-dataset-description}
 As described above, the dataset contains two complementary components: (i) session-level metadata stored as tabular files, and (ii) motion-capture marker data together with derived kinematic variables per session. Below we describe each component and list the variables that are available for analysis.
 
-\paragraph{Metadata (tabular)} Metada is provided as a CSV file: \texttt{run\_data\_meta.csv}. Each row corresponds to a single treadmill session recorded for a subject.
+\paragraph{Metadata File (tabular) The metadata file is provided as a CSV file: \texttt{run\_data\_meta.csv}. Each row corresponds to a single treadmill session recorded for a subject. It contains anthropometric and demographic variables.
 \begin{itemize}
     \item \texttt{sub\_id}: Unique subject identifier.
     \item \texttt{datestring}: Session recording date.
@@ -46,23 +46,23 @@ As described above, the dataset contains two complementary components: (i) sessi
     \item \texttt{Activities}: Subject reported athletic activities performed on a regular basis.
     \item \texttt{Level}: Self-reported level of athletic activity (recreational/competitive).
     \item \texttt{YrsRunning}: Number of years subject has been running on a regular basis.
-    \item \texttt{RaceDistance}: Perferred race distance.
-    \item \texttt{RaceTimeHrs}, \texttt{RaceTimeMins}, \texttt{RaceTimeSecs}: Perferred race distance best time.
+    \item \texttt{RaceDistance}: Preferred race distance.
+    \item \texttt{RaceTimeHrs}, \texttt{RaceTimeMins}, \texttt{RaceTimeSecs}: Preferred race distance best time.
     \item \texttt{YrPR}: Year of preferred race distance personal best time.
     \item \texttt{NumRaces}: Number of races completed per year.
 \end{itemize}
 
 \paragraph{Marker and descriptive biomechanical data (Hierarchical)} For each session, 3D positions of reflective markers and descriptive variables derived from those markers are provided.
 \begin{itemize}
-    \item \textbf{Recording frequency} Fequency of the recording in Herz (Hz). Either 120hz or 200hz depending on the lab.
+    \item \textbf{Recording frequency} Frequency of the recording in Hertz (Hz). Either 120 Hz or 200 Hz depending on the lab.
     \item \textbf{Joint Marker Neutral}: 3D coordinates of the individual markers of the core and additional marker sets while the subject is standing in neutral position.
     \item \textbf{Cluster Marker Neutral}: 3D coordinates of the individual markers in the cluster marker set while the subject is standing in neutral position.
     \item \textbf{Dynamic Marker data}: 3D coordinates at each of the frames of the recording for the individual markers in the cluster marker set.
     \item \textbf{Descriptive biomechanical variables}: Set of 77 variables derived from the 3D coordinates Marker data. Calculated for Left and Right side of the body.
 \end{itemize}
 
-It must be noted that \texttt{Joints} and \texttt{Neutral} coordinates do not represent the true anatomical centers, only the centers of the markers on the skin of the subject.
-Only 33 of the 77 descriptive biomehanical variables are populated per side, the rest all contain 0 for all values of all sessions, this totals 66 populated descriptive variables in total. Table \ref{tab:met-desc-variable-init} describes the variable set per side.
+It must be noted that \texttt{Joints} and \texttt{Neutral} coordinates do not represent the true anatomical centres, only the centres of the markers on the skin of the subject.
+Only 33 of the 77 descriptive biomechanical variables are populated per side, the rest all contain 0 for all values of all sessions, this totals 66 populated descriptive variables in total. Table \ref{tab:met-desc-variable-init} describes the variable set per side.
 
 \begin{table}[ht]
     \centering
@@ -120,14 +120,14 @@ All descriptive variables follow the interpretations described in \citet{Bartlet
 % -- My code and repo (high level + refernce to Anex 1)
 We have implemented an ad-hoc python library to orchestrate data extraction, preprocessing, feature engineering, modelling, and evaluation. All code developed for this project and used to produce the reported results has been made publicly available for reproducibility \cite{Zapater_Reig_Running_Injury_Clinic_2025}. Additionally we have made use of the MATLAB reference implementation published with the dataset in \cite{Ferber2024}.The matlab scripts used have also been included in the repository in the \texttt{supplemental\_material} folder which are available for consultation. Below we describe the most important scripts that we borrow from the paper:
 
-\paragraph{\texttt{gait\_kinematics.m}} Calculates joint angles and joint angle velocities from \texttt{Dynamic Marker Data}, \texttt{Join Marker Neutral} and \texttt{Cluster Marker Neutral} data. It constructs anatomical segment coordinate systems from the neutral marker data, tracks segment motion during using the dynamic marker data and computes XYZ Cardan joint angles and angular velocities. It returns:
+\paragraph{\texttt{gait\_kinematics.m}} Matlab script provided alongside the source paper, that calculates joint angles and joint angle velocities from \texttt{Dynamic Marker Data}, \texttt{Join Marker Neutral} and \texttt{Cluster Marker Neutral} data. It constructs anatomical segment coordinate systems from the neutral marker data, tracks segment motion during using the dynamic marker data and computes XYZ Cardan joint angles and angular velocities. It returns:
 \begin{itemize}
     \item \texttt{Angles}: per-frame joint/segment angles for L/R ankle, knee, hip; foot and pelvis segments (degrees).
     \item \texttt{Velocities}: per-frame angular velocities for the same structures (deg/s).
     \item \texttt{jc}: Estimated joint centre positions (pelvis, hips, knees, ankles).
 \end{itemize}
 
-\paragraph{\texttt{gait\_steps.m}} Calculates the descriptive biomechanical variable set from \texttt{Dynamic Marker Data}, \texttt{Cluster Marker Neutral} data, \texttt{Angles} and \texttt{Velocities}. It returns:
+\paragraph{\texttt{gait\_steps.m}} Matlab script provided alongside the source paper, that calculates the descriptive biomechanical variable set from \texttt{Dynamic Marker Data}, \texttt{Cluster Marker Neutral} data, \texttt{Angles} and \texttt{Velocities}. It returns:
 
 \begin{itemize}
     \item \texttt{event}: Gait cycle events by side: Touchdown, mid-stance, toe-off and heel whip.
@@ -136,41 +136,53 @@ We have implemented an ad-hoc python library to orchestrate data extraction, pre
 
 Both script output additional variables, but are not of relevance for this project.
 
-\subsection{Kinematic Data Extraction}\label{subsec:kinematic-data-extraction}
--- How Kinematic variables are derived.
--- How we obtained angles, anglular velocities from matlab and events...
--- Internal processing assumptions
--- Axis reconstruction
--- Estimations
--- Focus on the Stance because computed variables are also focused there. Same reference paper. Or alternatively put in state of the art and justify here that we think it is better this way.
+\paragraph{\texttt{processing\_code\_example\_with\_outputs.m}} Matlab script implemented for this project that processes the metadata file and marker data json files to calculate the joint angles and joint angular velocities using \texttt{gait\_kinematics.m} and \texttt{gait\_steps.m}. Additionally it converts all data into tabular format for the exploratory data analysis (EDA) phase of the project. Sessions that do not have running data or that the preprocessing in matlab failed have been discarded.
 
-% TODO: How to integrate EDA and Preprocessing, since it is realted...
+\subsection{Data Extraction}\label{subsec:data-extraction}
+% -- How Kinematic variables are derived.
+% -- How we obtained angles, angular velocities from matlab and events...
+% -- Internal processing assumptions
+% -- Axis reconstruction
+% -- Estimations
+% -- Focus on the Stance because computed variables are also focused there. Same reference paper. Or alternatively put in state of the art and justify here that we think it is better this way.
+% TODO: How to integrate EDA and Preprocessing, since it is related...
+
+... Using 
+
+
+
+
+
+% TARGET: End with a summary of the tabular and time-series data that we have extracted
+
 
 
 \section{Exploratory Data Analysis (EDA)}\label{sec:method-eda}
--- Exploration → Extraction → Preparation, with concrete checks and figures:
--- Tabular data Exploration (sanity and distributions)
--- Dataset inventory (sessions per runner, class prevalence per runner, cycles/session).
--- Missingness map (metadata \& signals); strategy preview (drop/impute).
--- Outliers: per-joint angle/velocity ranges, z-score >3 heatmap by runner (flag sensors/markers).
--- Dimensionality previews: PCA/t-SNE to see separability.
+% -- Exploration → Extraction → Preparation, with concrete checks and figures:
+% -- Tabular data Exploration (sanity and distributions)
+% -- Dataset inventory (sessions per runner, class prevalence per runner, cycles/session).
+% -- Missing-ness map (metadata \& signals); strategy preview (drop/impute).
+% -- Outliers: per-joint angle/velocity ranges, z-score >3 heat-map by runner (flag sensors/markers).
+% -- Dimensionality previews: PCA/t-SNE to see separability.
 
 
--- Timeseries data Exploration:
--- Visuals: overlay of 20 random stance cycles per class; Markers, Angles, Velocities, ...
--- Analysis of curves
--- Extraction (curve-level descriptors)
+% -- Time-series data Exploration:
+% -- Visuals: overlay of 20 random stance cycles per class; Markers, Angles, Velocities, ...
+% -- Analysis of curves
+% -- Extraction (curve-level descriptors)
 
 
--- Preparation (decisions fixed before modelling)
+% -- Preparation (decisions fixed before modelling)
 
--- Group-aware split policy (runner-level), ensuring no cycle leakage across folds.
--- Class-imbalance diagnostics (AUC-PR baseline, per-runner prevalence plots).
--- Filtering rules for cycles/sessions (min cycles per session, quality thresholds).
+% -- Group-aware split policy (runner-level), ensuring no cycle leakage across folds.
+% -- Class-imbalance diagnostics (AUC-PR baseline, per-runner prevalence plots).
+% -- Filtering rules for cycles/sessions (min cycles per session, quality thresholds).
 
--- Final feature set(s) to carry forward (e.g., summaries, PC scores, raw curves for DL)
+% -- Final feature set(s) to carry forward (e.g., summaries, PC scores, raw curves for DL)
 
 % TODO: Maybe we keep outliers and filering here?
+Steps:
+- 
 
 
 \section{Pre-processing}\label{sec:method-preprocessing}
@@ -178,7 +190,7 @@ Both script output additional variables, but are not of relevance for this proje
     -- filtering, subject identification, outliers, cleaning, etc..
     -- Final dataset creation -> Give name to track
 
--- Timeseries:
+-- Time-series:
     -- Extraction of angles and angular velocities as mentioned in literature.
     -- Extraction of events
     -- Combination of events and TS
