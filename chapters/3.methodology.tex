@@ -124,7 +124,7 @@ The MATLAB reference implementation published with the dataset in \citet{Ferber2
 The following assets are the most relevant components of the repository:  
 
 \paragraph{Notebooks}  
-Jupyter notebooks used during development. These capture the iterative process across the different phases of the project and the reporting of results.
+\Gls{jupyter} notebooks used during development. These capture the iterative process across the different phases of the project and the reporting of results.
 
 \paragraph{\texttt{core} Package}  
 Python package containing the core functionality used in the notebooks. It includes classes, functions, and constants to orchestrate data extraction, preprocessing, feature engineering, model training, and evaluation.  
@@ -154,11 +154,11 @@ Script implemented for this project to process the metadata file and marker-data
 
 The script \texttt{processing\_source\_data.m} was executed to process the raw dataset. Out of 2506 recorded sessions (with some subjects contributing multiple sessions), 2487 were processed successfully, of which 1813 contained valid running data. Sessions without running data or those where MATLAB preprocessing failed were excluded.  
 
-The outputs consist of time-series data for markers, joint angles, joint angular velocities, and detected gait cycle events with their corresponding frame indices. The outputs were further processed using the \texttt{pandas} and \texttt{kinetics-toolkit} Python packages to combine the event data with the timeseries data.
+The outputs consist of time-series data for markers, joint angles, joint angular velocities, and detected gait cycle events with their corresponding frame indices. The outputs were further processed using the \texttt{pandas} and \texttt{kinetics-toolkit} Python packages to combine the event data with the time-series data.
 
 Figure \ref{fig:data-ext-marker-velo-angle-ts} illustrates an example from a single session, showing the raw marker data for one marker in the left shank cluster alongside the corresponding joint angle and angular velocity for the left knee. Figure \ref{fig:data-ext-l-knee-angle-events} shows frames 500-1000 of the left knee angle, annotated with the touchdown and toe-off events. Figure \ref{fig:data-ext-marker-3d} shows the 3D representation of 1 frame of the all of the marker data.
 
-Additionally to the timeseries data, the script also generates the set of 33 descriptive variables. These variables are the same as the ones in the JSON files in the source dataset.  This variable set was used to validate the results of the execution of \texttt{processing\_source\_data.m} by comparing the output with the source dataset. All variables are equal up to a relative tolerance of $1 \times 10^{-9}$ except for 35 \texttt{speed\_r} values, that are equal to $9 \times 10^{-2}$, this is neglectible for human speed measured in m/s. This result supports the idea that the exeuction was successfully. We decide to discard the computed set of descriptive variables in favour of the set provided in the original dataset because the original set has 1832 samples. The data is ready for the exploratory data analysis stage.
+Additionally to the time-series data, the script also generates the set of 33 descriptive variables. These variables are the same as the ones in the JSON files in the source dataset.  This variable set was used to validate the results of the execution of \texttt{processing\_source\_data.m} by comparing the output with the source dataset. All variables are equal up to a relative tolerance of $1 \times 10^{-9}$ except for 35 \texttt{speed\_r} values, that are equal to $9 \times 10^{-2}$, this is negligible for human speed measured in m/s. This result supports the idea that the execution was successfully. We decide to discard the computed set of descriptive variables in favour of the set provided in the original dataset because the original set has 1832 samples. The data is ready for the exploratory data analysis stage.
 
 \begin{figure}[ht]
     \centering
@@ -196,6 +196,8 @@ Additionally to the timeseries data, the script also generates the set of 33 des
 % -- Outliers: per-joint angle/velocity ranges, z-score >3 heat-map by runner (flag sensors/markers).
 % -- Dimensionality previews: PCA/t-SNE to see separability.
 
+
+\subsection{Tabular dataset}\label{subsec:method-tabular-dataset}
 Tabular:
 1832 recordings of a sessions of 1402 distinct runners with 209 of them having more than 1 session.
 
@@ -245,7 +247,6 @@ Missing data:
 As expected \texttt{SpecInjury2}, \texttt{InjJoint2} and \texttt{InjSide2} has the most missing values, it is only populated when a subject has two injuries reported. If it only has 1, then it will be empty. There are data quality issues with those columns, because they missing values \% do not match.
 
 Columns with more than 30\% of missing values will not be used for modelling.
-
 
 Definition of Injury: the dataset does not contain a column that marks injury, we have two columns with relevant information: \texttt{SpecInjury} and \texttt{InjDefn}. The former is the injury reported by a medical expert and the latter is the injury severity self-reported by the patient. Identifying a positive injury status should be easy, but we have found some edge cases where a runner reported no injury and the medical expert diagnosed an injury, and the inverse scenario too.
 
