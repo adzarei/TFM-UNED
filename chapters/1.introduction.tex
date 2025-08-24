@@ -43,59 +43,115 @@ O2: Assess whether advanced deep learning models (Unilateral LSTM, Bilateral LST
 O3: Apply post-hoc interpretability techniques (SHAP and saliency maps) to identify key kinematic features that contribute most to injury detection.
 
 \section{Work Plan}\label{sec:intro-work-plan}
+% 4 phase project:
+%     - Data Preparation
+%     - Modelling
+%     - Model interpretation
 
-4 phase project:
-    - Data Preparation
-    - Modelling
-    - Model interpretation
+% Phase 1:
+% - Data acquisition and Preparation
+%     - Source paper data
+%     - Preprocessing in matlab
+%     - Data extraction into JSONs, folders, etc... Errors
+%     - Implementation of library to work with the data, both sides.
+%     - Data quality and checks -> We keep X side of the story. What sessions have been discarded during data acquisition?
 
-Phase 1:
-- Data acquisition and Preparation
-    - Source paper data
-    - Preprocessing in matlab
-    - Data extraction into JSONs, folders, etc... Errors
-    - Implementation of library to work with the data, both sides.
-    - Data quality and checks -> We keep X side of the story. What sessions have been discarded during data acquisition?
+% - Exploratory Data Analysis
+%     - Data Exploration and visualisation; Distributions, magnitudes, ts visualisation
+%     - Curation of tabular and timeseries data:
+%         - Outlier detection and removal
+%     - Feature engineering:
+%         - TimeSeries
+%             - Segmentation into stance phase and normalisation
+%         - Tabular:
+%             - Study of natural clustering t-SNE and PCA.
+%             - Statistical tests - Study of correlation, mutual information, t-test and chisquared
+%             - Assumption: Lots of very related features: Collinearity analysis
+%             - extract Dominant Leg features
+%     -Feature Selection:
+%         - MRMR to extract top 40 features
+%         - Select a representant Curve for all the segments of a trial: Curve Registration and Mean Curve.
 
-- Exploratory Data Analysis
-    - Data Exploration and visualisation; Distributions, magnitudes, ts visualisation
-    - Curation of tabular and timeseries data:
-        - Outlier detection and removal
-    - Feature engineering:
-        - TimeSeries
-            - Segmentation into stance phase and normalisation
-        - Tabular:
-            - Study of natural clustering t-SNE and PCA.
-            - Statistical tests - Study of correlation, mutual information, t-test and chisquared
-            - Assumption: Lots of very related features: Collinearity analysis
-            - extract Dominant Leg features
-    -Feature Selection:
-        - MRMR to extract top 40 features
-        - Select a representant Curve for all the segments of a trial: Curve Registration and Mean Curve.
+% Phase 2:
+% - Machine Learning modelling
+%     - Establish evaluation process: performance metrics, threshold selection process
+%     - Train classical ML models on handcrafted features
+%     - Hyper parameter tuning, group aware CV.
+%     - Analyse the results.
 
-Phase 2:
-- Machine Learning modelling
-    - Establish evaluation process: performance metrics, threshold selection process
-    - Train classical ML models on handcrafted features
-    - Hyper parameter tuning, group aware CV.
-    - Analyse the results.
+% - Advanced Modelling:
+%     - Implementation of Deep Learning models: Unilateral CNN-LSTM, Billateral-CNN-LSTM, Multimodal-Billateral-CNN-LSTM and MC-DCNN
+%     - Hyper parameter tuning for models
+%     - Analyse the results
 
-- Advanced Modelling:
-    - Implementation of Deep Learning models: Unilateral CNN-LSTM, Billateral-CNN-LSTM, Multimodal-Billateral-CNN-LSTM and MC-DCNN
-    - Hyper parameter tuning for models
-    - Analyse the results
+% - Compare comparision:
+%     - Compare the models using DeLongs test on the primary evaluation metric (ROC\_AUC)
+%     - Analyse the results and discuss the outcomes
 
-- Compare comparision:
-    - Compare the models using DeLongs test on the primary evaluation metric (ROC\_AUC)
-    - Analyse the results and discuss the outcomes
+% Phase 3:
+% - Model interpretation:
+%     - Calculate SHAP values for the best performing model of both categories.
+%     - Generate Saliency maps for the best performing Deep Learning model
+%     - Analyse SHAP values and Saliency maps to extract conclusive insights.
+%         - What features are most important when detecting injury?
+%         - What part of the stance phase is more important when detecting injury?
 
-Phase 3:
-- Model interpretation:
-    - Calculate SHAP values for the best performing model of both categories.
-    - Generate Saliency maps for the best performing Deep Learning model
-    - Analyse SHAP values and Saliency maps to extract conclusive insights.
-        - What features are most important when detecting injury?
-        - What part of the stance phase is more important when detecting injury?
+<DRAFT>
+This project is organized into three phases that span data preparation, modeling and comparative evaluation, and interpretation.
+
+\subsection{Phase 1: Data preparation and exploratory analysis}
+\begin{itemize}
+    \item \textbf{Data acquisition and preprocessing}
+    \begin{itemize}
+        \item Ingest source paper data and reproduce the MATLAB preprocessing pipeline.
+        \item Export structured artifacts (e.g., JSON, CSV, organized folders) and document any errors or deviations.
+        \item Implement a Python library to load, transform, and validate both tabular and time-series data.
+        \item Perform data quality checks and record excluded or discarded sessions with justification.
+    \end{itemize}
+    \item \textbf{Exploratory Data Analysis (EDA)}
+    \begin{itemize}
+        \item Visualize distributions, magnitudes, and representative time-series.
+        \item Curate tabular and time-series data; detect and remove outliers.
+        \item Feature engineering:
+        \begin{itemize}
+            \item Time-series: segment stance phase and normalize trajectories.
+            \item Tabular: explore natural structure (t-SNE, PCA); run correlation, mutual information, t-test, and chi-squared tests; assess collinearity; derive dominant-leg features.
+        \end{itemize}
+        \item Feature selection: apply MRMR to identify a compact set of top features (e.g., top 40).
+        \item Curve summarization: perform curve registration and compute mean representative curves for trial segments.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Phase 2: Modeling and comparative evaluation}
+\begin{itemize}
+    \item \textbf{Evaluation protocol}
+    \begin{itemize}
+        \item Define primary and secondary metrics, with emphasis on AUC-ROC and threshold-selection strategy.
+        \item Use group-aware cross-validation for fair subject-level evaluation and reproducible hyper-parameter tuning.
+    \end{itemize}
+    \item \textbf{Classical machine learning (handcrafted features)}
+    \begin{itemize}
+        \item Train baseline models on engineered features.
+        \item Tune hyper-parameters with group-aware CV and analyze performance.
+    \end{itemize}
+    \item \textbf{Advanced deep learning (time-series kinematics)}
+    \begin{itemize}
+        \item Implement and train Unilateral and Bilateral CNN--LSTM architectures and an MC-DCNN model.
+        \item Tune model capacity and regularization; monitor learning dynamics and generalization.
+    \end{itemize}
+    \item \textbf{Comparative analysis}
+    \begin{itemize}
+        \item Compare best classical and deep models using DeLong's test on the primary metric (AUC-ROC).
+        \item Summarize findings and discuss practical implications.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Phase 3: Model interpretation}
+\begin{itemize}
+    \item Compute SHAP values for the best-performing classical model to identify influential features.
+    \item Generate saliency maps for the best-performing deep model to localize informative regions across the stance phase.
+    \item Synthesize insights to address: (i) which features contribute most to injury detection, and (ii) which portions of the stance phase are most informative.
+\end{itemize}
 
 \section{Document Structure}\label{sec:intro-structure}
 The document is structured in 4 chapters. The first chapter sets the context and frames the injury detection problem. Chapter 2, summarises the current state of the field of Machine learning applied to biomechanics with a focus on the problem and delves deeper into the challenges, limitation that exists, setting this project appart from what currently exists. In Chapter 3, the source paper (\cite{Ferber2024}) and its assets are presented together with the preprocessing and Exploratory Data Analysis (EDA). Then we continue with the implementation, training and evaluation of the models. To close the chapter Post-hoc explanability techniques are applied and key insights summarised. In Chapter 4, the results are presented and discussed. To conclude, in Chapter 5, we reflect on the results, derive conclusions and present limitation and future lines of work.
