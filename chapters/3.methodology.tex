@@ -115,28 +115,37 @@ Only 33 of the 77 descriptive biomechanical variables are populated per side, th
 All descriptive variables follow the interpretations described in \citet{Bartlett2014}. Unless specified explicitly in the table, the units are degrees for angles and excursions, and degrees/s for joint velocities. Excursions are also commonly known as range of motion (ROM) in the literature. 
 % TODO: Explain important biomechanical concepts like dorsiflexion, eversion, etc...
 
+
 \subsection{Code Description}\label{subsec:method-code-description}
-% -- Matlab code provided by the source paper.
-% -- My code and repo (high level + refernce to Anex 1)
-We have implemented an ad-hoc python library to orchestrate data extraction, preprocessing, feature engineering, modelling, and evaluation. All code developed for this project and used to produce the reported results has been made publicly available for reproducibility \cite{Zapater_Reig_Running_Injury_Clinic_2025}. Additionally we have made use of the MATLAB reference implementation published with the dataset in \cite{Ferber2024}.The matlab scripts used have also been included in the repository in the \texttt{supplemental\_material} folder which are available for consultation. Below we describe the most important scripts that we borrow from the paper:
+Python was the main language used in this project, although several scripts were implemented in \GLS{matlab} for the data acquisition and extraction stages. Matlab was also used to preprocess the dataset, following the procedure described in the source paper. All code created for this project and used to generate the reported results has been made publicly available for reproducibility \cite{Zapater_Reig_Running_Injury_Clinic_2025}.  
 
-\paragraph{\texttt{gait\_kinematics.m}} Matlab script provided alongside the source paper, that calculates joint angles and joint angle velocities from \texttt{Dynamic Marker Data}, \texttt{Join Marker Neutral} and \texttt{Cluster Marker Neutral} data. It constructs anatomical segment coordinate systems from the neutral marker data, tracks segment motion during using the dynamic marker data and computes XYZ Cardan joint angles and angular velocities. It returns:
+The MATLAB reference implementation published with the dataset in \citet{Ferber2024} was employed as part of this work. The corresponding MATLAB scripts have been included in the repository under the \texttt{supplemental\_material} folder for consultation.  
+
+The following assets are the most relevant components of the repository:  
+
+\paragraph{Notebooks}  
+Jupyter notebooks used during development. These capture the iterative process across the different phases of the project and the reporting of results.
+
+\paragraph{\texttt{core} Package}  
+Python package containing the core functionality used in the notebooks. It includes classes, functions, and constants to orchestrate data extraction, preprocessing, feature engineering, model training, and evaluation.  
+
+\paragraph{\texttt{gait\_kinematics.m}}  
+Script provided with the source paper. It calculates joint angles and angular velocities from the \texttt{Dynamic Marker Data}, \texttt{Joint Marker Neutral}, and \texttt{Cluster Marker Neutral} files. Anatomical segment coordinate systems are constructed from the neutral marker data, segment motion is tracked using the dynamic marker data, and XYZ Cardan joint angles and angular velocities are computed. The script returns:  
 \begin{itemize}
-    \item \texttt{Angles}: per-frame joint/segment angles for L/R ankle, knee, hip; foot and pelvis segments (degrees).
+    \item \texttt{Angles}: per-frame joint/segment angles for the left/right ankle, knee, hip, as well as foot and pelvis segments (degrees).
     \item \texttt{Velocities}: per-frame angular velocities for the same structures (deg/s).
-    \item \texttt{jc}: Estimated joint centre positions (pelvis, hips, knees, ankles).
+    \item \texttt{jc}: estimated joint centre positions (pelvis, hips, knees, ankles).
 \end{itemize}
 
-\paragraph{\texttt{gait\_steps.m}} Matlab script provided alongside the source paper, that calculates the descriptive biomechanical variable set from \texttt{Dynamic Marker Data}, \texttt{Cluster Marker Neutral} data, \texttt{Angles} and \texttt{Velocities}. It returns:
-
+\paragraph{\texttt{gait\_steps.m}}  
+Script also provided with the source paper. It calculates descriptive biomechanical variables from the \texttt{Dynamic Marker Data}, \texttt{Cluster Marker Neutral}, \texttt{Angles}, and \texttt{Velocities}. The script returns:  
 \begin{itemize}
-    \item \texttt{event}: Gait cycle events by side: Touchdown, mid-stance, toe-off and heel whip.
-    \item \texttt{Descriptive biomechanical variables}: Set of variables described in table \ref{tab:met-desc-variable-init}
+    \item \texttt{event}: gait cycle events by side (touchdown, mid-stance, toe-off, heel whip).
+    \item \texttt{Descriptive biomechanical variables}: as defined in Table~\ref{tab:met-desc-variable-init}.
 \end{itemize}
 
-Both script output additional variables, but are not of relevance for this project.
-
-\paragraph{\texttt{processing\_code\_example\_with\_outputs.m}} Matlab script implemented for this project that processes the metadata file and marker data json files to calculate the joint angles and joint angular velocities using \texttt{gait\_kinematics.m} and \texttt{gait\_steps.m}. Additionally it converts all data into tabular format for the exploratory data analysis (EDA) phase of the project. Sessions that do not have running data or that the preprocessing in matlab failed have been discarded.
+\paragraph{\texttt{processing\_source\_data.m}}  
+Script implemented for this project to process the metadata file and marker-data JSON files. Joint angles and angular velocities are computed by calling \texttt{gait\_kinematics.m} and \texttt{gait\_steps.m}. The outputs are converted into tabular format for the exploratory data analysis (EDA) stage. Sessions without valid running data, or those where MATLAB preprocessing failed, were excluded.
 
 \subsection{Data Extraction}\label{subsec:data-extraction}
 % -- How Kinematic variables are derived.
