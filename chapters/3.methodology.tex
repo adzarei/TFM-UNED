@@ -145,21 +145,33 @@ Script also provided with the source paper. It calculates descriptive biomechani
 \end{itemize}
 
 \paragraph{\texttt{processing\_source\_data.m}}  
-Script implemented for this project to process the metadata file and marker-data JSON files. Joint angles and angular velocities are computed by calling \texttt{gait\_kinematics.m} and \texttt{gait\_steps.m}. The outputs are converted into tabular format for the exploratory data analysis (EDA) stage. Sessions without valid running data, or those where MATLAB preprocessing failed, were excluded.
+Script implemented for this project to process the metadata file and marker-data JSON files. Joint angles, joint angular velocities and cycle events are computed by calling \texttt{gait\_kinematics.m} and \texttt{gait\_steps.m}. The outputs are converted into tabular format for the exploratory data analysis (EDA) stage.
 
 \subsection{Data Extraction}\label{subsec:data-extraction}
-% -- How Kinematic variables are derived.
-% -- How we obtained angles, angular velocities from matlab and events...
-% -- Internal processing assumptions
-% -- Axis reconstruction
-% -- Estimations
-% -- Focus on the Stance because computed variables are also focused there. Same reference paper. Or alternatively put in state of the art and justify here that we think it is better this way.
-% TODO: How to integrate EDA and Preprocessing, since it is related...
+% TODO: If there is value, we can explain how:
+% - Descriptive variables are derived in matlab code
+% - angles, angular velocities are derived in matlab code.
 
-... Using 
+\texttt{processing\_source\_data.m} was run. Out of the 2506 sessions (Some subjects have more than one session), 2487 were processed successfully and 1813 had running data. Sessions without valid running data, or those where MATLAB preprocessing failed, were excluded. 
 
+The output contains time-series dataset of the markers, joint angles and joint angular velocities, and the detected events of the gait cycle and on what frame do they occour. The output was processed using \texttt{pandas} and \texttt{kinetics toolkit} packages.
+Figure \ref{fig:data-ext-marker-velo-angle-ts} shows an example of the raw marker data for 1 marker in the left shank cluster, and the joint angle and joint angular velocity for the left knee for one sample session. Figure \ref{fig:data-ext-l-knee-angle-events} shows fame 500 to 1000 for the left knee angle marked with the cycle events.
 
+\begin{figure}[ht]
+    \begin{centering}
+    \includegraphics[width=0.5\columnwidth]{images/ex_marker_angle_vel_ts.png}
+    \par\end{centering}
+    \caption{1st left shank marker, left knee angle and left knee angular velocity for the 3 axis: [0] X, [1] Y and [2] Z.}
+    \label{fig:data-ext-marker-velo-angle-ts}
+\end{figure}
 
+\begin{figure}[ht]
+    \begin{centering}
+    \includegraphics[width=0.5\columnwidth]{images/ex_l_knee_angle_events.png.png}
+    \par\end{centering}
+    \caption{Frames 500 to 1000 of the 3 axis: [0] X, [1] Y and [2] Z of the left knee angle annotated with touchdown (L_TD) and toe-off (L_TO) events.}
+    \label{fig:data-ext-l-knee-angle-events}
+\end{figure}
 
 
 % TARGET: End with a summary of the tabular and time-series data that we have extracted
