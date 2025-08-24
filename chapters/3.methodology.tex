@@ -29,7 +29,7 @@ During the recording of the sessions of all 1798 subjects the 'core' and 'cluste
 \subsection{Dataset Description}\label{subsec:method-dataset-description}
 As described above, the dataset contains two complementary components: (i) session-level metadata stored as tabular files, and (ii) motion-capture marker data together with derived kinematic variables per session. Below we describe each component and list the variables that are available for analysis.
 
-\paragraph{Metadata File (tabular) The metadata file is provided as a CSV file: \texttt{run\_data\_meta.csv}. Each row corresponds to a single treadmill session recorded for a subject. It contains anthropometric and demographic variables.
+\paragraph{Metadata File (tabular)} The metadata file is provided as a CSV file: \texttt{run\_data\_meta.csv}. Each row corresponds to a single treadmill session recorded for a subject. It contains anthropometric and demographic variables.
 \begin{itemize}
     \item \texttt{sub\_id}: Unique subject identifier.
     \item \texttt{datestring}: Session recording date.
@@ -52,7 +52,7 @@ As described above, the dataset contains two complementary components: (i) sessi
     \item \texttt{NumRaces}: Number of races completed per year.
 \end{itemize}
 
-\paragraph{Marker and descriptive biomechanical data (Hierarchical)} For each session, 3D positions of reflective markers and descriptive variables derived from those markers are provided.
+\paragraph{Marker and descriptive biomechanical data (Hierarchical)} For each session, 3D positions of reflective markers and descriptive variables derived from those markers are provided as json files. One file per session.
 \begin{itemize}
     \item \textbf{Recording frequency} Frequency of the recording in Hertz (Hz). Either 120 Hz or 200 Hz depending on the lab.
     \item \textbf{Joint Marker Neutral}: 3D coordinates of the individual markers of the core and additional marker sets while the subject is standing in neutral position.
