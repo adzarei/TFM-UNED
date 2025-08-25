@@ -222,7 +222,8 @@ Quantitative variables have been left unchanged, standardisation and normalizati
 
 All values that do not fall into a defined category or an accepted value for the data-type are considered as missing value and are converted to None. This is saved as "" when saving the dataset to CSV format.
 
-> TODO: Expan each of the points and add visualization if needed.
+> TODO: Expand each of the points and add visualization if needed.
+
 Key points regarding the distributions of the columns:
 \begin{itemize}
     \item The male/female distribution is balanced (exact percentage to be reported), with few empty values.
@@ -245,7 +246,7 @@ Additional inconsistencies were found in the injury variables. In many sessions,
 
 All columns in the metadata were inspected for implausible values. Table \ref{tab:met-outlier-range} summarises the range thresholds used for outlier detection. Values outside of these ranges were considered unrealistic and replaced with \texttt{None}. For example, ages of 255 years, heights of 999~cm, weights of 1564~kg, injury durations of 30,000 days (82 years), and years running of 999 were identified as outliers and removed. These extreme values were detected visually using box plots and validated against plausible ranges for human adults.  
 
-%TODO: Try to get it together with the text
+%TODO: Try to get it to show together with the text
 \begin{table}[htbp]
     \centering
     \caption[Outlier detection range for tabular data]{Summary of outlier detection ranges for key variables.\label{tab:met-outlier-range}}
@@ -297,21 +298,31 @@ For categorical variables, missing values were replaced with the label \texttt{u
 
 
 \paragraph{Definition of Injury status}
-Definition of Injury: the dataset does not contain a column that marks injury, we have two columns with relevant information: \texttt{SpecInjury} and \texttt{InjDefn}. The former is the injury reported by a medical expert and the latter is the injury severity self-reported by the patient. Identifying a positive injury status should be easy, but we have found some edge cases where a runner reported no injury and the medical expert diagnosed an injury, and the inverse scenario too.
+Seven columns contain injury data: primary injury data (\texttt{SpecInjury}, \texttt{InjJoint}, \texttt{InjSide}), secondary injury data (\texttt{SpecInjury2}, \texttt{InjJoint2}, \texttt{InjSide2}), and injury severity (\texttt{InjDefn}), and while primary and secondary injury data is consistent within each group, they are not consistent with injury severity. In total, 9\% of the dataset wither was diagnosed with no injury but the runner reported, at least, that they were "continuing to train in pain" or was diagnosed with an injury but reported \texttt{"no injury"} in the serverity score.
 
-<Image with distribution of InjDefn> 
-<Image with visualization of injuries - Word map?> 
+The source paper does not precise clearly what logic did they use for a subject to be counted as uninjured, but we have decided to use the information comming from \texttt{SpecInjury} and \texttt{SpecInjury2} because it is medically diagnosed by a medical practitioned. So if any of these two variables has a value other than \texttt{"no_injury"}, we will flag the runner as injured during the session. The distribution of injured vs uninjured sessions is 63.7\% to 36.3\%.
 
 
-TODO: What conclusions of the exploration of injury data can be derived?
-TODO: Healthy vs injured distribution.
+\paragraph{Variable standardisation for training}  
+To prepare the variables for training, numerical values were standardised using the Z-score $Z = (X - \mu) / \sigma$. This procedure centres the data around a mean of 0 and scales it to a standard deviation of 1. Standardisation reduces bias when working with variables of different magnitudes and is required for models such as Logistic Regression and Support Vector Machines (SVMs).  
 
-\paragraph{Variable standarisation for training}
-Numerical variables were normalized with the z score $z = (x - u) / s$
-Categorical variables were converted into a sparse on-hot numeric array. \dots explain in more detail\dots
+Categorical variables were converted into sparse one-hot encoded arrays, where each category value is represented as a separate column and encoded with a 1 or 0 to indicate its presence. To mitigate perfect collinearity, where one variable can be predicted exactly from another, reducing the reliability of coefficient estimates and hindering interpretability, the column corresponding to the value \texttt{unknown} was dropped for each categorical variable.
 
 
 \paragraph{Analysis of relationship between predictors and target variable}
+t-distributed Stochastic Neighbor Embedding (t-SNE) is a non-linear dimensionality reduction technique that projects high-dimensional data into a low-dimensional space while preserving local neighbourhood relationships \citep{JMLR:v9:vandermaaten08a}. In this project, t-SNE was used as an exploratory tool to analyse whether natural clustering exists in the data.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\columnwidth]{images/t-sne-p50-scatter-is_injured.png}
+    \caption[2D t-SNE plot with perplexity 50]{2D t-SNE plot with perplexity 50. Injured samples appear in blue and uninjured in orange.\label{fig:met-tsne-injured}}
+\end{figure}
+
+Figure \reg{fig:met-tsne-injured} visualizes two t-sne dimensions
+
+This provided an intuitive visualisation of the structure of the dataset and helps to assess whether meaningful separation is possible before training predictive models.
+
+
 \begin{itemize}
     \item Natural clustering t-SNE
     \item Mutual info and correlation
