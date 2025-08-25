@@ -226,7 +226,7 @@ All values that do not fall into a defined category or an accepted value for the
 
 Key points regarding the distributions of the columns:
 \begin{itemize}
-    \item The male/female distribution is balanced (exact percentage to be reported), with an additional "unknown" category present.
+    \item The male/female distribution is balanced (exact percentage to be reported), with few empty values.
     \item The \texttt{DominantLeg} variable is skewed towards the right leg, as expected; there are few ambidextrous cases.
     \item The distributions of \texttt{SpecInjury} and \texttt{InjDefn} are noteworthy and should be reported.
     \item The "Level" variable (recreational vs. competitive) is skewed towards recreational runners.
@@ -247,7 +247,8 @@ Additional inconsistencies were found in the injury variables. In many sessions,
 
 All columns in the metadata were inspected for implausible values. Table \ref{tab:met-outlier-range} summarises the range thresholds used for outlier detection. Values outside of these ranges were considered unrealistic and replaced with \texttt{None}. For example, ages of 255 years, heights of 999~cm, weights of 1564~kg, injury durations of 30,000 days (82 years), and years running of 999 were identified as outliers and removed. These extreme values were detected visually using box plots and validated against plausible ranges for human adults.  
 
-\begin{table}[h!]
+%TODO: Try to get it together with the text
+\begin{table}[htbp]
     \centering
     \caption[Outlier detection range for tabular data]{Summary of outlier detection ranges for key variables.\label{tab:met-outlier-range}}
     \begin{tabular}{lcc}
@@ -264,17 +265,37 @@ All columns in the metadata were inspected for implausible values. Table \ref{ta
 \end{table}
 
 
-\paragraph{Merging metadata and biomechanical variables}
-We decided to introduce a surrogate key "id" that can be used across datasets to identify each sample uniquely. One sample is a session. The surrogate key is the concatenation of subject id with the filename in uppercase i.e. \"100001\_20110531T161051\". We use this column to join both datasets by "id".
-
+\paragraph{Merging metadata and biomechanical variables} 
+A surrogate key \texttt{id} was introduced to uniquely identify each sample across datasets, where one sample corresponds to a session. The surrogate key was defined as the concatenation of the subject identifier and the session filename in uppercase (e.g., \texttt{100001\_20110531T161051}). This column was then used as the join key to merge the metadata and biomechanical variables.
 % TODO: List all variables available? Maybe better on a Apendinx?
 
-\paragraph{Missing values:}
-Missing data:
-<table> Missing data, table with columns with most missing values after cleaning
-As expected \texttt{SpecInjury2}, \texttt{InjJoint2} and \texttt{InjSide2} has the most missing values, it is only populated when a subject has two injuries reported. If it only has 1, then it will be empty. There are data quality issues with those columns, because they missing values \% do not match.
+\paragraph{Missing values}  
+Table\ref{tab:met-missing-values} presents the ten variables with the highest proportion of missing values after standardisation, data cleaning, and outlier detection. Variables with more than 35\% missing values were discarded.  
 
-Columns with more than 30\% of missing values will not be used for modelling.
+For numeric variables, the maximum proportion of missing values was 0.7\%. However, dropping all rows with at least one missing value would have removed more than twice as many samples. To preserve data, missing values in numeric variables were therefore imputed with the median. The median was chosen because normality could not be assumed for all variables and several distributions were skewed. Under such conditions, the median is more robust than the mean.
+
+For categorical variables, missing values were replaced with the label \texttt{unknown} to allow easy identification of imputed categories.
+
+\begin{table}[htbp]
+    \centering
+    \caption[Top 10 metadata variable with most missing values]{Top 10 Variable with the highest percentage of missing values after cleaning.\label{tab:met-missing-values}}
+    \begin{tabular}{lc}
+        \hline
+        \textbf{Column} & \textbf{Missing (\%)} \\
+        \hline
+        YrPR & 76.80 \\
+        RaceTimeSecs & 75.71 \\
+        NumRaces & 72.49 \\
+        RaceTimeHrs & 69.71 \\
+        RaceTimeMins & 61.74 \\
+        YrsRunning & 31.00 \\
+        DominantLeg & 19.21 \\
+        RaceDistance & 18.45 \\
+        Activities & 17.25 \\
+        Level & 14.68 \\
+        \hline
+    \end{tabular}
+\end{table}
 
 
 \paragraph{Definition of Injury status}
