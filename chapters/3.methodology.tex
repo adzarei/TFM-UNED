@@ -233,34 +233,36 @@ Key points regarding the distributions of the columns:
     \item There is little longitudinal data: only 30 sessions (2.1\%) are at least one month apart.
 \end{itemize}
 
-\paragraph{Data quality and outlier detection:}
-When comparing the sessions for the same subject we have found samples where the level of athletic activity \(\texttt{Level}\) changes and the reported dominant leg (\texttt{DominantLeg}) changes over time, and cases where both \texttt{SpecInjury} and \texttt{InjDefn} change. We belive this cases are plausible and consider them to be true and part of the specificities of the dataset. There is nothing in the the source paper that makes us belive that these cases need to be considered a data quality issue. We leave them untouched.
+\paragraph{Data quality and outlier detection} 
 
-On the other hand, we have found one case where the age gap between sessions is 10 years, which is longer than the duration of the study. We decided to check the whole dataset for inconsistencies between the age difference between sessions and the time of the sessions. Two samples had a significant difference (more than 1 year difference): Subject 100234 was 40 on a initial session and 43 in a session 1 year later. 200375 was a female of age 27 on one session and a 50 year old male subject on the next one, it is clearly two different people.
+During inspection of the dataset, several inconsistencies were identified. In some cases, the level of athletic activity (\texttt{Level}), the reported dominant leg (\texttt{DominantLeg}), and the injury descriptors (\texttt{SpecInjury} and \texttt{InjDefn}) changed across sessions for the same subject. These cases were considered plausible and interpreted as part of the natural variability of the dataset. No indication was found in the source paper that such cases should be regarded as data quality issues, and they were therefore left unchanged.  
 
-For the first case, we decided to override the the age of the second session and set it to 41. For the second case, we decided to create a new synthetic subject ID (300375) and assign the second session to the new subject. The number of sessions remains the same, but there is a new subject.
+One case was found in which the reported age differed by ten years between two sessions, which exceeds the duration of the study. To investigate, the entire dataset was checked for inconsistencies between reported age and the time difference between sessions. Two problematic cases were identified:  
+\begin{itemize}
+    \item Subject 100234 was recorded as 40 years old in the first session and 43 years old one year later. In this case, the age in the second session was corrected to 41.  
+    \item Subject 200375 was recorded as a 27-year-old female in one session and as a 50-year-old male in the next. This inconsistency suggests that the sessions belong to different individuals. A new synthetic subject identifier (300375) was therefore created, and the second session was reassigned to this new subject. The total number of sessions remained unchanged, but the number of unique subjects increased by one.  
+\end{itemize}
 
-In addition we have observed that \texttt{SpecInjury} is empty, but \texttt{SpecInjury2} is populated on many sessions. For those cases, we assume that it is an input error and move the value from \texttt{SpecInjury} to \texttt{SpecInjury2}, that is, if an injury was reported in \texttt{SpecInjury}, we will take it as a primary injury, if not and \texttt{SpecInjury2} is populated, we will take that one. We will only assume a subject has no primary injury in a session if both \texttt{SpecInjury} and \texttt{SpecInjury2} are empty.
+Additional inconsistencies were found in the injury variables. In many sessions, \texttt{SpecInjury} was empty while \texttt{SpecInjury2} contained information. These cases were treated as input errors: when \texttt{SpecInjury} was missing and \texttt{SpecInjury2} was populated, the value of \texttt{SpecInjury2} was taken as the primary injury. A subject was assumed to have no primary injury in a session only if both fields were empty.  
 
-We inspected all of the columns in the metadata file to find outliers. Table \ref{tab:met-outlier-range} porvides a summary of the columns with outliers and the range used to detect outliers.
+All columns in the metadata were inspected for implausible values. Table \ref{tab:met-outlier-range} summarises the range thresholds used for outlier detection. Values outside of these ranges were considered unrealistic and replaced with \texttt{None}. For example, ages of 255 years, heights of 999~cm, weights of 1564~kg, injury durations of 30,000 days (82 years), and years running of 999 were identified as outliers and removed. These extreme values were detected visually using box plots and validated against plausible ranges for human adults.  
 
 \begin{table}[h!]
     \centering
-    \caption[Outlier detection range for tabular data]{Summary of outlier detection range for key variables.\label{tab:met-outlier-range}
-    \begin{tabular}{lp{0.6\textwidth}}
+    \caption[Outlier detection range for tabular data]{Summary of outlier detection ranges for key variables.\label{tab:met-outlier-range}}
+    \begin{tabular}{lcc}
         \hline
         \textbf{Variable} & \textbf{Min} & \textbf{Max} \\
         \hline
         Age & 18.0 & 73.0 \\
-        Height & 120.0 & 196.5 \\
-        Weight & 42.5 & 176.0 \\
-        InjDuration (days) & 0.0 & 176.0 \\
-        YearsRunning & 0.0 & 54.0 \\
+        Height (cm) & 120.0 & 196.5 \\
+        Weight (kg) & 42.5 & 176.0 \\
+        Injury duration (days) & 0.0 & 176.0 \\
+        Years running & 0.0 & 54.0 \\
         \hline
     \end{tabular}
 \end{table}
 
-Values outside of these ranges were considered unrealistic and were replaced with None. For example, ages of 255 years, heights of 999 cm, weights of 1564 kg, injury durations of 30,000 days (82 years), and years running of 999 were all identified as outliers and removed. These extreme values were detected visually using box-plots and by checking for plausibility against normal values for human adults.
 
 \paragraph{Merging metadata and biomechanical variables}
 We decided to introduce a surrogate key "id" that can be used across datasets to identify each sample uniquely. One sample is a session. The surrogate key is the concatenation of subject id with the filename in uppercase i.e. \"100001\_20110531T161051\". We use this column to join both datasets by "id".
