@@ -2,12 +2,12 @@
 This chapter introduces the materials and datasets provided in the source paper \citep{Ferber2024}. We then describe how the data were preprocessed and explored, explain how the models were implemented, trained, and evaluated, and finally present the methods used to analyse model explainability.
 
 \section{Data and Materials}\label{sec:method-data-materials}
-As part of \citet{Ferber2024}, the authors have published a dataset of 1798 \glspl{subject} running or walking on a treadmill captured using multi-camera 3D \gls{mocapsys}. The dataset is composed of raw 3D marker data of each \gls{session}, descriptive biomechanical variables derived from the marker data for each session and demographic and anthropometric metadata of the subjects. Additionally, the matlab code for the preprocessing of the data, the calculation of the kinematic variables and tutorial notebooks that help lustrate how to use their library and read the data from the folder structure are also provided. Although both walking and running data is provided, we have used exclusively running data. From this point onwards, walking data is ignored for brevity.
+As part of \citet{Ferber2024}, the authors have published a dataset of 1798 \glspl{subject} running or walking on a treadmill captured using multi-camera 3D \gls{mocapsys}. The dataset is composed of raw 3D~marker data of each \gls{session}, descriptive biomechanical variables derived from the marker data for each session and demographic and anthropometric metadata of the subjects. Additionally, the matlab code for the preprocessing of the data, the calculation of the kinematic variables and tutorial notebooks that help lustrate how to use their library and read the data from the folder structure are also provided. Although both walking and running data is provided, we have used exclusively running data. From this point onwards, walking data is ignored for brevity.
 
 \subsection{Measurement protocol}\label{subsec:measurement-protocol}
 The complete measurement protocol is described in \citet{Ferber2024}. In this subsection, we provide a summary of the aspects that are most relevant for the methods and analyses presented in this thesis.
 
-The raw marker data was collected using high-speed optoelectronic infrared-based motion capture cameras (MX3/Bonita, Vicon, Oxford, UK) were used to record the position of 9 mm spherical retro-reflective markers attached to anatomical landmarks of the subjects at either 120 Hz or 200 Hz. Depending on the lab, eight or three cameras were used. Below we list and describe the three sets of markers that were used.
+The raw marker data was collected using high-speed optoelectronic infrared-based motion capture cameras (MX3/Bonita, Vicon, Oxford, UK) were used to record the position of 9~mm spherical retro-reflective markers attached to anatomical landmarks of the subjects at either 120~Hz or 200~Hz. Depending on the lab, eight or three cameras were used. Below we list and describe the three sets of markers that were used.
 \begin{itemize}
     \item \textbf{Core}: Markers attached to the following anatomical landmarks: medial and lateral malleoli, medial and lateral femoral condyles, and greater trochanters.
     \item \textbf{Additional}: Markers attached to the following anatomical landmarks: bilateral 1st and 5th metatarsal heads, distal aspect of the shoe, tibial tuberosity, anterior superior iliac spines, and iliac crests;
@@ -115,48 +115,47 @@ Only 33 of the 77 descriptive biomechanical variables are populated per side, th
 All descriptive variables follow the interpretations described in \citet{Bartlett2014}. Unless specified explicitly in the table, the units are degrees for angles and excursions, and degrees/s for joint velocities. Excursions are also commonly known as range of motion (ROM) in the literature. 
 % TODO: Explain important biomechanical concepts like dorsiflexion, eversion, etc...
 
-
 \subsection{Code Description}\label{subsec:method-code-description}
-Python was the main language used in this project, although several scripts were implemented in \GLS{matlab} for the data acquisition and extraction stages. Matlab was also used to preprocess the dataset, following the procedure described in the source paper. All code created for this project and used to generate the reported results has been made publicly available for reproducibility \cite{Zapater_Reig_Running_Injury_Clinic_2025}.  
+Python was the main language used in this project, although several scripts were implemented in \GLS{matlab} for the data acquisition and extraction stages. Matlab was also used to preprocess the dataset, following the procedure described in the source paper. All code created for this project and used to generate the reported results has been made publicly available for reproducibility \cite{Zapater_Reig_Running_Injury_Clinic_2025}.
 
-The MATLAB reference implementation published with the dataset in \citet{Ferber2024} was employed as part of this work. The corresponding MATLAB scripts have been included in the repository under the \texttt{supplemental\_material} folder for consultation.  
+The MATLAB reference implementation published with the dataset in \citet{Ferber2024} was employed as part of this work. The corresponding MATLAB scripts have been included in the repository under the \texttt{supplemental\_material} folder for consultation.
 
-The following assets are the most relevant components of the repository:  
+The following assets are the most relevant components of the repository:
 
-\paragraph{Notebooks}  
+\paragraph{Notebooks}
 \Gls{jupyter} notebooks used during development. These capture the iterative process across the different phases of the project and the reporting of results.
 
-\paragraph{\texttt{core} Package}  
-Python package containing the core functionality used in the notebooks. It includes classes, functions, and constants to orchestrate data extraction, preprocessing, feature engineering, model training, and evaluation.  
+\paragraph{\texttt{core} Package}
+Python package containing the core functionality used in the notebooks. It includes classes, functions, and constants to orchestrate data extraction, preprocessing, feature engineering, model training, and evaluation.
 
-\paragraph{\texttt{gait\_kinematics.m}}  
-Script provided with the source paper. It calculates joint angles and angular velocities from the \texttt{Dynamic Marker Data}, \texttt{Joint Marker Neutral}, and \texttt{Cluster Marker Neutral} files. Anatomical segment coordinate systems are constructed from the neutral marker data, segment motion is tracked using the dynamic marker data, and XYZ Cardan joint angles and angular velocities are computed. The script returns:  
+\paragraph{\texttt{gait\_kinematics.m}}
+Script provided with the source paper. It calculates joint angles and angular velocities from the \texttt{Dynamic Marker Data}, \texttt{Joint Marker Neutral}, and \texttt{Cluster Marker Neutral} files. Anatomical segment coordinate systems are constructed from the neutral marker data, segment motion is tracked using the dynamic marker data, and XYZ Cardan joint angles and angular velocities are computed. The script returns:
 \begin{itemize}
     \item \texttt{Angles}: per-frame joint/segment angles for the left/right ankle, knee, hip, as well as foot and pelvis segments (degrees).
     \item \texttt{Velocities}: per-frame angular velocities for the same structures (deg/s).
     \item \texttt{jc}: estimated joint centre positions (pelvis, hips, knees, ankles).
 \end{itemize}
 
-\paragraph{\texttt{gait\_steps.m}}  
-Script also provided with the source paper. It calculates descriptive biomechanical variables from the \texttt{Dynamic Marker Data}, \texttt{Cluster Marker Neutral}, \texttt{Angles}, and \texttt{Velocities}. The script returns:  
+\paragraph{\texttt{gait\_steps.m}}
+Script also provided with the source paper. It calculates descriptive biomechanical variables from the \texttt{Dynamic Marker Data}, \texttt{Cluster Marker Neutral}, \texttt{Angles}, and \texttt{Velocities}. The script returns:
 \begin{itemize}
     \item \texttt{event}: gait cycle events by side (touchdown, mid-stance, toe-off, heel whip).
     \item \texttt{Descriptive biomechanical variables}: as defined in Table~\ref{tab:met-desc-variable-init}.
 \end{itemize}
 
-\paragraph{\texttt{processing\_source\_data.m}}  
+\paragraph{\texttt{processing\_source\_data.m}}
 Script implemented for this project to process the metadata file and marker-data JSON files. Joint angles, joint angular velocities and cycle events are computed by calling \texttt{gait\_kinematics.m} and \texttt{gait\_steps.m}. The outputs are converted into tabular format for the exploratory data analysis (EDA) stage.
 
 
 \subsection{Data Extraction}\label{subsec:data-extraction}
 
-The script \texttt{processing\_source\_data.m} was executed to process the raw dataset. Out of 2506 recorded sessions (with some subjects contributing multiple sessions), 2487 were processed successfully, of which 1813 contained valid running data. Sessions without running data or those where MATLAB preprocessing failed were excluded.  
+The script \texttt{processing\_source\_data.m} was executed to process the raw dataset. Out of 2506 recorded sessions (with some subjects contributing multiple sessions), 2487 were processed successfully, of which 1813 contained valid running data. Sessions without running data or those where MATLAB preprocessing failed were excluded.
 
-The outputs consist of time-series data for markers, joint angles, joint angular velocities, and detected gait cycle events with their corresponding frame indices. These outputs were further processed using the \texttt{pandas} and \texttt{kinetics-toolkit} Python packages to combine the event information with the time-series data.  
+The outputs consist of time-series data for markers, joint angles, joint angular velocities, and detected gait cycle events with their corresponding frame indices. These outputs were further processed using the \texttt{pandas} and \texttt{kinetics-toolkit} Python packages to combine the event information with the time-series data.
 
-Figure \ref{fig:data-ext-marker-velo-angle-ts} illustrates an example from a single session, showing the raw marker data for one marker in the left shank cluster together with the corresponding joint angle and angular velocity for the left knee. Figure \ref{fig:data-ext-l-knee-angle-events} shows frames 500--1000 of the left knee angle, annotated with the touchdown and toe-off events. Figure \ref{fig:data-ext-marker-3d} provides a 3D representation of a frame with the full marker set.  
+Figure \ref{fig:data-ext-marker-velo-angle-ts} illustrates an example from a single session, showing the raw marker data for one marker in the left shank cluster together with the corresponding joint angle and angular velocity for the left knee. Figure \ref{fig:data-ext-l-knee-angle-events} shows frames 500--1000 of the left knee angle, annotated with the touchdown and toe-off events. Figure \ref{fig:data-ext-marker-3d} provides a 3D representation of a frame with the full marker set.
 
-In addition to the time-series data, the script also generates a set of 33 descriptive variables. These variables are equivalent to those stored in the JSON files of the source dataset. To validate the execution of \texttt{processing\_source\_data.m}, the generated variables were compared against the source dataset. All variables matched within a relative tolerance of $1 \times 10^{-9}$, except for 35 values of \texttt{speed\_r}, which differed by $9 \times 10^{-2}$. This deviation is negligible when measuring human running speed in m/s and confirms that the execution was successful. The computed set of descriptive variables was discarded in favour of the original dataset variables, which included 1832 samples. The resulting data were therefore considered ready for the exploratory data analysis stage.
+In addition to the time-series data, the script also generates the a of 33 descriptive variables. These variables are equivalent to those stored in the JSON files of the source dataset. To validate the execution of \texttt{processing\_source\_data.m}, the generated variables were compared against the source dataset. All variables matched within a relative tolerance of $1 \times 10^{-9}$, except for 35 values of \texttt{speed\_r}, which differed by $9 \times 10^{-2}$. This deviation is negligible when measuring human running speed in m/s and confirms that the execution was successful. The resulting data was considered ready for the exploratory data analysis stage.
 
 \begin{figure}[ht]
     \centering
@@ -210,7 +209,7 @@ As discussed on the previous section, we have two main types of data available:
 Given the difference in structure of both groups of datasets we need to apply different techniques and methods when working with them. Below we will discuss each of them separately.
 
 \subsection{Tabular dataset}\label{subsec:method-tabular-dataset}
-The tabular datasets contain a row for each of the 1832 recordings of running sessions. There are 1402 distinct runners within those sessions, with 209 of them having more than 1 session recorded. There are 19 more sessions compared to the time-series datasets due to the errors during data extraction. Still, we will use the full tabular dataset, for the tasks that require only tabular data, since there are no data quality issues with the tabular data of those sessions.
+The tabular datasets contain a row for each of the 1813 recordings of running sessions. There are 1394 distinct runners within those sessions, with 207 of them having more than 1 session recorded.
 
 \paragraph{Categorical Variable Cleaning and Encoding}
 The values of nominal categorical variables with less than 100 categories have been mapped to a code that is easier to work with(no spaces, no special characters and restricted length), and we have consolidated categories that refer to the same code but were written slightly differently (i.e. meniscal tear-lateral and meniscal tear lateral).
@@ -234,17 +233,18 @@ Key points regarding the distributions of the columns:
 \end{itemize}
 
 \paragraph{Data Quality and Outlier detection}
-During inspection of the dataset, several inconsistencies were identified. In some cases, the level of athletic activity (\texttt{Level}), the reported dominant leg (\texttt{DominantLeg}), and the injury descriptors (\texttt{SpecInjury} and \texttt{InjDefn}) changed across sessions for the same subject. These cases were considered plausible and interpreted as part of the natural variability of the dataset. No indication was found in the source paper that such cases should be regarded as data quality issues, and they were therefore left unchanged.  
+During inspection of the dataset, several inconsistencies were identified. In some cases, the level of athletic activity (\texttt{Level}), the reported dominant leg (\texttt{DominantLeg}), and the injury descriptors (\texttt{SpecInjury} and \texttt{InjDefn}) changed across sessions for the same subject. These cases were considered plausible and interpreted as part of the natural variability of the dataset. No indication was found in the source paper that such cases should be regarded as data quality issues, and they were therefore left unchanged.
 
-One case was found in which the reported age differed by ten years between two sessions, which exceeds the duration of the study. To investigate, the entire dataset was checked for inconsistencies between reported age and the time difference between sessions. Two problematic cases were identified:  
+One case was found in which the reported age differed by ten years between two sessions, which exceeds the duration of the study. To investigate, the entire dataset was checked for inconsistencies between reported age and the time difference between sessions. Two problematic cases were identified:
 \begin{itemize}
-    \item Subject 100234 was recorded as 40 years old in the first session and 43 years old one year later. In this case, the age in the second session was corrected to 41.  
-    \item Subject 200375 was recorded as a 27-year-old female in one session and as a 50-year-old male in the next. This inconsistency suggests that the sessions belong to different individuals. A new synthetic subject identifier (300375) was therefore created, and the second session was reassigned to this new subject. The total number of sessions remained unchanged, but the number of unique subjects increased by one.  
+    \item Subject 100234 was recorded as 40 years old in the first session and 43 years old one year later. In this case, the age in the second session was corrected to 41.
+    \item Subject 200375 was recorded as a 27-year-old female in one session and as a 50-year-old male in the next. This inconsistency suggests that the sessions belong to different individuals. A new synthetic subject identifier (300375) was therefore created, and the second session was reassigned to this new subject. The total number of sessions remained unchanged, but the number of unique subjects increased by one.
 \end{itemize}
 
-Additional inconsistencies were found in the injury variables. In many sessions, \texttt{SpecInjury} was empty while \texttt{SpecInjury2} contained information. These cases were treated as input errors: when \texttt{SpecInjury} was missing and \texttt{SpecInjury2} was populated, the value of \texttt{SpecInjury2} was taken as the primary injury. A subject was assumed to have no primary injury in a session only if both fields were empty.  
+Additional inconsistencies were found in the injury variables. In many sessions, \texttt{SpecInjury} was empty while \texttt{SpecInjury2} contained information. These cases were treated as input errors: when \texttt{SpecInjury} was missing and \texttt{SpecInjury2} was populated, the value of \texttt{SpecInjury2} was taken as the primary injury. A subject was assumed to have no primary injury in a session only if both fields were empty.
 
-All columns in the metadata were inspected for implausible values. Table \ref{tab:met-outlier-range} summarises the range thresholds used for outlier detection. Values outside of these ranges were considered unrealistic and replaced with \texttt{None}. For example, ages of 255 years, heights of 999~cm, weights of 1564~kg, injury durations of 30,000 days (82 years), and years running of 999 were identified as outliers and removed. These extreme values were detected visually using box plots and validated against plausible ranges for human adults.  
+All columns in the metadata were inspected for implausible values. Table \ref{tab:met-outlier-range} summarises the range thresholds used for outlier detection. Values outside of these ranges were considered unrealistic and replaced with \texttt{None}. For example, ages of 255~years, heights of 999~cm, weights of 1564~kg, injury durations of 30,000~days (82~years), and years running of 999 were identified as outliers and removed. These extreme values were detected visually using box plots and validated against plausible ranges for human adults.
+
 
 %TODO: Try to get it to show together with the text
 \begin{table}[htbp]
@@ -268,8 +268,8 @@ All columns in the metadata were inspected for implausible values. Table \ref{ta
 A surrogate key \texttt{id} was introduced to uniquely identify each sample across datasets, where one sample corresponds to a session. The surrogate key was defined as the concatenation of the subject identifier and the session filename in uppercase (e.g., \texttt{100001\_20110531T161051}). This column was then used as the join key to merge the metadata and biomechanical variables.
 % TODO: List all variables available? Maybe better on a Apendinx?
 
-\paragraph{Missing values}  
-Table\ref{tab:met-missing-values} presents the ten variables with the highest proportion of missing values after standardisation, data cleaning, and outlier detection. Variables with more than 35\% missing values were discarded.  
+\paragraph{Missing values}
+Table\ref{tab:met-missing-values} presents the ten variables with the highest proportion of missing values after standardisation, data cleaning, and outlier detection. We decided to keep all discrete variables and \texttt{age}, \texttt{Height}, \texttt{Weight}, \texttt{Gender} and \texttt{DominantLeg}.
 
 For numeric variables, the maximum proportion of missing values was 0.7\%. However, dropping all rows with at least one missing value would have removed more than twice as many samples. To preserve data, missing values in numeric variables were therefore imputed with the median. The median was chosen because normality could not be assumed for all variables and several distributions were skewed. Under such conditions, the median is more robust than the mean.
 
@@ -282,16 +282,16 @@ For categorical variables, missing values were replaced with the label \texttt{u
         \hline
         \textbf{Column} & \textbf{Missing (\%)} \\
         \hline
-        YrPR & 76.80 \\
-        RaceTimeSecs & 75.71 \\
-        NumRaces & 72.49 \\
-        RaceTimeHrs & 69.71 \\
-        RaceTimeMins & 61.74 \\
-        YrsRunning & 31.00 \\
-        DominantLeg & 19.21 \\
-        RaceDistance & 18.45 \\
-        Activities & 17.25 \\
-        Level & 14.68 \\
+        YrPR & 77.16 \\
+        RaceTimeSecs & 75.95 \\
+        NumRaces & 72.91 \\
+        RaceTimeHrs & 70.04 \\
+        RaceTimeMins & 62.05 \\
+        YrsRunning & 31.16 \\
+        DominantLeg & 19.46 \\
+        RaceDistance & 18.64 \\
+        Activities & 17.42 \\
+        Level & 14.83 \\
         \hline
     \end{tabular}
 \end{table}
@@ -300,33 +300,70 @@ For categorical variables, missing values were replaced with the label \texttt{u
 \paragraph{Definition of Injury status}
 Seven columns contain injury data: primary injury data (\texttt{SpecInjury}, \texttt{InjJoint}, \texttt{InjSide}), secondary injury data (\texttt{SpecInjury2}, \texttt{InjJoint2}, \texttt{InjSide2}), and injury severity (\texttt{InjDefn}), and while primary and secondary injury data is consistent within each group, they are not consistent with injury severity. In total, 9\% of the dataset wither was diagnosed with no injury but the runner reported, at least, that they were "continuing to train in pain" or was diagnosed with an injury but reported \texttt{"no injury"} in the severity score.
 
-The source paper does not precise clearly what logic did they use for a subject to be counted as uninjured, but we have decided to use the information coming from \texttt{SpecInjury} and \texttt{SpecInjury2} because it is medically diagnosed by a medical practitioner. So if any of these two variables has a value other than \texttt{"no\_injury"}, we will flag the runner as injured during the session. The distribution of injured vs uninjured sessions is 63.7\% to 36.3\%.
+The source paper does not precise clearly what logic did they use for a subject to be counted as uninjured, but we have decided to use the information coming from \texttt{SpecInjury} and \texttt{SpecInjury2} because it is medically diagnosed by a medical practitioner. So if any of these two variables has a value other than \texttt{"no\_injury"}, we will flag the runner as injured during the session. The distribution of injured vs uninjured sessions is 63.5\% to 36.5\%.
 
 
-\paragraph{Variable standardisation for training}  
-To prepare the variables for training, numerical values were standardised using the Z-score $Z = (X - \mu) / \sigma$. This procedure centres the data around a mean of 0 and scales it to a standard deviation of 1. Standardisation reduces bias when working with variables of different magnitudes and is required for models such as Logistic Regression and Support Vector Machine (SVM).  
+\paragraph{Variable standardisation for training}
+To prepare the variables for training, numerical values were standardised using the Z-score $Z = (X - \mu) / \sigma$. This procedure centres the data around a mean of 0 and scales it to a standard deviation of 1. Standardisation reduces bias when working with variables of different magnitudes and is required for models such as Logistic Regression and Support Vector Machine (SVM).
 
 Categorical variables were converted into sparse one-hot encoded arrays, where each category value is represented as a separate column and encoded with a 1 or 0 to indicate its presence. To mitigate perfect collinearity, where one variable can be predicted exactly from another, reducing the reliability of coefficient estimates and hindering interpretability, the column corresponding to the value \texttt{unknown} was dropped for each categorical variable.
 
 
 \paragraph{Analysis of relationship between predictors and target variable}
-t-distributed Stochastic Neighbor Embedding (t-SNE) is a non-linear dimensionality reduction technique that projects high-dimensional data into a low-dimensional space while preserving local neighbourhood relationships \citep{JMLR:v9:vandermaaten08a}. In this project, t-SNE was used as an exploratory tool to analyse whether natural clustering exists in the data. Seven plots with different values of hyperparameter \texttt{perplexity} were visualized, and the one that best captured the relationship was choosen, the range of values proposed in \citep{JMLR:v9:vandermaaten08a} as normal values was used.
+t-distributed Stochastic Neighbor Embedding (t-SNE) is a non-linear dimensionality reduction technique that projects high-dimensional data into a low-dimensional space while preserving local neighbourhood relationships \citep{JMLR:v9:vandermaaten08a}. In this project, t-SNE was applied as an exploratory tool to assess whether natural clustering exists in the data. Seven plots were generated with different values of the hyperparameter \texttt{perplexity}, and the plot that best reflected the data structure was chosen. The range of perplexity values proposed in \citet{JMLR:v9:vandermaaten08a} as typical was used.
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\columnwidth]{images/t-sne-p10-scatter-is_injured.png}
-    \caption[2D t-SNE plot with perplexity 10]{2D t-SNE plot with perplexity 10. Injured samples appear in blue and uninjured in orange.\label{fig:met-tsne-injured}}
+    \caption[2D t-SNE plot with perplexity 10]{2D t-SNE plot with perplexity 10. Injured samples appear in blue and uninjured samples in orange.\label{fig:met-tsne-injured}}
 \end{figure}
 
-In figure \ref{fig:met-tsne-injured} we can see a 2D t-SNE plot of our cleaned dataset. The algorithm reveals that no strong natural groupings exist, and that the two populatations (injured and uninjured) are very close one to the other. There is a small cluster of uninjured samples on the top center part of the plot, but the distance with the neighbour samples is not very large, this indicates that even the cluster with most separation is not clearly defined and that the separation between classes is more  complex due to class similarity. That said, the plot only takes into account two t-SNE components, it is still possible that in a higer dimensional space clearly defined groups exist.
+Figure \ref{fig:met-tsne-injured} shows the 2D t-SNE projection of the cleaned dataset. The embedding suggests that no strong natural groupings exist, as injured and uninjured samples overlap accross most of the plot. A small cluster of uninjured samples is visible in the upper-central region of the plot, but the distance to neighbouring points is limited. This indicates that even the most distinct subgroup is not well separated and that class separation is more complex due to high similarity between classes. It should also be noted that the figure only displays the first two t-SNE components. Additional separation may exist in higher-dimensional representations.
 
-There is one more thing we can learn from the plot: If we pay attention to the density of of orange and blue points, injured samples are more common on the botom left side of the graph and uninjured samplesa re more common on the top right side. A line could be drawn such that more than 50\% of uninjured samples would fall on the top, meaning that we would be able to build a linear regression classifier using t-SNE components that is slightly better than random chance. Class separation seems to be possible.
+The plot also highlights differences in the relative density of the two classes: injured samples appear more frequently in the lower-left region of the plot, whereas uninjured samples are more common in the upper-center. A separating line could be drawn such that more than 50\% of the uninjured samples fall on one side, suggesting that a simple linear classifier trained on the t-SNE components would perform slightly better than random chance. This indicates that some degree of class separation is present, although it remains weak.
 
+<DRAFT>\dots 
+To further analyse the relationship between the predictors and the target variable, we calcualte the mutual informaiton MI, for numerical values we calcualte the pearson correlation and perform a t-test to compare the distributions of the injured and uninjured populations. For categorical data, we perform the ChiSquared test. Table~\ref{tab:met-top-vars-stat-test} shows the top 5 scorers by metric.
 
-\begin{itemize}
-    \item Mutual info and correlation
-    \item Compare populations with mann-witney statistical test
-\end{itemize}
+\begin{table}[htbp]
+    \centering
+    \caption{Top Predictors of Injury Status Across Statistical Tests}.\label{tab:met-top-vars-stat-test}}
+    \begin{tabular}{lll}
+        \hline
+        \textbf{Metric} & \textbf{Predictor} & \textbf{Score} \\
+        \hline
+        \multicolumn{3}{l}{\textit{Top 5 by Mutual Information}} \\
+        & weight & 0.069027 \\
+        & age & 0.045877 \\
+        & height & 0.043159 \\
+        & dom\_leg\_foot\_ang\_at\_hs & 0.021200 \\
+        & dom\_leg\_diff\_knee\_abd\_peak\_angle & 0.021124 \\
+        \hline
+        \multicolumn{3}{l}{\textit{Top 5 by absolute correlation with is\_injured}} \\
+        & dom\_leg\_stance\_time & Pearson $r$ = 0.228451, $p$ = $6.78 \times 10^{-23}$ \\
+        & dom\_leg\_stride\_length & Pearson $r$ = -0.166545, $p$ = $9.58 \times 10^{-13}$ \\
+        & dom\_leg\_ankle\_eve\_peak\_vel & Pearson $r$ = 0.149308, $p$ = $1.67 \times 10^{-10}$ \\
+        & dom\_leg\_hip\_ext\_peak\_angle & Pearson $r$ = 0.139237, $p$ = $2.62 \times 10^{-9}$ \\
+        & dom\_leg\_pelvic\_drop\_peak\_vel & Pearson $r$ = -0.133314, $p$ = $1.21 \times 10^{-8}$ \\
+        \hline
+        \multicolumn{3}{l}{\textit{Top 5 by t-test p-value}} \\
+        & dom\_leg\_stance\_time & $6.78 \times 10^{-23}$ \\
+        & dom\_leg\_stride\_length & $9.58 \times 10^{-13}$ \\
+        & dom\_leg\_ankle\_eve\_peak\_vel & $1.67 \times 10^{-10}$ \\
+        & dom\_leg\_hip\_ext\_peak\_angle & $2.62 \times 10^{-9}$ \\
+        & dom\_leg\_pelvic\_drop\_peak\_vel & $1.21 \times 10^{-8}$ \\
+        \hline
+        \multicolumn{3}{l}{\textit{Top 2 by Chi$^2$ p-value}} \\
+        & gender & 0.193481 \\
+        & id & 0.488958 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+% Should I add this? not for now....
+% \begin{itemize}
+%     \item Compare populations with mann-witney statistical test
+% \end{itemize}
 
 
 \subsection{Time-series dataset}\label{subsec:method-ts-dataset}
@@ -347,14 +384,14 @@ There is one more thing we can learn from the plot: If we pay attention to the d
 
 In timeseries data we keep the same definition of injury status and \dots What else do we reuse? \dots
 
-\paragraph{Stance phase segmentation and normalisation}  
-The dataset contains nine joints (left and right foot, ankle, knee, and hip, plus the pelvis). For each joint, three axes (X, Y, Z) were recorded, and for each axis both joint angles and angular velocities are available. This results in a total of 54 time series per session. Since 99\% of the sessions were recorded at 200 Hz and lasted up to 60 seconds, each time series contains up to 12,000 data points, which is too large for direct use. In addition, for time-series data to be used in machine learning models or compared across sessions, each time point must represent the same phase of the movement across all sequences. This is not the case in our datasets due to differences in length, sampling frequency, and starting points. Although alignment methods such as Dynamic Time Warping \citep{Bringmann2023} could be applied, the same goal can be achieved with less complexity by simply segmenting and normalising the data.
+\paragraph{Stance phase segmentation and normalisation}
+The dataset contains nine joints (left and right foot, ankle, knee, and hip, plus the pelvis). For each joint, three axes (X, Y, Z) were recorded, and for each axis both joint angles and angular velocities are available. This results in a total of 54 time series per session. Since 99\% of the sessions were recorded at 200~Hz and lasted up to 60~seconds, each time series contains up to 12,000 data points, which is too large for direct use. In addition, for time-series data to be used in machine learning models or compared across sessions, each time point must represent the same phase of the movement across all sequences. This is not the case in our datasets due to differences in length, sampling frequency, and starting points. Although alignment methods such as Dynamic Time Warping \citep{Bringmann2023} could be applied, the same goal can be achieved with less complexity by simply segmenting and normalising the data.
 
-Following the procedure described in the source paper \citep{Ferber2024} and later replicated with good results in \citep{FuentesJimnez2025}, each recording was segmented into the stance phases of the gait cycle. To perform this segmentation, each \gls{channel} was split using the detected gait events: the stance phase starts with touchdown (TD) and ends with toe-off (TO).  
+Following the procedure described in the source paper \citep{Ferber2024} and later replicated with good results in \citep{FuentesJimnez2025}, each recording was segmented into the stance phases of the gait cycle. To perform this segmentation, each \gls{channel} was split using the detected gait events: the stance phase starts with touchdown (TD) and ends with toe-off (TO).
 
-It should be noted that the stance phases of the right and left sides overlap whenever both feet are in contact with the ground. For this reason, different events were used to segment the two sides. Specifically, the events \texttt{L\_TD} and \texttt{L\_TO} were used for left-side joints, while \texttt{R\_TD} and \texttt{R\_TO} were used for right-side joints.  
+It should be noted that the stance phases of the right and left sides overlap whenever both feet are in contact with the ground. For this reason, different events were used to segment the two sides. Specifically, the events \texttt{L\_TD} and \texttt{L\_TO} were used for left-side joints, while \texttt{R\_TD} and \texttt{R\_TO} were used for right-side joints.
 
-The pelvis was treated as a special case, since it is not side-specific. For this joint, two groups of segments were created: one aligned with the left stance phase and one aligned with the right stance phase. This segmentation procedure was applied to both angles and angular velocities.  
+The pelvis was treated as a special case, since it is not side-specific. For this joint, two groups of segments were created: one aligned with the left stance phase and one aligned with the right stance phase. This segmentation procedure was applied to both angles and angular velocities.
 
 Table \ref{tab:met-ts-vars} lists all time-series variables available per session, which add up to 60 in total.
 
@@ -401,6 +438,14 @@ The duration of the stance phase varies between subjects and there strongly nega
     -- Cycle Segmentation and normalization -> Reference papers either here or in SOTA.
 
 \subsection{Feature Engineering}\label{subsec:method-feature-engineering}
+<DRAFT>\dots 
+For tabular data, we have seen very high values of VIF which indicate collinearity. This is common on biomechanics domain because we have variables that describe the same movement (i.e. Stance time inversely proportional to speed and stride length). By plotting a correlation matrix for numerical variables we see that high absolute correlation exists for many variables. When those variables with an absolute correlation higher than 0.9 are dropped, we see a reduction of the VIF  values, though still high. There are only 10 variables below VIF = 10.
+
+Seeing the effect of removing collinearity, we decide to keep only the dominant pair from left and right. And to not loose information of the non-dominant side completely, extract the difference between both sides as a varible. The VIF is now reduced significatly, going from only 10 variables below VIF = 10 to 32 and those variables over 10 have a value significatly less than before the change.
+
+
+
+
 -- Transformations and feature extraction
     -- Dominant Leg -> VIF reduction
     -- Obtaining a representative curve
