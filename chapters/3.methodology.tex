@@ -298,13 +298,13 @@ For categorical variables, missing values were replaced with the label \texttt{u
 
 
 \paragraph{Definition of Injury status}
-Seven columns contain injury data: primary injury data (\texttt{SpecInjury}, \texttt{InjJoint}, \texttt{InjSide}), secondary injury data (\texttt{SpecInjury2}, \texttt{InjJoint2}, \texttt{InjSide2}), and injury severity (\texttt{InjDefn}), and while primary and secondary injury data is consistent within each group, they are not consistent with injury severity. In total, 9\% of the dataset wither was diagnosed with no injury but the runner reported, at least, that they were "continuing to train in pain" or was diagnosed with an injury but reported \texttt{"no injury"} in the serverity score.
+Seven columns contain injury data: primary injury data (\texttt{SpecInjury}, \texttt{InjJoint}, \texttt{InjSide}), secondary injury data (\texttt{SpecInjury2}, \texttt{InjJoint2}, \texttt{InjSide2}), and injury severity (\texttt{InjDefn}), and while primary and secondary injury data is consistent within each group, they are not consistent with injury severity. In total, 9\% of the dataset wither was diagnosed with no injury but the runner reported, at least, that they were "continuing to train in pain" or was diagnosed with an injury but reported \texttt{"no injury"} in the severity score.
 
-The source paper does not precise clearly what logic did they use for a subject to be counted as uninjured, but we have decided to use the information comming from \texttt{SpecInjury} and \texttt{SpecInjury2} because it is medically diagnosed by a medical practitioned. So if any of these two variables has a value other than \texttt{"no_injury"}, we will flag the runner as injured during the session. The distribution of injured vs uninjured sessions is 63.7\% to 36.3\%.
+The source paper does not precise clearly what logic did they use for a subject to be counted as uninjured, but we have decided to use the information coming from \texttt{SpecInjury} and \texttt{SpecInjury2} because it is medically diagnosed by a medical practitioner. So if any of these two variables has a value other than \texttt{"no\_injury"}, we will flag the runner as injured during the session. The distribution of injured vs uninjured sessions is 63.7\% to 36.3\%.
 
 
 \paragraph{Variable standardisation for training}  
-To prepare the variables for training, numerical values were standardised using the Z-score $Z = (X - \mu) / \sigma$. This procedure centres the data around a mean of 0 and scales it to a standard deviation of 1. Standardisation reduces bias when working with variables of different magnitudes and is required for models such as Logistic Regression and Support Vector Machines (SVMs).  
+To prepare the variables for training, numerical values were standardised using the Z-score $Z = (X - \mu) / \sigma$. This procedure centres the data around a mean of 0 and scales it to a standard deviation of 1. Standardisation reduces bias when working with variables of different magnitudes and is required for models such as Logistic Regression and Support Vector Machine (SVM).  
 
 Categorical variables were converted into sparse one-hot encoded arrays, where each category value is represented as a separate column and encoded with a 1 or 0 to indicate its presence. To mitigate perfect collinearity, where one variable can be predicted exactly from another, reducing the reliability of coefficient estimates and hindering interpretability, the column corresponding to the value \texttt{unknown} was dropped for each categorical variable.
 
@@ -318,7 +318,7 @@ t-distributed Stochastic Neighbor Embedding (t-SNE) is a non-linear dimensionali
     \caption[2D t-SNE plot with perplexity 50]{2D t-SNE plot with perplexity 50. Injured samples appear in blue and uninjured in orange.\label{fig:met-tsne-injured}}
 \end{figure}
 
-Figure \reg{fig:met-tsne-injured} visualizes two t-sne dimensions
+Figure \ref{fig:met-tsne-injured} visualizes two t-SNE dimensions
 
 This provided an intuitive visualisation of the structure of the dataset and helps to assess whether meaningful separation is possible before training predictive models.
 
