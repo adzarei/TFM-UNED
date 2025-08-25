@@ -351,7 +351,7 @@ Table \ref{tab:met-ts-vars} lists all time-series variables available per sessio
 \begin{table}[htbp]
     \centering
     \caption[List of 60 time-series channels]{List of 60 time-series channels per session. Each channel corresponds to a specific joint, measurement type (angle or velocity), and axis (X, Y, Z) for left (L) and right (R) sides. \label{tab:met-ts-vars}}
-    \begin{tabular}{lp{0.6\textwidth}}
+    \begin{tabular}{lll}
     \hline
     \textbf{X-axis Channel} & \textbf{Y-axis Channel} & \textbf{Z-axis Channel} \\
     \hline
@@ -377,10 +377,9 @@ Table \ref{tab:met-ts-vars} lists all time-series variables available per sessio
     R\_pelvis\_velocity\_X  & R\_pelvis\_velocity\_Y  & R\_pelvis\_velocity\_Z \\
     \hline
     \end{tabular}
-    \label{tab:ts-channels}
 \end{table}
 
-The duration of the stance phase varies between subjects and there strongly negatively correlated to running speed, for that reason we will normalise all timesereis to the same number of datapoints. It is standard practice to normalise biomechanical kinematic data to 101 data points \citep{Crane2010,FuentesJimnez2025}, representing the percentage of the stance phase from 0\% to 100\% inclusive.
+The duration of the stance phase varies between subjects and there strongly negatively correlated to running speed, for that reason we will normalise all time-series to the same number of data points. It is standard practice to normalise biomechanical kinematic data to 101 data points \citep{Crane2010,FuentesJimnez2025}, representing the percentage of the stance phase from 0\% to 100\% inclusive.
 
 
 % TODO: Maybe we keep outliers and filering here?
