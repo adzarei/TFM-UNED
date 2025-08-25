@@ -310,21 +310,20 @@ Categorical variables were converted into sparse one-hot encoded arrays, where e
 
 
 \paragraph{Analysis of relationship between predictors and target variable}
-t-distributed Stochastic Neighbor Embedding (t-SNE) is a non-linear dimensionality reduction technique that projects high-dimensional data into a low-dimensional space while preserving local neighbourhood relationships \citep{JMLR:v9:vandermaaten08a}. In this project, t-SNE was used as an exploratory tool to analyse whether natural clustering exists in the data.
+t-distributed Stochastic Neighbor Embedding (t-SNE) is a non-linear dimensionality reduction technique that projects high-dimensional data into a low-dimensional space while preserving local neighbourhood relationships \citep{JMLR:v9:vandermaaten08a}. In this project, t-SNE was used as an exploratory tool to analyse whether natural clustering exists in the data. Seven plots with different values of hyperparameter \texttt{perplexity} were visualized, and the one that best captured the relationship was choosen, the range of values proposed in \citep{JMLR:v9:vandermaaten08a} as normal values was used.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.5\columnwidth]{images/t-sne-p50-scatter-is_injured.png}
-    \caption[2D t-SNE plot with perplexity 50]{2D t-SNE plot with perplexity 50. Injured samples appear in blue and uninjured in orange.\label{fig:met-tsne-injured}}
+    \includegraphics[width=0.5\columnwidth]{images/t-sne-p10-scatter-is_injured.png}
+    \caption[2D t-SNE plot with perplexity 10]{2D t-SNE plot with perplexity 10. Injured samples appear in blue and uninjured in orange.\label{fig:met-tsne-injured}}
 \end{figure}
 
-Figure \ref{fig:met-tsne-injured} visualizes two t-SNE dimensions
+In figure \ref{fig:met-tsne-injured} we can see a 2D t-SNE plot of our cleaned dataset. The algorithm reveals that no strong natural groupings exist, and that the two populatations (injured and uninjured) are very close one to the other. There is a small cluster of uninjured samples on the top center part of the plot, but the distance with the neighbour samples is not very large, this indicates that even the cluster with most separation is not clearly defined and that the separation between classes is more  complex due to class similarity. That said, the plot only takes into account two t-SNE components, it is still possible that in a higer dimensional space clearly defined groups exist.
 
-This provided an intuitive visualisation of the structure of the dataset and helps to assess whether meaningful separation is possible before training predictive models.
+There is one more thing we can learn from the plot: If we pay attention to the density of of orange and blue points, injured samples are more common on the botom left side of the graph and uninjured samplesa re more common on the top right side. A line could be drawn such that more than 50\% of uninjured samples would fall on the top, meaning that we would be able to build a linear regression classifier using t-SNE components that is slightly better than random chance. Class separation seems to be possible.
 
 
 \begin{itemize}
-    \item Natural clustering t-SNE
     \item Mutual info and correlation
     \item Compare populations with mann-witney statistical test
 \end{itemize}
