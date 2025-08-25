@@ -69,7 +69,7 @@ Only 33 of the 77 descriptive biomechanical variables are populated per side, th
     \caption[Populated Descriptive Variables Summary]{Summary of the Descriptive Biomechanical Variables that are populated\label{tab:met-desc-variable-init}}
     \begin{tabular}{lp{0.6\textwidth}}
     \hline
-    Variable & Category \\
+    \textbf{Variable} & \textbf{Category} \\
     \hline
     Step width (m) & Temporal-spatial \\
     Stride rate (steps/min) & Temporal-spatial \\
@@ -222,7 +222,8 @@ Quantitative variables have been left unchanged, standardisation and normalizati
 
 All values that do not fall into a defined category or an accepted value for the data-type are considered as missing value and are converted to None. This is saved as "" when saving the dataset to CSV format.
 
-TODO: Expan each of the points and add visualization if needed.
+> TODO: Expan each of the points and add visualization if needed.
+
 Key points regarding the distributions of the columns:
 \begin{itemize}
     \item The male/female distribution is balanced (exact percentage to be reported), with an additional "unknown" category present.
@@ -233,26 +234,38 @@ Key points regarding the distributions of the columns:
 \end{itemize}
 
 \paragraph{Data quality and outlier detection:}
-When comparing the sessions of the same subject we have found samples where the \texttt{Level} changes from competitive to recreational or the other way around, also we have found examples where the \texttt{DominantLeg} changes over time, and cases where both \texttt{SpecInjury} and \texttt{InjDefn} change. Since there is no indication in the source paper that makes us think that this is not possible, we will continue with assuming that this scenario is possible.
+When comparing the sessions for the same subject we have found samples where the level of athletic activity \(\texttt{Level}\) changes and the reported dominant leg (\texttt{DominantLeg}) changes over time, and cases where both \texttt{SpecInjury} and \texttt{InjDefn} change. We belive this cases are plausible and consider them to be true and part of the specificities of the dataset. There is nothing in the the source paper that makes us belive that these cases need to be considered a data quality issue. We leave them untouched.
 
-There is one case where the age gap between sessions is 10 years, which is longer than the duration of the study. We check the whole dataset by comparing the difference in reported age  between sessions and compare it with the time difference between sessions. Two samples show a significant difference: Subject 100234 reports 3 years older in less than 1 year between sessions. 200375 is clearly two different people: A 27 year old female and a 50 year old male. For the first case, we decided to override the age of the former and set it to 41. For the second case, we decided to create a new synthetic subject ID (300375) and assign the second session to the new subject. The number of sessions remains the same, but there is a new subject.
+On the other hand, we have found one case where the age gap between sessions is 10 years, which is longer than the duration of the study. We decided to check the whole dataset for inconsistencies between the age difference between sessions and the time of the sessions. Two samples had a significant difference (more than 1 year difference): Subject 100234 was 40 on a initial session and 43 in a session 1 year later. 200375 was a female of age 27 on one session and a 50 year old male subject on the next one, it is clearly two different people.
 
-In some samples we have observed that SpecInjury is empty, but SpecInjury2 has a value. For those cases, we assume that it is an input error and move the value from SpecInjury to SpecInjury2.
+For the first case, we decided to override the the age of the second session and set it to 41. For the second case, we decided to create a new synthetic subject ID (300375) and assign the second session to the new subject. The number of sessions remains the same, but there is a new subject.
 
-% There are images in 04_eda..ipynb is needed
-Outliers -> Replace with NaN
-Find outliers drawing a box-plot and visually identifying unrealistic values.
-- Age of 255 - New Max Age: 73.0, Min Age: 18.0
-- Height of 999 - New Max Height: 196.5, Min Height: 120.0
-- Weight - New Max Weight: 176.0, Min Weight: 42.5
-- InjDuration of 30000 days (82 years) and 10000 (25 years), very high + very clean number - New Max InjDuration: 176.0, Min InjDuration: 42.5. Checked that the age was below the value. Clearly an error
-- YearsRunning of 999 - New Max YrsRunning: 54.0, Min YrsRunning: 42.5
+In addition we have observed that \texttt{SpecInjury} is empty, but \texttt{SpecInjury2} is populated on many sessions. For those cases, we assume that it is an input error and move the value from \texttt{SpecInjury} to \texttt{SpecInjury2}, that is, if an injury was reported in \texttt{SpecInjury}, we will take it as a primary injury, if not and \texttt{SpecInjury2} is populated, we will take that one. We will only assume a subject has no primary injury in a session if both \texttt{SpecInjury} and \texttt{SpecInjury2} are empty.
+
+We inspected all of the columns in the metadata file to find outliers. Table \ref{tab:met-outlier-range} porvides a summary of the columns with outliers and the range used to detect outliers.
+
+\begin{table}[h!]
+    \centering
+    \caption[Outlier detection range for tabular data]{Summary of outlier detection range for key variables.\label{tab:met-outlier-range}
+    \begin{tabular}{lp{0.6\textwidth}}
+        \hline
+        \textbf{Variable} & \textbf{Min} & \textbf{Max} \\
+        \hline
+        Age & 18.0 & 73.0 \\
+        Height & 120.0 & 196.5 \\
+        Weight & 42.5 & 176.0 \\
+        InjDuration (days) & 0.0 & 176.0 \\
+        YearsRunning & 0.0 & 54.0 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+Values outside of these ranges were considered unrealistic and were replaced with None. For example, ages of 255 years, heights of 999 cm, weights of 1564 kg, injury durations of 30,000 days (82 years), and years running of 999 were all identified as outliers and removed. These extreme values were detected visually using box-plots and by checking for plausibility against normal values for human adults.
 
 \paragraph{Merging metadata and biomechanical variables}
 We decided to introduce a surrogate key "id" that can be used across datasets to identify each sample uniquely. One sample is a session. The surrogate key is the concatenation of subject id with the filename in uppercase i.e. \"100001\_20110531T161051\". We use this column to join both datasets by "id".
 
-% TODO: List all variables available?
-
+% TODO: List all variables available? Maybe better on a Apendinx?
 
 \paragraph{Missing values:}
 Missing data:
