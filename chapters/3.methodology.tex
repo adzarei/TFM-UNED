@@ -212,7 +212,7 @@ Given the difference in structure of both groups of datasets we need to apply di
 \subsection{Tabular dataset}\label{subsec:method-tabular-dataset}
 The tabular datasets contain a row for each of the 1832 recordings of running sessions. There are 1402 distinct runners within those sessions, with 209 of them having more than 1 session recorded. There are 19 more sessions compared to the time-series datasets due to the errors during data extraction. Still, we will use the full tabular dataset, for the tasks that require only tabular data, since there are no data quality issues with the tabular data of those sessions.
 
-\paragraph{Standardisation of variables:}
+\paragraph{Categorical Variable Cleaning and Encoding}
 The values of nominal categorical variables with less than 100 categories have been mapped to a code that is easier to work with(no spaces, no special characters and restricted length), and we have consolidated categories that refer to the same code but were written slightly differently (i.e. meniscal tear-lateral and meniscal tear lateral).
 
 For nominal categorical variables with more than 100 categories that are likely a free text input for the subjects like \texttt{Activities}, we Convert to lowercase, remove leading and trailing spaces, replace non-standard separators with comma, replace multiple spaces with single space, replace multiple commas with single comma.
@@ -223,7 +223,6 @@ Quantitative variables have been left unchanged, standardisation and normalizati
 All values that do not fall into a defined category or an accepted value for the data-type are considered as missing value and are converted to None. This is saved as "" when saving the dataset to CSV format.
 
 > TODO: Expan each of the points and add visualization if needed.
-
 Key points regarding the distributions of the columns:
 \begin{itemize}
     \item The male/female distribution is balanced (exact percentage to be reported), with few empty values.
@@ -233,8 +232,7 @@ Key points regarding the distributions of the columns:
     \item There is little longitudinal data: only 30 sessions (2.1\%) are at least one month apart.
 \end{itemize}
 
-\paragraph{Data quality and outlier detection} 
-
+\paragraph{Data Quality and Outlier detection}
 During inspection of the dataset, several inconsistencies were identified. In some cases, the level of athletic activity (\texttt{Level}), the reported dominant leg (\texttt{DominantLeg}), and the injury descriptors (\texttt{SpecInjury} and \texttt{InjDefn}) changed across sessions for the same subject. These cases were considered plausible and interpreted as part of the natural variability of the dataset. No indication was found in the source paper that such cases should be regarded as data quality issues, and they were therefore left unchanged.  
 
 One case was found in which the reported age differed by ten years between two sessions, which exceeds the duration of the study. To investigate, the entire dataset was checked for inconsistencies between reported age and the time difference between sessions. Two problematic cases were identified:  
@@ -308,6 +306,18 @@ Definition of Injury: the dataset does not contain a column that marks injury, w
 TODO: What conclusions of the exploration of injury data can be derived?
 TODO: Healthy vs injured distribution.
 
+\paragraph{Variable standarisation for training}
+Numerical variables were normalized with the z score $z = (x - u) / s$
+Categorical variables were converted into a sparse on-hot numeric array. \dots explain in more detail\dots
+
+
+\paragraph{Analysis of relationship between predictors and target variable}
+\begin{itemize}
+    \item Natural clustering t-SNE
+    \item Mutual info and correlation
+    \item Compare populations with mann-witney statistical test
+\end{itemize}
+
 
 \subsection{Time-series dataset}\label{subsec:method-ts-dataset}
 
@@ -325,14 +335,55 @@ TODO: Healthy vs injured distribution.
 
 % -- Final feature set(s) to carry forward (e.g., summaries, PC scores, raw curves for DL)
 
+In timeseries data we keep the same definition of injury status and \dots What else do we reuse? \dots
+
+\paragraph{Stance phase segmentation and normalisation}  
+The dataset contains nine joints (left and right foot, ankle, knee, and hip, plus the pelvis). For each joint, three axes (X, Y, Z) were recorded, and for each axis both joint angles and angular velocities are available. This results in a total of 54 time series per session. Since 99\% of the sessions were recorded at 200 Hz and lasted up to 60 seconds, each time series contains up to 12,000 data points, which is too large for direct use. In addition, for time-series data to be used in machine learning models or compared across sessions, each time point must represent the same phase of the movement across all sequences. This is not the case in our datasets due to differences in length, sampling frequency, and starting points. Although alignment methods such as Dynamic Time Warping \citep{Bringmann2023} could be applied, the same goal can be achieved with less complexity by simply segmenting and normalising the data.
+
+Following the procedure described in the source paper \citep{Ferber2024} and later replicated with good results in \citep{FuentesJimnez2025}, each recording was segmented into the stance phases of the gait cycle. To perform this segmentation, each \gls{channel} was split using the detected gait events: the stance phase starts with touchdown (TD) and ends with toe-off (TO).  
+
+It should be noted that the stance phases of the right and left sides overlap whenever both feet are in contact with the ground. For this reason, different events were used to segment the two sides. Specifically, the events \texttt{L\_TD} and \texttt{L\_TO} were used for left-side joints, while \texttt{R\_TD} and \texttt{R\_TO} were used for right-side joints.  
+
+The pelvis was treated as a special case, since it is not side-specific. For this joint, two groups of segments were created: one aligned with the left stance phase and one aligned with the right stance phase. This segmentation procedure was applied to both angles and angular velocities.  
+
+Table \ref{tab:met-ts-vars} lists all time-series variables available per session, which add up to 60 in total.
+
+\begin{table}[ht]
+    \centering
+    \caption[List of 60 time-series channels]{List of 60 time-series channels per session. Each channel corresponds to a specific joint, measurement type (angle or velocity), and axis (X, Y, Z) for left (L) and right (R) sides. \lable{tab:met-ts-vars}}
+    \begin{tabular}{htbp}
+        \hline
+        X-axis Channel Name & Y-axis Channel Name & Z-axis Channel Name \\
+        \hline
+        L\_ankle\_angle\_X      & L\_ankle\_angle\_Y      & L\_ankle\_angle\_Z \\
+        L\_ankle\_velocity\_X   & L\_ankle\_velocity\_Y   & L\_ankle\_velocity\_Z \\
+        L\_foot\_angle\_X       & L\_foot\_angle\_Y       & L\_foot\_angle\_Z \\
+        L\_foot\_velocity\_X    & L\_foot\_velocity\_Y    & L\_foot\_velocity\_Z \\
+        L\_hip\_angle\_X        & L\_hip\_angle\_Y        & L\_hip\_angle\_Z \\
+        L\_hip\_velocity\_X     & L\_hip\_velocity\_Y     & L\_hip\_velocity\_Z \\
+        L\_knee\_angle\_X       & L\_knee\_angle\_Y       & L\_knee\_angle\_Z \\
+        L\_knee\_velocity\_X    & L\_knee\_velocity\_Y    & L\_knee\_velocity\_Z \\
+        R\_ankle\_angle\_X      & R\_ankle\_angle\_Y      & R\_ankle\_angle\_Z \\
+        R\_ankle\_velocity\_X   & R\_ankle\_velocity\_Y   & R\_ankle\_velocity\_Z \\
+        R\_foot\_angle\_X       & R\_foot\_angle\_Y       & R\_foot\_angle\_Z \\
+        R\_foot\_velocity\_X    & R\_foot\_velocity\_Y    & R\_foot\_velocity\_Z \\
+        R\_hip\_angle\_X        & R\_hip\_angle\_Y        & R\_hip\_angle\_Z \\
+        R\_hip\_velocity\_X     & R\_hip\_velocity\_Y     & R\_hip\_velocity\_Z \\
+        R\_knee\_angle\_X       & R\_knee\_angle\_Y       & R\_knee\_angle\_Z \\
+        R\_knee\_velocity\_X    & R\_knee\_velocity\_Y    & R\_knee\_velocity\_Z \\
+        L\_pelvis\_angle\_X     & L\_pelvis\_angle\_Y     & L\_pelvis\_angle\_Z \\
+        L\_pelvis\_velocity\_X  & L\_pelvis\_velocity\_Y  & L\_pelvis\_velocity\_Z \\
+        R\_pelvis\_angle\_X     & R\_pelvis\_angle\_Y     & R\_pelvis\_angle\_Z \\
+        R\_pelvis\_velocity\_X  & R\_pelvis\_velocity\_Y  & R\_pelvis\_velocity\_Z \\
+        \hline
+    \end{tabular}
+    \label{tab:ts-channels}
+\end{table}
+
+The duration of the stance phase varies between subjects and there strongly negatively correlated to running speed, for that reason we will normalise all timesereis to the same number of datapoints. It is standard practice to normalise biomechanical kinematic data to 101 data points \citep{Crane2010,FuentesJimnez2025}, representing the percentage of the stance phase from 0\% to 100\% inclusive.
+
+
 % TODO: Maybe we keep outliers and filering here?
-
-
-
-\section{Pre-processing}\label{sec:method-preprocessing}
--- Tabular:
-    -- filtering, subject identification, outliers, cleaning, etc..
-    -- Final dataset creation -> Give name to track
 
 -- Time-series:
     -- Extraction of angles and angular velocities as mentioned in literature.
