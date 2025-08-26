@@ -514,18 +514,43 @@ Overall, this two-pronged strategy reduced dimensionality and redundancy in the 
 
 \section{Modelling}\label{sec:method-models}
 
-\subsection{Logistic Regression}\label{subsec:method-baselines}
-% Logistic Regression
-Logistic Regression models the log-odds of the target as a linear combination of the inputs. A sigmoid converts the score into a probability. This gives a simple, interpretable baseline that reacts to scaled feature magnitudes. The 40 mRMR-selected features were standardised, and class imbalance was addressed using class weights. The main hyperparameters were: inverse regularisation strength \texttt{C} ($10^{-3}$ to $10^{3}$), penalty (\texttt{L1} or \texttt{L2}), and solver (\texttt{liblinear} or \texttt{saga}). The solver-penalty pair must be compatible (e.g., \texttt{liblinear} supports L1/L2; \texttt{saga} is suitable for larger feature spaces).
+\paragraph{Logistic Regression Model}
+Logistic regression is a widely used statistical learning method for modeling the relationship between a binary dependent variable and one or more independent predictors. Unlike linear regression, which assumes a continuous outcome, logistic regression is designed for classification tasks where the target variable is categorical, typically taking values of 0 or 1. The model estimates the probability that a given input belongs to the positive class by applying the logistic function to a linear combination of the predictors. This transformation ensures that predicted probabilities are constrained within the interval $[0, 1]$, making the model interpretable in terms of likelihoods.
+
+Mathematically, the logistic regression model can be expressed as
+\begin{equation}
+    p(X) = \frac{e^{\beta_0 + \beta_1 X}}{1 + e^{\beta_0 + \beta_1 X}},
+\end{equation}
+where $\beta_0$ is the intercept and $\beta_1$ is the coefficient associated with predictor $X$. Model parameters are typically estimated through maximum likelihood estimation (MLE), with the objective of maximizing the likelihood of the observed data \citep{James2021Logistic}.
+
+\paragraph{Hyperparameters of Logistic Regression}
+Multiple hyperparameters are available that can be used to tweak the performance of the model. In this project we have used:
+\begin{itemize}
+    \item The regularization strength, denoted by the $C$ parameter, which is the inverse of the regularization coefficient $\lambda$.
+    \item The penalty function as \texttt{penalty} parameter, which allows to choose the regularisation function to use: $\ell_{1}$ penalty (Lasso) or $\ell_{2}$ penalty (Ridge)
+\end{itemize}
+
+The $\ell_{1}$ penalty (Lasso) enforces sparsity by driving some coefficients exactly to zero, thereby performing feature selection, while the $\ell_{2}$ penalty (Ridge) shrinks coefficients smoothly without eliminating them.
+
+% The effect of these penalties is incorporated into the cost function minimized during training. In the unregularized case, the objective is to maximize the likelihood of the observed data, equivalently minimizing the negative log-likelihood:
+% \begin{equation}
+%     \mathcal{L}(\mathbf{w}, b) = - \sum_{i=1}^{N} \left[ y_i \log P(X_i) + (1-y_i) \log (1-P(X_i)) \right],
+% \end{equation}
+% where $P(X_i)$ is the predicted probability for sample $i$. Regularization adds a penalty term $R(\mathbf{w})$ to this objective, yielding
+% \begin{equation}
+%     \mathcal{L}_{\text{reg}}(\mathbf{w}, b) = \mathcal{L}(\mathbf{w}, b) + \lambda R(\mathbf{w}),
+% \end{equation}
+% with $R(\mathbf{w}) = \|\mathbf{w}\|_{1}$ for $\ell_{1}$ or $R(\mathbf{w}) = \|\mathbf{w}\|_{2}^{2}$ for $\ell_{2}$. In the \texttt{scikit-learn} implementation, $\lambda$ is parameterized as $1/C$.  
+
+
 \subsection{Random Forest}\label{subsec:method-baselines}
+
 \subsection{Support Vector Machine}\label{subsec:method-baselines}
 \subsection{XGBoost}\label{subsec:method-baselines}
 \subsection{Unilateral BiLSTM}\label{subsec:method-deep-learning}
 Explain inversion of X and Y axis.
 \subsection{Bilateral BiLSTM}\label{subsec:method-deep-learning}
 With and without CNN.
-% \subsection{Multimodal Bilateral BiLSTM}\label{subsec:method-deep-learning}
-% Late and early fuse.
 \subsection{MC-DCNN}\label{subsec:method-deep-learning}
 
 \subsection{Hyperparameter tuning}
@@ -543,7 +568,6 @@ Why do we think they are they best?
     \item Unilateral TS with inversion -> See 17.2
     \item Bilateral TS -> See 14.4 v7
     \item As individual channels -> See 17.7 v2
-    % \item Multi modal <-- Decide if to remove
 \end{itemize}
 
 
