@@ -362,30 +362,14 @@ In summary, the correlation and t-test results indicate that several predictors 
 
 
 \subsection{Time-series dataset}\label{subsec:method-ts-dataset}
+The time-series dataset contains the projection of the joint angles and angular velocities of nine joints (left and right foot, ankle, knee, and hip, plus the pelvis) on three axes (X, Y, Z), which have been derived from the 3D marker data of a session. This results in a total of 54 time series per session.
 
-Describe the data in a paragraph to introducie to the next section.
+99\% of the sessions were recorded at 200~Hz and lasted up to 60~seconds, which means that each time series contains up to 12,000 data points. This is too large for direct use. In addition, to use this time-series data in machine learning models or for fair comparisions, each time point must represent the same point in the phase of the movement across all sequences. This is not the case in our datasets due to differences in length, sampling frequency, and starting points for each session. Additionally, there is inter subject variability and intra-session variability to be considered \citep{Chau2005}.
 
-
-% -- Time-series data Exploration:
-% -- Visuals: overlay of 20 random stance cycles per class; Markers, Angles, Velocities, ...
-% -- Analysis of curves
-% -- Extraction (curve-level descriptors)
-
-
-% -- Preparation (decisions fixed before modelling)
-
-% -- Group-aware split policy (runner-level), ensuring no cycle leakage across folds.
-% -- Class-imbalance diagnostics (AUC-PR baseline, per-runner prevalence plots).
-% -- Filtering rules for cycles/sessions (min cycles per session, quality thresholds).
-
-% -- Final feature set(s) to carry forward (e.g., summaries, PC scores, raw curves for DL)
-
-In timeseries data we keep the same definition of injury status and \dots What else do we reuse? \dots
+Alignment methods exist, such as Dynamic Time Warping \citep{Bringmann2023}, that could be used to mitigate this problem, but the same goal can be achieved with methods far less complex, for example by simply segmenting and normalising the data.
 
 \paragraph{Stance phase segmentation and normalisation}
-The dataset contains nine joints (left and right foot, ankle, knee, and hip, plus the pelvis). For each joint, three axes (X, Y, Z) were recorded, and for each axis both joint angles and angular velocities are available. This results in a total of 54 time series per session. Since 99\% of the sessions were recorded at 200~Hz and lasted up to 60~seconds, each time series contains up to 12,000 data points, which is too large for direct use. In addition, for time-series data to be used in machine learning models or compared across sessions, each time point must represent the same phase of the movement across all sequences. This is not the case in our datasets due to differences in length, sampling frequency, and starting points. Although alignment methods such as Dynamic Time Warping \citep{Bringmann2023} could be applied, the same goal can be achieved with less complexity by simply segmenting and normalising the data.
-
-Following the procedure described in the source paper \citep{Ferber2024} and later replicated with good results in \citep{FuentesJimnez2025}, each recording was segmented into the stance phases of the gait cycle. To perform this segmentation, each \gls{channel} was split using the detected gait events: the stance phase starts with touchdown (TD) and ends with toe-off (TO).
+Following the procedure described in the source paper \citep{Ferber2024} and later replicated with good results in \citep{FuentesJimnez2025}, we discard the swing phase of the movement and, segment each recording by the stance phases, that is the time when the foot is touching the ground. To perform this segmentation, each \gls{channel} was split using the the gait events dataset introduced in \ref{subsec:data-extractio}. The stance phase starts with touchdown (TD) and ends with toe-off (TO).
 
 It should be noted that the stance phases of the right and left sides overlap whenever both feet are in contact with the ground. For this reason, different events were used to segment the two sides. Specifically, the events \texttt{L\_TD} and \texttt{L\_TO} were used for left-side joints, while \texttt{R\_TD} and \texttt{R\_TO} were used for right-side joints.
 
@@ -429,7 +413,7 @@ The duration of the stance phase varies even withing a session, figure~\ref{fig:
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\columnwidth]{images/hist_segment_lengths_L_knee_angle.png}
-    \caption[Histogram of Segment Lengths for a session]{Histogram of Segment Lengths for the Left Knee Angle of session 100001_20110531T161051.\label{fig:met-hist-segments}}
+    \caption[Histogram of Segment Lengths for a session]{Histogram of Segment Lengths for the Left Knee Angle of session 100001\_20110531T161051.\label{fig:met-hist-segments}}
 \end{figure}
 
 
@@ -446,28 +430,82 @@ where $x_{\mathrm{dom}}$ is the value for the dominant leg and $x_{\mathrm{nondo
 
 This feature engineering step not only reduced the dimensionality of the predictor set but also introduced meaningful asymmetry measures that may be biomechanically relevant for injury detection. After applying this transformation, VIF values decreased substantially: the number of variables with VIF $< 10$ increased from 10 to 32, and the remaining variables above this threshold showed much lower values than before.  
 
-
-
-<DRAFT>\dots
-For time-series data, curve registration and summarization.
-
-\begin{itemize}
-    \item Transformations and feature extraction
-    \begin{itemize}
-        \item Obtaining a representative curve
-        \begin{itemize}
-        \item Curve registration attempt and actual result
-        \end{itemize}
-    \end{itemize}
-\end{itemize}
-
-
 \subsection{Feature Selection}\label{subsec:method-feature-selection}
-<DRAFT>
-The MRMR algorithm \citep{DING2005} is a powerful algorythm for a data-driven approach to feature selection.
-TODO: Explain in what it consists\dots
-\citet{Phinyomark2017} reports that improvements in classification have been observed consistently in previous studies.
-TODO: Explain how did we use it in this project, what parameters, customization we did and why.
+Two complementary methods were used, one per dataset type: (i) a filter-wrapper approach with Minimum Redundancy-Maximum Relevance (mRMR) to select best performing predictors for the tabular dataset, and (ii) a session-level summarisation of time-series curves to build compact, comparable representations for each joint angle and velocity.
+
+\paragraph{Tabular features: mRMR}
+To reduce redundancy while keeping predictive capacity, mRMR \citep{DING2005} was applied to the training set after preprocessing and feature engineering. The goal of mRMR is to maximise feature-target relevance while minimising redundancy among selected features.
+
+\begin{equation}
+TODO: EXPLAIN-MRMR-METHOD
+\end{equation}
+
+In practice, the MRMR implementation from \texttt{feature\_engine} python package was used with a Random Forest classifier as the relevance model, tuned via 3-fold cross-validation and optimised for ROC-AUC, and Pearson's correlation coefficient was used as redundancy measure.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\columnwidth]{images/hist_segment_lengths_L_knee_angle.png}
+    \caption[Tabular Features by MRMR relative relevance]{Tabular Features by MRMR relative relevance and, in red, the relevance cut-off value. Featured below that threshold were dropped.\label{fig:met-mrm-feat-sel}}
+\end{figure}
+
+The top 40 features were selected reducing the dataset by 53\%. Figure \ref{fig:met-mrm-feat-sel} shows the relative relevance of each feature and the cut-off value used.
+
+\paragraph{Time-series curves: session-level summarisation}
+\citet{Chau2005} acknowledges that inter-sample variation of the gait cycle is common acrross a sample of single-gait cycles and highlights that poor summarisation when combining multiple cycles into one can lead to the cancelation of  of critical chape characteristics and ladmarks. Moreover it proposes the Curve Registration technique \citep{Ramsay1998} as an effective way to maintain key curve features after summarisation.
+
+In \citet{Ramsay1998} curve registration is described as "the process of aligning curves by identifying the timing of certain salient features in the curves", or to put it in other words, to align the time axis of one or more time-series such that each datpoint $x_t$ on time $t$ represents the same landmark as a reference curve. Multiple registration techniques exist. In \citet{Chau2005} and iterative registration proces is discussed based on global registration, and Dynamic Time Warping (DTW). The iterative process is described as: "The basic principle is then to repeatedly align a set of sample functions to an iteratively estimated mean function. The agreement between a sample function and the mean function can be measured by a sum-of-squared error criterion. The goal of registration is to find a set of temporal shift functions such that the evaluation of each sample function at the transformed temporal values minimizes the sum-of-squared error criterion."
+
+In this project, we have implemented an interative Curve Registration with DTW. We used the \texttt{dtw} python library \citet{Giorgino2009} for the estimation of the best alignment between two curves. The pseudo code for the algorithm can be found \ref{alg:curve-registration-dtw}:
+
+\begin{algorithm}
+\caption{Iterative Curve Registration with DTW\label{alg:curve-registration-dtw}}
+\begin{algorithmic}[1]
+\Require curves $\in \mathbb{R}^{N \times T}$, max\_iter $\in \mathbb{N}$, tol $> 0$, step\_pattern
+\Ensure representative $\in \mathbb{R}^{T}$
+\State registered\_curves $\gets$ curves
+\For{$\text{iter} \gets 0$ to $\text{max\_iter} - 1$}
+    \State template $\gets \mathrm{Mean}(\text{registered\_curves}, \text{axis}=0)$ \Comment{$\in \mathbb{R}^{T}$}
+    \State new\_registered $\gets$ empty list
+    \ForAll{curve $\in$ curves}
+        \State alignment $\gets \mathrm{DTW}(\text{curve}, \text{template}, \text{step\_pattern})$
+        \State $(\text{path\_x}, \text{path\_y}) \gets (\text{alignment.index1}, \text{alignment.index2})$
+        \State aligned $\gets \mathbf{0}_{T}$; counts $\gets \mathbf{0}_{T}$
+        \ForAll{$(i, j)$ in zip(path\_x, path\_y)}
+            \State aligned[$j$] $\gets$ aligned[$j$] $+$ curve[$i$]
+            \State counts[$j$] $\gets$ counts[$j$] $+ 1$
+        \EndFor
+        \For{$j \gets 0$ to $T-1$}
+            \If{counts[$j$] $> 0$}
+                \State aligned[$j$] $\gets$ aligned[$j$] / counts[$j$]
+            \EndIf
+        \EndFor
+        \State append(new\_registered, aligned)
+    \EndFor
+    \State prev $\gets$ registered\_curves
+    \State registered\_curves $\gets \mathrm{StackRows}(\text{new\_registered})$ \Comment{$\in \mathbb{R}^{N \times T}$}
+    \If{$\text{iter} > 0$}
+        \State change $\gets \mathrm{Mean}(|\text{registered\_curves} - \text{prev}|)$
+        \If{change $<$ tol}
+            \State \textbf{break}
+        \EndIf
+    \EndIf
+\EndFor
+\State \Return $\mathrm{Mean}(\text{registered\_curves}, \text{axis}=0)$
+\end{algorithmic}
+\end{algorithm}
+
+The resulting representative curve provides a compact description of a runner's movement pattern while preserving temporal structure, and it can be used both for visual inspection and as input features for further analysis.
+
+$TODO ADD FIGURE of Curve registration with different algorithms.$
+
+Multiple algorythms exist for DTW estimation, each with very different results. Through visual inspection we decided to choose XXXXXX as it was the most stable.
+
+Unfortunately, the iterative nature of the algorithm resulted in very poor performance. The execution of the algorithm for the complete set of curves took more than 30 days of execution with the avaialble compute resources even after parallelizing accros 8 cores, which makes this option unfit or the resources requirements of the project. Sadly the mean curve was calcualted as a fast alternative. This took. With more time and resouces, the algorithm could be transformed into a matricial problem with better optimization prossibilites.
+
+$TODO ADD FIGURE of Curve registration compared with mean.$
+
+Overall, this two-pronged strategy reduced dimensionality and redundancy in the tabular space while producing a single time-series representations for each feature in a session.
+
 
 \section{Models}\label{sec:method-models}
 \subsection{Logistic Regression}\label{subsec:method-baselines}
