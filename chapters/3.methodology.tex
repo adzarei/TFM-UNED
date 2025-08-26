@@ -309,8 +309,8 @@ To prepare the variables for training, numerical values were standardised using 
 Categorical variables were converted into sparse one-hot encoded arrays, where each category value is represented as a separate column and encoded with a 1 or 0 to indicate its presence. To mitigate perfect collinearity, where one variable can be predicted exactly from another, reducing the reliability of coefficient estimates and hindering interpretability, the column corresponding to the value \texttt{unknown} was dropped for each categorical variable.
 
 
-\paragraph{Analysis of relationship between predictors and target variable}
-t-distributed Stochastic Neighbor Embedding (t-SNE) is a non-linear dimensionality reduction technique that projects high-dimensional data into a low-dimensional space while preserving local neighbourhood relationships \citep{JMLR:v9:vandermaaten08a}. In this project, t-SNE was applied as an exploratory tool to assess whether natural clustering exists in the data. Seven plots were generated with different values of the hyperparameter \texttt{perplexity}, and the plot that best reflected the data structure was chosen. The range of perplexity values proposed in \citet{JMLR:v9:vandermaaten08a} as typical was used.
+\paragraph{Statistical assessment of predictor-target associations}
+t-distributed Stochastic Neighbor Embedding (t-SNE) is a non-linear dimensionality reduction technique that projects high-dimensional data into a low-dimensional space while preserving local neighbourhood relationships \citep{JMLR:v9:vandermaaten08a}. In this project, t-SNE was applied as an exploratory tool to assess whether natural clustering exists in the data. Seven plots were generated with different values of the hyperparameter \texttt{perplexity}, and the plot that best reflected the data structure was chosen. The range of perplexity values proposed in \citet{JMLR:v9:vandermaaten08a} as typical was used.  
 
 \begin{figure}[ht]
     \centering
@@ -318,18 +318,16 @@ t-distributed Stochastic Neighbor Embedding (t-SNE) is a non-linear dimensionali
     \caption[2D t-SNE plot with perplexity 10]{2D t-SNE plot with perplexity 10. Injured samples appear in blue and uninjured samples in orange.\label{fig:met-tsne-injured}}
 \end{figure}
 
-Figure \ref{fig:met-tsne-injured} shows the 2D t-SNE projection of the cleaned dataset. The embedding suggests that no strong natural groupings exist, as injured and uninjured samples overlap accross most of the plot. A small cluster of uninjured samples is visible in the upper-central region of the plot, but the distance to neighbouring points is limited. This indicates that even the most distinct subgroup is not well separated and that class separation is more complex due to high similarity between classes. It should also be noted that the figure only displays the first two t-SNE components. Additional separation may exist in higher-dimensional representations.
+Figure~\ref{fig:met-tsne-injured} shows the 2D t-SNE projection of the cleaned dataset. The embedding suggests that no strong natural groupings exist, as injured and uninjured samples overlap across most of the plot. A small cluster of uninjured samples is visible in the upper-central region, but the distance to neighbouring points is limited. This indicates that even the most distinct subgroup is not well separated and that class separation is more complex due to high similarity between classes. It should also be noted that the figure only displays the first two t-SNE components. Additional separation may exist in higher-dimensional representations.  
 
-The plot also highlights differences in the relative density of the two classes: injured samples appear more frequently in the lower-left region of the plot, whereas uninjured samples are more common in the upper-center. A separating line could be drawn such that more than 50\% of the uninjured samples fall on one side, suggesting that a simple linear classifier trained on the t-SNE components would perform slightly better than random chance. This indicates that some degree of class separation is present, although it remains weak.
+The plot also highlights differences in the relative density of the two classes: injured samples appear more frequently in the lower-left region, whereas uninjured samples are more common in the upper-centre. A separating line could be drawn such that more than 50\% of the uninjured samples fall on one side, suggesting that a simple linear classifier trained on the t-SNE components would perform slightly better than random chance. This indicates that some degree of class separation is present, although it remains weak.  
 
-<DRAFT>\dots 
-To further analyse the relationship between the predictors and the target variable, we calcualte the mutual informaiton MI, for numerical values we calcualte the pearson correlation and perform a t-test to compare the distributions of the injured and uninjured populations. For categorical data, we perform the ChiSquared test. Table~\ref{tab:met-top-vars-stat-test} shows the top 5 scorers by metric.
-
-MI measures how much knowing a variable reduces uncertainty about the target and it is able to capture non-linear dependencies. Pearson r measures the linear correlation, the sign reflects if the correlation is positive or negative. The t-test compares means of injured and non-injured populations, if $p < 0.05$, the difference between the means is statistically significant. Similarly, the ChiSquared test calculates if the difference in distribution between injured and non-injured populations is statistically significant.
+To complement the visual inspection, statistical tests were performed to quantify the relationship between predictors and the target variable. Mutual information (MI) was computed for all variables, Pearson's correlation coefficient was calculated for numerical predictors, and independent-sample t-tests were applied to compare distributions of injured and uninjured groups. For categorical variables, Chi-squared tests were performed. Table~\ref{tab:met-top-vars-stat-test} shows the top-scoring predictors under each metric.  
+ 
 
 \begin{table}[htbp]
     \centering
-    \caption{Top Predictors of Injury Status Across Statistical Tests. \label{tab:met-top-vars-stat-test}}
+    \caption{Top predictors of injury status across statistical tests. \label{tab:met-top-vars-stat-test}}
     \begin{tabular}{lll}
         \hline
         \textbf{Metric} & \textbf{Predictor} & \textbf{Score} \\
@@ -361,7 +359,8 @@ MI measures how much knowing a variable reduces uncertainty about the target and
     \end{tabular}
 \end{table}
 
-TODO: Explain patterns. Quick summary: In summary t-test and correlation show that, although the value of correlation is small, there is a statistically significant difference between both classes. Gender as expected is not statistically significant. Interesting too see that variables other than the ones with highest correlatin show in MI. This is because MI captures non-linear relationships. But the highest MI is set to variables that we know, do not have causality with the target varible, which means that the model may not generalise well if it focuses on those variables.
+In summary, the correlation and t-test results indicate that several predictors show statistically significant differences between injured and uninjured populations, although this differences are small. Gender, as expected, was not statistically significant. Interestingly, variables highlighted by MI did not always overlap with those identified by correlation or t-tests, since MI is able to capture non-linear dependencies. However, some of the variables with the highest MI scores (i.e., weight, height) are unlikely to be causal predictors of injury status. This suggests that models focusing heavily on such variables may fail to generalise well and should be taken into consideration when addressing explainability of the models.
+
 
 % Should I add this? not for now....
 % \begin{itemize}
@@ -442,8 +441,8 @@ The duration of the stance phase varies between subjects and there strongly nega
 
 \subsection{Feature Engineering}\label{subsec:method-feature-engineering}
 <DRAFT>\dots 
-For tabular data, we have seen very high values of VIF which indicate collinearity. This is common on biomechanics domain because we have variables that describe the same movement (i.e. Stance time inversely proportional to speed and stride length). By plotting a correlation matrix for numerical variables we see that high absolute correlation exists for many variables. When those variables with an absolute correlation higher than 0.9 are dropped, we see a reduction of the VIF  values, though still high. There are only 10 variables below VIF = 10.
-
+For tabular data, we have seen very high values of VIF which indicate collinearity. This is common on biomechanics domain because we have variables that describe the same movement (i.e. Stance time inversely proportional to speed and stride length). By plotting a correlation matrix for numerical variables we see that high absolute correlation exists for many variables. When we reevaluating collinearity without the seven variables with an absolute correlation higher than 0.9, we see a big drop in VIF  values. VIF, though still very high, is reacting, as epxected, to the removal of highly linearly-correlated features.
+ 
 To address collinearity, we reduce redundant variables by retaining only one variable from each left-right pair. Specifically, we keep the variable corresponding to the dominant leg. If the dominant leg is not reported or it is ambidextrous, we default to the right side, as it is the most prevalent in the dataset. To preserve information from the non-dominant side, we also compute the difference between both sides as an additional variable. The difference equation is given by:
 \begin{equation}
     x_{\mathrm{diff}} = x_{\mathrm{dom}} - x_{\mathrm{nondom}}
