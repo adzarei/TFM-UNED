@@ -512,8 +512,11 @@ $TODO ADD FIGURE of Curve registration compared with mean.$
 Overall, this two-pronged strategy reduced dimensionality and redundancy in the tabular space while producing a single time-series representations for each feature in a session.
 
 
-\section{Models}\label{sec:method-models}
+\section{Modelling}\label{sec:method-models}
+
 \subsection{Logistic Regression}\label{subsec:method-baselines}
+% Logistic Regression
+Logistic Regression models the log-odds of the target as a linear combination of the inputs. A sigmoid converts the score into a probability. This gives a simple, interpretable baseline that reacts to scaled feature magnitudes. The 40 mRMR-selected features were standardised, and class imbalance was addressed using class weights. The main hyperparameters were: inverse regularisation strength \texttt{C} ($10^{-3}$ to $10^{3}$), penalty (\texttt{L1} or \texttt{L2}), and solver (\texttt{liblinear} or \texttt{saga}). The solver-penalty pair must be compatible (e.g., \texttt{liblinear} supports L1/L2; \texttt{saga} is suitable for larger feature spaces).
 \subsection{Random Forest}\label{subsec:method-baselines}
 \subsection{Support Vector Machine}\label{subsec:method-baselines}
 \subsection{XGBoost}\label{subsec:method-baselines}
@@ -521,21 +524,28 @@ Overall, this two-pronged strategy reduced dimensionality and redundancy in the 
 Explain inversion of X and Y axis.
 \subsection{Bilateral BiLSTM}\label{subsec:method-deep-learning}
 With and without CNN.
-\subsection{Multimodal Bilateral BiLSTM}\label{subsec:method-deep-learning}
-Late and early fuse.
+% \subsection{Multimodal Bilateral BiLSTM}\label{subsec:method-deep-learning}
+% Late and early fuse.
 \subsection{MC-DCNN}\label{subsec:method-deep-learning}
 
+\subsection{Hyperparameter tuning}
+Explain train/test/validation set split.
+Explain cross validation for Hyperparameter tuning.
+
+Summary of hyperparameters per model and the final best hyperparams.
+Why do we think they are they best?
+
+\subsection{Dataset configuration}
 \begin{itemize}
-    \item Add special tuning for class imbalance, etc...
-    \item Architecture choices (hyperparameters, etc...)
-    \item Explain Different data configurations:
-    \begin{itemize}
-        \item Classical models with Base data
-        \item Classical models with all dominant features
-        \item Classical models with 40 most important features
-        \item Unilateral TS with inversion vs Bilateral TS vs Multi modal.
-    \end{itemize}
+    \item Classical models with Base data -> See 14.6
+    \item Classical models with all dominant features ->  See 24.8
+    \item Classical models with 40 most important features -> See 14.7
+    \item Unilateral TS with inversion -> See 17.2
+    \item Bilateral TS -> See 14.4 v7
+    \item As individual channels -> See 17.7 v2
+    % \item Multi modal <-- Decide if to remove
 \end{itemize}
+
 
 \section{Evaluation Protocol}\label{sec:method-evaluation-protocol}
 
@@ -571,6 +581,8 @@ Late and early fuse.
     \item Group aware Cross-validation, nested cross-validation, ...
     \item Early stoping and tunning strategy.
 \end{itemize}
+
+
 
 
 \section{Explainability}\label{sec:method-explainability}
