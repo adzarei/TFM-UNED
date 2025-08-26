@@ -502,9 +502,9 @@ The resulting representative curve provides a compact description of a runner's 
 
 $TODO ADD FIGURE of Curve registration with different algorithms.$
 
-Multiple algorithms exist for DTW estimation, each with very different results. Through visual inspection we decided to choose XXXXXX as it was the most stable.
+Multiple algorythms exist for DTW estimation, each with very different results. Through visual inspection we decided to choose the Rabiner-Juang \citep{Rabiner1993} step pattern configured with family $VI$ and subtype $C$ \footnote{For a detailed description of available step patterns in DTW, see \url{https://search.r-project.org/CRAN/refmans/dtw/html/stepPattern.html}.} as it was the most stable.
 
-Unfortunately, the iterative nature of the algorithm resulted in very poor performance. The execution of the algorithm for the complete set of curves took more than 30 days of execution with the available compute resources even after parallelizing across 8 cores, which makes this option unfit or the resources requirements of the project. Sadly the mean curve was calculated as a fast alternative. This took. With more time and resources, the algorithm could be transformed into a matrix problem with better optimization possibilities.
+Unfortunately, the iterative nature of the algorithm resulted in poor processing performance. The execution of the algorithm for the complete set of curves took more than 30 days of execution with the avaialble compute resources even after parallelizing accros 8 cores, which makes this option unfit or the resources requirements of the project. Sadly the mean curve was calcualted as a fast alternative. This took. With more time and resouces, the algorithm could be transformed into a matricial problem with better optimization prossibilites.
 
 $TODO ADD FIGURE of Curve registration compared with mean.$
 
