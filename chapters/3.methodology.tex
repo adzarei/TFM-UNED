@@ -185,12 +185,6 @@ In addition to the time-series data, the script also generates the a of 33 descr
 % TODO: End with a summary of the tabular and time-series data that we have extracted?
 
 \section{Exploratory Data Analysis (EDA)}\label{sec:method-eda}
-% -- Exploration → Extraction → Preparation, with concrete checks and figures:
-% -- Tabular data Exploration (sanity and distributions)
-% -- Dataset inventory (sessions per runner, class prevalence per runner, cycles/session).
-% -- Missing-ness map (metadata \& signals); strategy preview (drop/impute).
-% -- Outliers: per-joint angle/velocity ranges, z-score >3 heat-map by runner (flag sensors/markers).
-% -- Dimensionality previews: PCA/t-SNE to see separability.
 As discussed on the previous section, we have two main types of data available:
 
 \begin{itemize}
@@ -324,7 +318,6 @@ The plot also highlights differences in the relative density of the two classes:
 
 To complement the visual inspection, statistical tests were performed to quantify the relationship between predictors and the target variable. Mutual information (MI) was computed for all variables, Pearson's correlation coefficient was calculated for numerical predictors, and independent-sample t-tests were applied to compare distributions of injured and uninjured groups. For categorical variables, Chi-squared tests were performed. Table~\ref{tab:met-top-vars-stat-test} shows the top-scoring predictors under each metric.  
  
-
 \begin{table}[htbp]
     \centering
     \caption{Top predictors of injury status across statistical tests. \label{tab:met-top-vars-stat-test}}
@@ -369,6 +362,9 @@ In summary, the correlation and t-test results indicate that several predictors 
 
 
 \subsection{Time-series dataset}\label{subsec:method-ts-dataset}
+
+Describe the data in a paragraph to introducie to the next section.
+
 
 % -- Time-series data Exploration:
 % -- Visuals: overlay of 20 random stance cycles per class; Markers, Angles, Velocities, ...
@@ -428,28 +424,32 @@ Table \ref{tab:met-ts-vars} lists all time-series variables available per sessio
     \end{tabular}
 \end{table}
 
-The duration of the stance phase varies between subjects and there strongly negatively correlated to running speed, for that reason we will normalise all time-series to the same number of data points. It is standard practice to normalise biomechanical kinematic data to 101 data points \citep{Crane2010,FuentesJimnez2025}, representing the percentage of the stance phase from 0\% to 100\% inclusive.
+The duration of the stance phase varies even withing a session, figure~\ref{fig:met-hist-segments} shows the distribution of segment duration within a session, which ranges from 62 to 67 frames. To be able to compare segments pairly, it is standard practice to normalise biomechanical kinematic data to 101 data points \citep{Crane2010,FuentesJimnez2025}, representing the percentage of the stance phase from 0\% to 100\% inclusive. When normalising the segments, linear interpolation is used.
 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\columnwidth]{images/hist_segment_lengths_L_knee_angle.png}
+    \caption[Histogram of Segment Lengths for a session]{Histogram of Segment Lengths for the Left Knee Angle of session 100001_20110531T161051.\label{fig:met-hist-segments}}
+\end{figure}
 
-% TODO: Maybe we keep outliers and filering here?
-
--- Time-series:
-    -- Extraction of angles and angular velocities as mentioned in literature.
-    -- Extraction of events
-    -- Combination of events and TS
-    -- Cycle Segmentation and normalization -> Reference papers either here or in SOTA.
 
 \subsection{Feature Engineering}\label{subsec:method-feature-engineering}
-<DRAFT>\dots 
-For tabular data, we have seen very high values of VIF which indicate collinearity. This is common on biomechanics domain because we have variables that describe the same movement (i.e. Stance time inversely proportional to speed and stride length). By plotting a correlation matrix for numerical variables we see that high absolute correlation exists for many variables. When we reevaluating collinearity without the seven variables with an absolute correlation higher than 0.9, we see a big drop in VIF  values. VIF, though still very high, is reacting, as epxected, to the removal of highly linearly-correlated features.
- 
-To address collinearity, we reduce redundant variables by retaining only one variable from each left-right pair. Specifically, we keep the variable corresponding to the dominant leg. If the dominant leg is not reported or it is ambidextrous, we default to the right side, as it is the most prevalent in the dataset. To preserve information from the non-dominant side, we also compute the difference between both sides as an additional variable. The difference equation is given by:
+High collinearity was observed within the tabular dataset, which is expected in the biomechanics domain since the variables we work with are usually describing the same movement or posture (e.g., stance time is inversely proportional to running speed and strongly related to stride length). A correlation matrix confirmed that several variables were highly correlated, and initial variance inflation factor (VIF) values were extremely high.  
+
+To reduce redundancy and at the same time generate more informative predictors, new features were engineered based on the symmetry of the lower limbs. For each left-right pair of variables, only the measurement from the dominant leg was retained. When the dominant leg was not reported or was marked as ambidextrous, the right side was selected by default, as it is the most common case in the dataset.  
+
+In addition, to preserve information from the non-dominant side, new **difference variables** were created to capture asymmetries between the two legs. These were defined as:  
 \begin{equation}
     x_{\mathrm{diff}} = x_{\mathrm{dom}} - x_{\mathrm{nondom}}
 \end{equation}
-where $x_{\mathrm{diff}}$ is the difference variable, $x_{\mathrm{dom}}$ is the value for the dominant leg, and $x_{\mathrm{nondom}}$ is the value for the non-dominant leg.
+where $x_{\mathrm{dom}}$ is the value for the dominant leg and $x_{\mathrm{nondom}}$ is the value for the non-dominant leg.  
 
-The VIF is now reduced significatly, going from only 10 variables below VIF = 10 to 32 and those variables over 10 have a value significatly less than before the change.
+This feature engineering step not only reduced the dimensionality of the predictor set but also introduced meaningful asymmetry measures that may be biomechanically relevant for injury detection. After applying this transformation, VIF values decreased substantially: the number of variables with VIF $< 10$ increased from 10 to 32, and the remaining variables above this threshold showed much lower values than before.  
+
+
+
+<DRAFT>\dots
+For time-series data, curve registration and summarization.
 
 \begin{itemize}
     \item Transformations and feature extraction
@@ -460,6 +460,7 @@ The VIF is now reduced significatly, going from only 10 variables below VIF = 10
         \end{itemize}
     \end{itemize}
 \end{itemize}
+
 
 \subsection{Feature Selection}\label{subsec:method-feature-selection}
 <DRAFT>
