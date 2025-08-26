@@ -502,9 +502,10 @@ The resulting representative curve provides a compact description of a runner's 
 
 $TODO ADD FIGURE of Curve registration with different algorithms.$
 
-Multiple algorythms exist for DTW estimation, each with very different results. Through visual inspection we decided to choose the Rabiner-Juang \citep{Rabiner1993} step pattern configured with family $VI$ and subtype $C$ \footnote{For a detailed description of available step patterns in DTW, see \url{https://search.r-project.org/CRAN/refmans/dtw/html/stepPattern.html}.} as it was the most stable.
+Several algorithms are available for DTW estimation, each producing markedly different results. After visual inspection, the Rabiner-Juang step pattern \citep{Rabiner1993}, configured with family~$VI$ and subtype~$C$\footnote{A detailed description of available step patterns in DTW can be found in the documentation of the R version of the library: \url{https://search.r-project.org/CRAN/refmans/dtw/html/stepPattern.html}.}, was selected as the most stable option.  
 
-Unfortunately, the iterative nature of the algorithm resulted in poor processing performance. The execution of the algorithm for the complete set of curves took more than 30 days of execution with the avaialble compute resources even after parallelizing accros 8 cores, which makes this option unfit or the resources requirements of the project. Sadly the mean curve was calcualted as a fast alternative. This took. With more time and resouces, the algorithm could be transformed into a matricial problem with better optimization prossibilites.
+However, the iterative nature of the algorithm resulted in very poor processing performance. Executing DTW across the full set of curves required more than 30~days of computation on the available resources, even when parallelised across 8~cores. With this computational cost the approach is impractical within the resource constraints of the project. As an alternative, a simple mean curve was computed as a faster approximation. Although less precise, this approach produced results in line with project requirements. With additional time and computational resources, the DTW procedure could potentially be reformulated into a matrix-based optimisation problem, which would improve scalability and efficiency.
+
 
 $TODO ADD FIGURE of Curve registration compared with mean.$
 
