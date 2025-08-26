@@ -459,25 +459,28 @@ In \citet{Ramsay1998} curve registration is described as "the process of alignin
 In this project, we have implemented an interative Curve Registration with DTW. We used the \texttt{dtw} python library \citet{Giorgino2009} for the estimation of the best alignment between two curves. The pseudo code for the algorithm can be found \ref{alg:curve-registration-dtw}:
 
 \begin{algorithm}
-\caption{Iterative Curve Registration with DTW\label{alg:curve-registration-dtw}}
+\caption{Iterative DTW-based Curve Registration}
 \begin{algorithmic}[1]
 \Require curves $\in \mathbb{R}^{N \times T}$, max\_iter $\in \mathbb{N}$, tol $> 0$, step\_pattern
-\Ensure representative $\in \mathbb{R}^{T}$
+\Ensure representative $\in \mathbb{R}^T$
 \State registered\_curves $\gets$ curves
 \For{$\text{iter} \gets 0$ to $\text{max\_iter} - 1$}
     \State template $\gets \mathrm{Mean}(\text{registered\_curves}, \text{axis}=0)$ \Comment{$\in \mathbb{R}^{T}$}
     \State new\_registered $\gets$ empty list
     \ForAll{curve $\in$ curves}
-        \State alignment $\gets \mathrm{DTW}(\text{curve}, \text{template}, \text{step\_pattern})$
-        \State $(\text{path\_x}, \text{path\_y}) \gets (\text{alignment.index1}, \text{alignment.index2})$
-        \State aligned $\gets \mathbf{0}_{T}$; counts $\gets \mathbf{0}_{T}$
+        \State alignment $\gets \mathrm{DTW}(\text{curve}, \text{template})$
+        \State $\text{path\_x} \gets \text{alignment.index1}$ \Comment{Indices in \textbf{curve}...}
+        \State $\text{path\_y} \gets \text{alignment.index2}$ \Comment{... mapped to indices in \textbf{template}.}
+        \State aligned $\gets \mathbf{0}_T$; counts $\gets \mathbf{0}_T$
         \ForAll{$(i, j)$ in zip(path\_x, path\_y)}
-            \State aligned[$j$] $\gets$ aligned[$j$] $+$ curve[$i$]
+            \State aligned[$j$] $\gets$ aligned[$j$] $+$ curve[$i$] \Comment{Accumulate aligned \textbf{curve} values.}
             \State counts[$j$] $\gets$ counts[$j$] $+ 1$
         \EndFor
         \For{$j \gets 0$ to $T-1$}
-            \If{counts[$j$] $> 0$}
-                \State aligned[$j$] $\gets$ aligned[$j$] / counts[$j$]
+            \If{counts[$j$] $>$ 0}
+                \State aligned[$j$] $\gets$ aligned[$j$] / counts[$j$] \Comment{Average aligned points.}
+            \Else
+                \State aligned[$j$] $\gets 0$
             \EndIf
         \EndFor
         \State append(new\_registered, aligned)
