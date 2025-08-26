@@ -325,6 +325,8 @@ The plot also highlights differences in the relative density of the two classes:
 <DRAFT>\dots 
 To further analyse the relationship between the predictors and the target variable, we calcualte the mutual informaiton MI, for numerical values we calcualte the pearson correlation and perform a t-test to compare the distributions of the injured and uninjured populations. For categorical data, we perform the ChiSquared test. Table~\ref{tab:met-top-vars-stat-test} shows the top 5 scorers by metric.
 
+MI measures how much knowing a variable reduces uncertainty about the target and it is able to capture non-linear dependencies. Pearson r measures the linear correlation, the sign reflects if the correlation is positive or negative. The t-test compares means of injured and non-injured populations, if $p < 0.05$, the difference between the means is statistically significant. Similarly, the ChiSquared test calculates if the difference in distribution between injured and non-injured populations is statistically significant.
+
 \begin{table}[htbp]
     \centering
     \caption{Top Predictors of Injury Status Across Statistical Tests. \label{tab:met-top-vars-stat-test}}
@@ -353,12 +355,13 @@ To further analyse the relationship between the predictors and the target variab
         & dom\_leg\_hip\_ext\_peak\_angle & $2.62 \times 10^{-9}$ \\
         & dom\_leg\_pelvic\_drop\_peak\_vel & $1.21 \times 10^{-8}$ \\
         \hline
-        \multicolumn{3}{l}{\textit{Top 2 by Chi$^2$ p-value}} \\
+        \multicolumn{3}{l}{\textit{Top 1 by Chi$^2$ p-value}} \\
         & gender & 0.193481 \\
-        & id & 0.488958 \\
         \hline
     \end{tabular}
 \end{table}
+
+TODO: Explain patterns. Quick summary: In summary t-test and correlation show that, although the value of correlation is small, there is a statistically significant difference between both classes. Gender as expected is not statistically significant. Interesting too see that variables other than the ones with highest correlatin show in MI. This is because MI captures non-linear relationships. But the highest MI is set to variables that we know, do not have causality with the target varible, which means that the model may not generalise well if it focuses on those variables.
 
 % Should I add this? not for now....
 % \begin{itemize}
@@ -441,79 +444,90 @@ The duration of the stance phase varies between subjects and there strongly nega
 <DRAFT>\dots 
 For tabular data, we have seen very high values of VIF which indicate collinearity. This is common on biomechanics domain because we have variables that describe the same movement (i.e. Stance time inversely proportional to speed and stride length). By plotting a correlation matrix for numerical variables we see that high absolute correlation exists for many variables. When those variables with an absolute correlation higher than 0.9 are dropped, we see a reduction of the VIF  values, though still high. There are only 10 variables below VIF = 10.
 
-Seeing the effect of removing collinearity, we decide to keep only the dominant pair from left and right. And to not loose information of the non-dominant side completely, extract the difference between both sides as a varible. The VIF is now reduced significatly, going from only 10 variables below VIF = 10 to 32 and those variables over 10 have a value significatly less than before the change.
+To address collinearity, we reduce redundant variables by retaining only one variable from each left-right pair. Specifically, we keep the variable corresponding to the dominant leg. If the dominant leg is not reported or it is ambidextrous, we default to the right side, as it is the most prevalent in the dataset. To preserve information from the non-dominant side, we also compute the difference between both sides as an additional variable. The difference equation is given by:
+\begin{equation}
+    x_{\mathrm{diff}} = x_{\mathrm{dom}} - x_{\mathrm{nondom}}
+\end{equation}
+where $x_{\mathrm{diff}}$ is the difference variable, $x_{\mathrm{dom}}$ is the value for the dominant leg, and $x_{\mathrm{nondom}}$ is the value for the non-dominant leg.
 
+The VIF is now reduced significatly, going from only 10 variables below VIF = 10 to 32 and those variables over 10 have a value significatly less than before the change.
 
-
-
--- Transformations and feature extraction
-    -- Dominant Leg -> VIF reduction
-    -- Obtaining a representative curve
-        -- Curve registration attempt and Actual result
-
--- Feature selection:
-    -- MRMR for feature selection
+\begin{itemize}
+    \item Transformations and feature extraction
+    \begin{itemize}
+        \item Obtaining a representative curve
+        \begin{itemize}
+        \item Curve registration attempt and actual result
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
 
 \subsection{Feature Selection}\label{subsec:method-feature-selection}
--- Transformations and feature extraction
-    -- Dominant Leg -> VIF reduction
-    -- Obtaining a representative curve
-        -- Curve registration attempt and Actual result
-
--- Feature selection:
-    -- MRMR for feature selection
-
-% \subsection{Tabular Data}\label{subsec:method-tabular-data}
-% -- Correlations mutual information, ...
-% -- Collinearity: PCA, VIF, ...
-% -- Left-right features - Dominant leg extraction
-% -- Collinearity reduction
-
-% \subsection{Timeseries Data}\label{subsec:method-timeseries-data}
-% -- Segmentation: TD/TO, stance, swing, ...
-% -- Normalisation/standardisation
-
-\subsection{Final Feature Sets}\label{subsec:method-final-feature-sets}
--- Summary of the feature by dataset.
+<DRAFT>
+The MRMR algorithm \citep{DING2005} is a powerful algorythm for a data-driven approach to feature selection.
+TODO: Explain in what it consists\dots
+\citet{Phinyomark2017} reports that improvements in classification have been observed consistently in previous studies.
+TODO: Explain how did we use it in this project, what parameters, customization we did and why.
 
 \section{Models}\label{sec:method-models}
-\subsection{Baseline (Tabular)}\label{subsec:method-baselines}
-\subsection{Deep Learning}\label{subsec:method-deep-learning}
--- Unilateral LSTM
--- Bilateral LSTM
--- Multimodal
--- TMAG
--- MC DCNN
+\subsection{Logistic Regression}\label{subsec:method-baselines}
+\subsection{Random Forest}\label{subsec:method-baselines}
+\subsection{Support Vector Machine}\label{subsec:method-baselines}
+\subsection{XGBoost}\label{subsec:method-baselines}
+\subsection{Unilateral BiLSTM}\label{subsec:method-deep-learning}
+Explain inversion of X and Y axis.
+\subsection{Bilateral BiLSTM}\label{subsec:method-deep-learning}
+With and without CNN.
+\subsection{Multimodal Bilateral BiLSTM}\label{subsec:method-deep-learning}
+Late and early fuse.
+\subsection{MC-DCNN}\label{subsec:method-deep-learning}
 
--- Add special tuning for class imbalance, etc...
--- Architecture choices (hyperparameters, etc...)
--- class imbalance, oversampling, etc... TBD Where to put this? -> Explain in the models that used it. We will give results for each option individually.
+\begin{itemize}
+    \item Add special tuning for class imbalance, etc...
+    \item Architecture choices (hyperparameters, etc...)
+    \item Explain Different data configurations:
+    \begin{itemize}
+        \item Classical models with Base data
+        \item Classical models with all dominant features
+        \item Classical models with 40 most important features
+        \item Unilateral TS with inversion vs Bilateral TS vs Multi modal.
+    \end{itemize}
+\end{itemize}
 
 \section{Evaluation Protocol}\label{sec:method-evaluation-protocol}
--- The blueprint before we run anything.
--- Questions/Hipothesis, grouping, leakage, validation scheme (group-aware train/val/test)
--- Evaluation protocol -> Measurements, statistics. How are we scoring the experimentriment. (Primary, Secondary metric, Threshold rule, ...).
--- Significance Tests. How do we know something is "Better" (DeLong's test)?
--- CI 95 \%
--- Research questions (RQs), validation scheme (group-aware train/val/test), splits, primary/secondary metrics.
--- Justify the choices , but do not present any results yet...
+
+\begin{itemize}
+    \item The blueprint before we run anything.
+    \item Formulate research questions and hypotheses. -> All models perform the same (Reject hypothesis with p < 0.05)
+    \item Train, Test and Validation set split by sub_id - group aware split to address potential data leakage. At the cost of not exactly respecting the injured/non-injured stratification. Still evry similar.
+    \item Establish the evaluation protocol, including:
+    \begin{itemize}
+        \item Primary and secondary metrics
+        \item Threshold rule for best threshold.
+    \end{itemize}
+    \item Specify significance tests to assess whether differences are meaningful: DeLong's test
+    \item Calculate 95\% confidence intervals for key metrics.
+    \item Justify the choices , but do not present any results yet...
+\end{itemize}
 
 % \subsection{Evaluation Metrics}\label{subsec:method-evaluation-metrics}
 % - AUC ROC + PR for class imbalance + Macro F1 score for threshold.
 
 \subsection{Training and Validation Strategy}\label{subsec:method-training-validation-strategy}
--- Train, test, validation split.
--- Group-aware split policy (runner-level), ensuring no cycle leakage across folds.
--- Class-imbalance diagnostics (AUC-PR baseline, prevalence).
+
+\begin{itemize}
+    \item Train, test, validation split.
+    \item Group-aware split policy (runner-level), ensuring no cycle leakage across folds.
+    \item Class-imbalance diagnostics (AUC-PR baseline, prevalence).
+\end{itemize}
 
 \subsection{Hyperparameter Tuning}\label{subsec:method-hyperparameter-tuning}
--- Grid search, random search, ...
--- Cross-validation, nested cross-validation, ...
--- Early stopping, ...
--- Hyperparameter tuning strategy.
 
-
-% TODO: Add Traing and use of Cross Validation
+\begin{itemize}
+    \item Grid search,Hyperband tuner, ...
+    \item Group aware Cross-validation, nested cross-validation, ...
+    \item Early stoping and tunning strategy.
+\end{itemize}
 
 
 \section{Explainability}\label{sec:method-explainability}
@@ -522,14 +536,18 @@ Seeing the effect of removing collinearity, we decide to keep only the dominant 
 To get the most out of this work, we used both intrinsic methods and Explainable AI (XAI) techniques, as in \cite{FuentesJimnez2025}, to make the model's decisions more transparent.
 
 \subsection{Intrinsic Explainability}\label{subsec:method-intrinsic-explainability}
-- Random Forest, linear regression, etc...
--- Pros, Cons, etc..
--- what affects them?
+\begin{itemize}
+    \item Random Forest, linear regression, etc...
+    \item What they are and how are they calcualted
+    \item How much can we trust them
+\end{itemize}
 
 \subsection{Post-hoc Explainability}\label{subsec:method-posthoc-explainability}
--- SHAPs, Saliency maps, feature permutation?
-
-
+\begin{itemize}
+    \item SHAPs, Saliency maps, feature permutation?
+    \item What they are and how are they calcualted
+    \item How much can we trust them
+\end{itemize}
 
 % \section{Reproducibility Assets}\label{sec:method-reproducibility}
 % -- code repository structure, libraries, etc...
