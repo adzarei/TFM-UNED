@@ -562,12 +562,42 @@ The splits of every partiion were stratified by injury status to preserve the cl
 \end{table}
 
 
-\paragraph{Cross-validation within training}
-Within the training set, a $k$-fold group-aware cross-validation procedure was employed to improve the reliability of model evaluation and to mitigate variance due to partitioning. Specifically, \texttt{k=5} folds were used, and splits were stratified by the injury status label while ensuring that all sessions from the same subject remained in the same fold.
+\paragraph{Cross-validation within training in the tabular pipeline}
+During hyperparameter tuning in the tabular model pipeline, $k$-fold cross-validation was used with splits taken fro the training set to improve the reliability of model evaluation and to mitigate variance due to partitioning. Specifically, \texttt{k=5} folds were used. Splits were group-aware and stratified by the injury status label like teh training, test and validation set to prevent data leakage.
 
 \paragraph{Evaluation protocol}
-Performance metrics were calculated on the validation folds during model selection and hyperparameter tuning. Once the best configuration was identified, the model was retrained on the entire training+validation data and finally evaluated once on the held-out test set. This protocol ensured that the reported test scores reflect generalisation to unseen subjects.
+The Area Under the Receiver Operating Characteristic curve (\texttt{AUC ROC}) was used as the primary evaluation metric during both hyperparameter tuning and cross-model evaluation. This metric represents the area under the curve obtained by plotting the True Positive Rate (TPR) against the False Positive Rate (FPR) across all possible thresholds. Formally:  
 
+\begin{equation}
+    \mathrm{TPR}(t)=\frac{\mathrm{TP}(t)}{\mathrm{TP}(t)+\mathrm{FN}(t)},\quad
+    \mathrm{FPR}(t)=\frac{\mathrm{FP}(t)}{\mathrm{FP}(t)+\mathrm{TN}(t)},
+\end{equation}
+
+\begin{equation}
+    \mathrm{AUC}_{\mathrm{ROC}}
+    = \sum_{i=1}^{m-1} \big(\mathrm{FPR}_{i+1}-\mathrm{FPR}_{i}\big)\,
+    \frac{\mathrm{TPR}_{i+1}+\mathrm{TPR}_{i}}{2}.
+\end{equation}
+
+Here $TP(t)$, $TN(t)$, $FP(t)$, and $FN(t)$ represent the number of true positives, true negatives, false positives, and false negatives at a threshold $t$, respectively. $\mathrm{AUC}_{\mathrm{ROC}}$ was approximated using the trapezoidal rule on $m$ thresholds, typically corresponding to the unique scores returned by the model. Since \texttt{AUC ROC} is insensitive to class prevalence, it is suitable for comparing model performance across the slightly different class distributions that result from group-aware splits.  
+
+The Area Under the Precision-Recall curve (\texttt{AUC PR}) and the macro-averaged F1-score (\texttt{F1-Macro}) were used as secondary metrics. Precision and recall are defined as:  
+
+\begin{equation}
+    \mathrm{Prec}(t)=\frac{\mathrm{TP}(t)}{\mathrm{TP}(t)+\mathrm{FP}(t)},\quad
+    \mathrm{Rec}(t)=\frac{\mathrm{TP}(t)}{\mathrm{TP}(t)+\mathrm{FN}(t)}.
+\end{equation}
+
+\begin{equation}
+    \mathrm{AUC}_{\mathrm{PR}}
+    = \sum_{i=1}^{m-1} \big(\mathrm{Rec}_{i+1}-\mathrm{Rec}_i\big)\,\frac{\mathrm{Prec}_{i+1}+\mathrm{Prec}_i}{2}.
+\end{equation}
+
+\begin{equation}
+    \mathrm{F1}_{\mathrm{macro}}=\frac{1}{K}\sum_{k=1}^{K}\mathrm{F1}_k.
+\end{equation}
+
+In these equations, $\mathrm{Prec}(t)$ and $\mathrm{Rec}(t)$ denote precision and recall at threshold $t$, $\mathrm{AUC}_{\mathrm{PR}}$ is computed with the trapezoidal rule on $m$ thresholds, and $K$ is the number of classes (two in this case: injured and uninjured). Unlike \texttt{AUC ROC}, both \texttt{AUC PR} and \texttt{F1-Macro} are sensitive to class prevalence. Therefore, they are not directly comparable across different pipelines (e.g., tabular versus deep learning), but they provide useful complementary insight when comparing runs of the same model or models within the same pipeline.
 
 \subsection{Logistic Regression Model}\label{subsec:method-log-reg}
 Logistic regression is a widely used statistical learning method for modeling the relationship between a binary dependent variable and one or more independent predictors. Unlike linear regression, which assumes a continuous outcome, logistic regression is designed for classification tasks where the target variable is categorical, typically taking values of 0 or 1. The model estimates the probability that a given input belongs to the positive class by applying the logistic function to a linear combination of the predictors. This transformation ensures that predicted probabilities are constrained within the interval $[0, 1]$, making the model interpretable in terms of likelihoods.
