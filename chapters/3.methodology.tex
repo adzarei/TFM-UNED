@@ -544,6 +544,20 @@ The $\ell_{1}$ penalty (Lasso) enforces sparsity by driving some coefficients ex
 
 
 \subsection{Random Forest}\label{subsec:method-baselines}
+Random forests are ensemble learning methods that extend the idea of decision trees by combining a large number of them in order to improve predictive accuracy and control overfitting \citep{Breiman2001}. Each tree in the ensemble is constructed from a bootstrap sample of the training data, and at each split a random subset of predictors is considered. This strategy reduces correlation among trees and increases the overall robustness of the model. The final prediction is obtained by aggregating the outputs of all trees, typically through majority voting in classification tasks. Random forests are non-parametric, can model complex non-linear relationships, and naturally provide measures of variable importance, which makes them particularly attractive for high-dimensional datasets such as biomechanical measurements.
+
+\paragraph{Hyperparameters of Random Forest}
+Several hyperparameters influence the behavior and generalization ability of random forests. In this project, the following were explored:
+\begin{itemize}
+    \item \texttt{n\_estimators}: the number of trees in the forest. Increasing this value generally improves performance but comes at the cost of higher computational requirements.
+    \item \texttt{max\_depth}: the maximum depth of each tree. Limiting tree depth helps control overfitting, while unlimited depth (\texttt{None}) allows trees to fully grow.
+    \item \texttt{min\_samples\_split}: the minimum number of samples required to split an internal node. Larger values result in shallower trees and may improve generalization.
+    \item \texttt{min\_samples\_leaf}: the minimum number of samples required to be at a leaf node. Increasing this value creates smoother decision boundaries by preventing overly specific leaves.
+    \item \texttt{max\_features}: the number of predictors to consider when searching for the best split. Common choices are the square root of the total number of features (\texttt{sqrt}) or the base-2 logarithm (\texttt{log2}), both of which promote diversity among trees.
+\end{itemize}
+
+By tuning these hyperparameters, the trade-off between bias and variance can be adjusted to achieve an optimal balance between accuracy, robustness, and interpretability in the classification task.
+
 
 \subsection{Support Vector Machine}\label{subsec:method-baselines}
 \subsection{XGBoost}\label{subsec:method-baselines}
