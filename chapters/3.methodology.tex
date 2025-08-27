@@ -369,7 +369,7 @@ The time-series dataset contains the projection of the joint angles and angular 
 Alignment methods exist, such as Dynamic Time Warping \citep{Bringmann2023}, that could be used to mitigate this problem, but the same goal can be achieved with methods far less complex, for example by simply segmenting and normalising the data.
 
 \paragraph{Stance phase segmentation and normalisation}
-Following the procedure described in the source paper \citep{Ferber2024} and later replicated with good results in \citep{FuentesJimnez2025}, we discard the swing phase of the movement and, segment each recording by the stance phases, that is the time when the foot is touching the ground. To perform this segmentation, each \gls{channel} was split using the the gait events dataset introduced in \ref{subsec:data-extractio}. The stance phase starts with touchdown (TD) and ends with toe-off (TO).
+Following the procedure described in the source paper \citep{Ferber2024} and later replicated with good results in \citep{FuentesJimnez2025}, we discard the swing phase of the movement and, segment each recording by the stance phases, that is the time when the foot is touching the ground. To perform this segmentation, each \gls{channel} was split using the the gait events dataset introduced in \ref{subsec:data-extraction}. The stance phase starts with touchdown (TD) and ends with toe-off (TO).
 
 It should be noted that the stance phases of the right and left sides overlap whenever both feet are in contact with the ground. For this reason, different events were used to segment the two sides. Specifically, the events \texttt{L\_TD} and \texttt{L\_TO} were used for left-side joints, while \texttt{R\_TD} and \texttt{R\_TO} were used for right-side joints.
 
@@ -566,7 +566,7 @@ The splits of every partiion were stratified by injury status to preserve the cl
 During hyperparameter tuning in the tabular model pipeline, $k$-fold cross-validation was used with splits taken fro the training set to improve the reliability of model evaluation and to mitigate variance due to partitioning. Specifically, \texttt{k=5} folds were used. Splits were group-aware and stratified by the injury status label like teh training, test and validation set to prevent data leakage.
 
 \paragraph{Evaluation protocol}
-The Area Under the Receiver Operating Characteristic curve (\texttt{AUC ROC}) was used as the primary evaluation metric during both hyperparameter tuning and cross-model evaluation. This metric represents the area under the curve obtained by plotting the True Positive Rate (TPR) against the False Positive Rate (FPR) across all possible thresholds. Formally:  
+The Area Under the Receiver Operating Characteristic curve (\texttt{AUC ROC}) was used as the primary evaluation metric during hyperparameter tuning and model selection. This metric represents the area under the curve obtained by plotting the True Positive Rate (TPR) against the False Positive Rate (FPR) across all possible thresholds. Formally:  
 
 \begin{equation}
     \mathrm{TPR}(t)=\frac{\mathrm{TP}(t)}{\mathrm{TP}(t)+\mathrm{FN}(t)},\quad
@@ -599,6 +599,10 @@ The Area Under the Precision-Recall curve (\texttt{AUC PR}) and the macro-averag
 
 In these equations, $\mathrm{Prec}(t)$ and $\mathrm{Rec}(t)$ denote precision and recall at threshold $t$, $\mathrm{AUC}_{\mathrm{PR}}$ is computed with the trapezoidal rule on $m$ thresholds, and $K$ is the number of classes (two in this case: injured and uninjured). Unlike \texttt{AUC ROC}, both \texttt{AUC PR} and \texttt{F1-Macro} are sensitive to class prevalence. Therefore, they are not directly comparable across different pipelines (e.g., tabular versus deep learning), but they provide useful complementary insight when comparing runs of the same model or models within the same pipeline.
 
+
+$TODO:-Describe-protocol-to-compare-AUC_ROC$
+% TODO: Describe how we prove that a model has a statistically siginificant advantage over another. 
+
 \subsection{Logistic Regression Model}\label{subsec:method-log-reg}
 Logistic regression is a widely used statistical learning method for modeling the relationship between a binary dependent variable and one or more independent predictors. Unlike linear regression, which assumes a continuous outcome, logistic regression is designed for classification tasks where the target variable is categorical, typically taking values of 0 or 1. The model estimates the probability that a given input belongs to the positive class by applying the logistic function to a linear combination of the predictors. This transformation ensures that predicted probabilities are constrained within the interval $[0, 1]$, making the model interpretable in terms of likelihoods.
 
@@ -628,7 +632,7 @@ The $\ell_{1}$ penalty (Lasso) enforces sparsity by driving some coefficients ex
 % with $R(\mathbf{w}) = \|\mathbf{w}\|_{1}$ for $\ell_{1}$ or $R(\mathbf{w}) = \|\mathbf{w}\|_{2}^{2}$ for $\ell_{2}$. In the \texttt{scikit-learn} implementation, $\lambda$ is parameterized as $1/C$.
 
 
-\subsection{Random Forest}\label{subsec:method-baselines}
+\subsection{Random Forest}\label{subsec:method-rand-forest}
 Random forests are ensemble learning methods that extend the idea of decision trees by combining a large number of them in order to improve predictive accuracy and control overfitting \citep{Breiman2001}. Each tree in the ensemble is constructed from a bootstrap sample of the training data, and at each split a random subset of predictors is considered. This strategy reduces correlation among trees and increases the overall robustness of the model. The final prediction is obtained by aggregating the outputs of all trees, typically through majority voting in classification tasks. Random forests are non-parametric, can model complex non-linear relationships, and naturally provide measures of variable importance, which makes them particularly attractive for high-dimensional datasets such as biomechanical measurements.
 
 \paragraph{Hyperparameters of Random Forest}
@@ -644,22 +648,22 @@ Several hyperparameters influence the behavior and generalization ability of ran
 By tuning these hyperparameters, the trade-off between bias and variance can be adjusted to achieve an optimal balance between accuracy, robustness, and interpretability in the classification task.
 
 
-\subsection{Support Vector Machine}\label{subsec:method-baselines}
+\subsection{Support Vector Machine}\label{subsec:method-svm}
 \subsection{XGBoost}\label{subsec:method-baselines}
-\subsection{Unilateral BiLSTM}\label{subsec:method-deep-learning}
+\subsection{Unilateral BiLSTM}\label{subsec:method-unilat-bilstm}
 Explain inversion of X and Y axis.
-\subsection{Bilateral BiLSTM}\label{subsec:method-deep-learning}
+\subsection{Bilateral BiLSTM}\label{subsec:method-bilat-bilstm}
 With and without CNN.
-\subsection{MC-DCNN}\label{subsec:method-deep-learning}
+\subsection{MC-DCNN}\label{subsec:method-mc-dcnn}
 
-\subsection{Hyperparameter tuning}
+\subsection{Hyperparameter tuning}\label{subsec:method-hyperparam-tuning}
 Explain train/test/validation set split.
 Explain cross validation for Hyperparameter tuning.
 
 Summary of hyperparameters per model and the final best hyperparams.
 Why do we think they are they best?
 
-\subsection{Dataset configuration}
+\subsection{Dataset configuration}\label{subsec:method-data-config}
 \begin{itemize}
     \item Classical models with Base data -> See 14.6
     \item Classical models with all dominant features ->  See 24.8
