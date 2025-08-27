@@ -653,6 +653,13 @@ By tuning these hyperparameters, the trade-off between bias and variance can be 
 
 
 \subsection{Support Vector Machine}\label{subsec:method-svm}
+Support Vector Machines (SVMs) is a type of supervised machine learning algorithm used for classification problems. SVM's goal is to find the hyperplane that maximises the margin between classes \citep{Cortes1995}. The larger the margin, the lower the generalisation error of the classifier. The points that are closer to the decision hyperplane delimit the margin and are called the \texttt{support vectors}. When the problem is not linearly separable, the support vectors are the samples within the margin boundaries. In addition, SVM allows the usage of kernel functions to map the data-points into a higher dimensional space where the problem could be linearly spearable. The model often yields strong generalization, particularly in high-dimensional settings and when the boundary is close to linear.
+
+\paragraph{Hyperparameters of SVMs}
+SVMs offer 2 main hyperparameters: the kernel function, and the regularisation parameter $C$. The kernel function $K(x,z)$ defines the feature mapping that maps the datapoints into another dimensional space. Typical kernels include the linear kernel $K(x,z)=x \cdot z$, the polynomial kernel $K(x,z)=(x \cdot z + c)^d$, and the radial basis function (RBF) kernel $K(x,z)=\exp\!\big(-\gamma \lVert x-z\rVert^2\big)$.
+
+The parameter $C$ trades a wider margin against training errors. Smaller $C$ values enforce stronger regularisation and larger values penalise margin violations more heavily. The scale parameter $\gamma$ (relevant for \texttt{rbf}/\texttt{poly}, among others kernel, and ignored by the linear kernel) sets the locality of the decision function. Larger $\gamma$ yields more complex, highly local boundaries, while smaller $\gamma$ enforces smoother, more global ones.
+
 \subsection{XGBoost}\label{subsec:method-baselines}
 \subsection{Unilateral BiLSTM}\label{subsec:method-unilat-bilstm}
 Explain inversion of X and Y axis.
