@@ -599,9 +599,13 @@ The Area Under the Precision-Recall curve (\texttt{AUC PR}) and the macro-averag
 
 In these equations, $\mathrm{Prec}(t)$ and $\mathrm{Rec}(t)$ denote precision and recall at threshold $t$, $\mathrm{AUC}_{\mathrm{PR}}$ is computed with the trapezoidal rule on $m$ thresholds, and $K$ is the number of classes (two in this case: injured and uninjured). Unlike \texttt{AUC ROC}, both \texttt{AUC PR} and \texttt{F1-Macro} are sensitive to class prevalence. Therefore, they are not directly comparable across different pipelines (e.g., tabular versus deep learning), but they provide useful complementary insight when comparing runs of the same model or models within the same pipeline.
 
-
+\paragraph{Model comparison protocol}
+The secondary objective of the project is to assess whether any of the deep learning models significantly improves the performance of the best tabular model.
 $TODO:-Describe-protocol-to-compare-AUC_ROC$
-% TODO: Describe how we prove that a model has a statistically siginificant advantage over another. 
+\citep{Sun2014}
+% TODO: Describe how we prove that a model has a statistically siginificant advantage over another.
+% See https://ieeexplore.ieee.org/document/6851192
+% And: https://github.com/yandexdataschool/roc_comparison?tab=readme-ov-file
 
 \subsection{Logistic Regression Model}\label{subsec:method-log-reg}
 Logistic regression is a widely used statistical learning method for modeling the relationship between a binary dependent variable and one or more independent predictors. Unlike linear regression, which assumes a continuous outcome, logistic regression is designed for classification tasks where the target variable is categorical, typically taking values of 0 or 1. The model estimates the probability that a given input belongs to the positive class by applying the logistic function to a linear combination of the predictors. This transformation ensures that predicted probabilities are constrained within the interval $[0, 1]$, making the model interpretable in terms of likelihoods.
