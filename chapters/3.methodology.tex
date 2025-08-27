@@ -702,69 +702,61 @@ For the deep learning models (MC-DCNN, bilateral LSTM, and unilateral LSTM), hyp
 \paragraph{Hyperparameter Ranges and Best Values}
 
 The following summarizes the hyperparameter search spaces and the best-performing values identified for each model:
-
-\begin{itemize}
-    \item \textbf{Logistic Regression}
-    \begin{itemize}
-        \item $C$: $10^{[-3,3]}$ (best: $0.1$)
-        \item Penalty: \{l1, l2\} (best: l1)
-        \item Solver: \{liblinear\} (best: liblinear)
-    \end{itemize}
-    \item \textbf{Random Forest}
-    \begin{itemize}
-        \item $n_{\text{estimators}}$: \{100, 200, 300\} (best: 200)
-        \item max\_depth: \{None, 10, 20\} (best: None)
-        \item min\_samples\_split: \{2, 5, 10, 16\} (best: 2)
-        \item min\_samples\_leaf: \{2, 5, 8\} (best: 2)
-        \item max\_features: \{$\sqrt{\phantom{a}}$, $\log_2$\} (best: $\sqrt{\phantom{a}}$)
-    \end{itemize}
-    \item \textbf{XGBoost}
-    \begin{itemize}
-        \item $n_{\text{estimators}}$: \{100, 200, 500\} (best: 500)
-        \item max\_depth: \{3, 6, 9\} (best: 6)
-        \item learning\_rate: \{0.005, 0.01, 0.1\} (best: 0.005)
-        \item subsample: \{0.8, 1.0\} (best: 0.8)
-        \item colsample\_bytree: \{0.8, 1.0\} (best: 1.0)
-        \item $\gamma$: \{0, 1, 5\} (best: 1)
-        \item scale\_pos\_weight: $=$ neg\_pos\_ratio (best: $\approx 1.78$)
-    \end{itemize}
-    \item \textbf{Support Vector Machine}
-    \begin{itemize}
-        \item $C$: \{0.1, 1, 10\} (best: 1)
-        \item Kernel: \{rbf, linear, poly\} (best: rbf)
-        \item $\gamma$: \{scale, 0.1, 0.01\} (best: 0.01)
-    \end{itemize}
-    \item \textbf{Deep CNN}
-    \begin{itemize}
-        \item activation\_combo: \{sigmoid\_relu\} (best: sigmoid\_relu)
-        \item $k_1$: \{5, 7\} (best: 5)
-        \item $f_{1/\text{ch}}$: \{8, 12\} (best: 8)
-        \item pool1: \{2, 3\} (best: 2)
-        \item hidden: \{256, 512, 768\} (best: 768)
-        \item fc\_dropout: \{0.0, 0.2, 0.4\} (best: 0.2)
-        \item learning\_rate: \{2e$-$4, 4e$-$4, 8e$-$4\} (best: $4\times10^{-4}$)
-        \item weight\_decay: \{1e$-$5, 3e$-$5, 1e$-$4\} (best: $1\times10^{-5}$)
-    \end{itemize}
-    \item \textbf{Bilateral Two-Tower LSTM}
-    \begin{itemize}
-        \item lstm\_units: \{48, 64, 96\} (best: 48)
-        \item lstm\_dropout: \{0.15, 0.20, 0.25, 0.30, 0.35\} (best: 0.15)
-        \item head\_hidden: \{48, 64, 96\} (best: 48)
-        \item head\_units: \{48, 64, 96\} (best: 96)
-        \item head\_dropout: \{0.20, 0.25, 0.30, 0.35, 0.40\} (best: 0.35)
-        \item learning\_rate: [1e$-$4, 5e$-$4] (best: $\approx 5\times10^{-4}$)
-        \item weight\_decay: [1e$-$5, 3e$-$4] (best: $\approx 1.1\times10^{-5}$)
-        \item multiscale\_conv: \{True, False\} (best: False)
-        \item single\_kernel: \{7, 15, 21, 31, 41, 51\} (best: 51)
-    \end{itemize}
-    \item \textbf{Unilateral LSTM}
-    \begin{itemize}
-        \item head\_units: \{32, 64\} (best: 64)
-        \item head\_dropout: \{0.0, 0.2, 0.4\} (best: 0.2)
-        \item lstm\_units: \{64, 128\} (best: 128)
-        \item lstm\_dropout: \{0.0, 0.2, 0.4\} (best: 0.0)
-    \end{itemize}
-\end{itemize}
+% \begin{table}[ht]
+%     \centering
+%     \caption{Hyperparameter search spaces and best values for each model}
+%     \begin{tabular}{llll}
+%         \toprule
+%         \textbf{Model} & \textbf{Hyperparameter} & \textbf{Values} & \textbf{Best} \\
+%         \midrule
+%         Logistic Regression & $C$ & $10^{[-3,3]}$ & 0.1 \\
+%         Logistic Regression & Penalty & \{l1, l2\} & l1 \\
+%         Logistic Regression & Solver & \{liblinear\} & liblinear \\
+%         \midrule
+%         Random Forest & $n_{\text{estimators}}$ & \{100, 200, 300\} & 200 \\
+%         Random Forest & max\_depth & \{None, 10, 20\} & None \\
+%         Random Forest & min\_samples\_split & \{2, 5, 10, 16\} & 2 \\
+%         Random Forest & min\_samples\_leaf & \{2, 5, 8\} & 2 \\
+%         Random Forest & max\_features & \{$\sqrt{\phantom{a}}$, $\log_2$\} & $\sqrt{\phantom{a}}$ \\
+%         \midrule
+%         XGBoost & $n_{\text{estimators}}$ & \{100, 200, 500\} & 500 \\
+%         XGBoost & max\_depth & \{3, 6, 9\} & 6 \\
+%         XGBoost & learning\_rate & \{0.005, 0.01, 0.1\} & 0.005 \\
+%         XGBoost & subsample & \{0.8, 1.0\} & 0.8 \\
+%         XGBoost & colsample\_bytree & \{0.8, 1.0\} & 1.0 \\
+%         XGBoost & $\gamma$ & \{0, 1, 5\} & 1 \\
+%         XGBoost & scale\_pos\_weight & $=$ neg\_pos\_ratio & $\approx 1.78$ \\
+%         \midrule
+%         Support Vector Machine & $C$ & \{0.1, 1, 10\} & 1 \\
+%         Support Vector Machine & Kernel & \{rbf, linear, poly\} & rbf \\
+%         Support Vector Machine & $\gamma$ & \{scale, 0.1, 0.01\} & 0.01 \\
+%         \midrule
+%         Deep CNN & activation\_combo & \{sigmoid\_relu\} & sigmoid\_relu \\
+%         Deep CNN & $k_1$ & \{5, 7\} & 5 \\
+%         Deep CNN & $f_{1/\text{ch}}$ & \{8, 12\} & 8 \\
+%         Deep CNN & pool1 & \{2, 3\} & 2 \\
+%         Deep CNN & hidden & \{256, 512, 768\} & 768 \\
+%         Deep CNN & fc\_dropout & \{0.0, 0.2, 0.4\} & 0.2 \\
+%         Deep CNN & learning\_rate & \{2e$-$4, 4e$-$4, 8e$-$4\} & $4\times10^{-4}$ \\
+%         Deep CNN & weight\_decay & \{1e$-$5, 3e$-$5, 1e$-$4\} & $1\times10^{-5}$ \\
+%         \midrule
+%         Bilateral Two-Tower LSTM & lstm\_units & \{48, 64, 96\} & 48 \\
+%         Bilateral Two-Tower LSTM & lstm\_dropout & \{0.15, 0.20, 0.25, 0.30, 0.35\} & 0.15 \\
+%         Bilateral Two-Tower LSTM & head\_hidden & \{48, 64, 96\} & 48 \\
+%         Bilateral Two-Tower LSTM & head\_units & \{48, 64, 96\} & 96 \\
+%         Bilateral Two-Tower LSTM & head\_dropout & \{0.20, 0.25, 0.30, 0.35, 0.40\} & 0.35 \\
+%         Bilateral Two-Tower LSTM & learning\_rate & [1e$-$4, 5e$-$4] & $\approx 5\times10^{-4}$ \\
+%         Bilateral Two-Tower LSTM & weight\_decay & [1e$-$5, 3e$-$4] & $\approx 1.1\times10^{-5}$ \\
+%         Bilateral Two-Tower LSTM & multiscale\_conv & \{True, False\} & False \\
+%         Bilateral Two-Tower LSTM & single\_kernel & \{7, 15, 21, 31, 41, 51\} & 51 \\
+%         \midrule
+%         Unilateral LSTM & head\_units & \{32, 64\} & 64 \\
+%         Unilateral LSTM & head\_dropout & \{0.0, 0.2, 0.4\} & 0.2 \\
+%         Unilateral LSTM & lstm\_units & \{64, 128\} & 128 \\
+%         Unilateral LSTM & lstm\_dropout & \{0.0, 0.2, 0.4\} & 0.0 \\
+%         \bottomrule
+%     \end{tabular}
+% \end{table}
 
 \noindent
 See the supplementary material and code repository for the full search grids and additional details.
