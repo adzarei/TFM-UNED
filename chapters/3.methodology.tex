@@ -619,48 +619,58 @@ where $\beta_0$ is the intercept and $\beta_1$ is the coefficient associated wit
 \paragraph{Hyperparameters of Logistic Regression}
 Multiple hyperparameters are available that can be used to tweak the performance of the model. In this project we have used:
 \begin{itemize}
-    \item The regularization strength, denoted by the $C$ parameter, which is the inverse of the regularization coefficient $\lambda$.
-    \item The penalty function as \texttt{penalty} parameter, which allows to choose the regularisation function to use: $\ell_{1}$ penalty (Lasso) or $\ell_{2}$ penalty (Ridge)
+    \item \textbf{Regularization strength} ($C$): The regularization strength, denoted by the $C$ parameter, which is the inverse of the regularization coefficient $\lambda$.
+    \item \textbf{penalty}: The penalty function as \texttt{penalty} parameter, which allows to choose the regularisation function to use: $\ell_{1}$ penalty (Lasso) or $\ell_{2}$ penalty (Ridge)
 \end{itemize}
 
 The $\ell_{1}$ penalty (Lasso) enforces sparsity by driving some coefficients exactly to zero, thereby performing feature selection, while the $\ell_{2}$ penalty (Ridge) shrinks coefficients smoothly without eliminating them.
 
-% The effect of these penalties is incorporated into the cost function minimized during training. In the unregularized case, the objective is to maximize the likelihood of the observed data, equivalently minimizing the negative log-likelihood:
-% \begin{equation}
-%     \mathcal{L}(\mathbf{w}, b) = - \sum_{i=1}^{N} \left[ y_i \log P(X_i) + (1-y_i) \log (1-P(X_i)) \right],
-% \end{equation}
-% where $P(X_i)$ is the predicted probability for sample $i$. Regularization adds a penalty term $R(\mathbf{w})$ to this objective, yielding
-% \begin{equation}
-%     \mathcal{L}_{\text{reg}}(\mathbf{w}, b) = \mathcal{L}(\mathbf{w}, b) + \lambda R(\mathbf{w}),
-% \end{equation}
-% with $R(\mathbf{w}) = \|\mathbf{w}\|_{1}$ for $\ell_{1}$ or $R(\mathbf{w}) = \|\mathbf{w}\|_{2}^{2}$ for $\ell_{2}$. In the \texttt{scikit-learn} implementation, $\lambda$ is parameterized as $1/C$.
-
-
 \subsection{Random Forest}\label{subsec:method-rand-forest}
-Random forests are ensemble learning methods that extend the idea of decision trees by combining a large number of them in order to improve predictive accuracy and control overfitting \citep{Breiman2001}. Each tree in the ensemble is constructed from a bootstrap sample of the training data, and at each split a random subset of predictors is considered. This strategy reduces correlation among trees and increases the overall robustness of the model. The final prediction is obtained by aggregating the outputs of all trees, typically through majority voting in classification tasks. Random forests are non-parametric, can model complex non-linear relationships, and naturally provide measures of variable importance, which makes them particularly attractive for high-dimensional datasets such as biomechanical measurements.
+Random forests are ensemble learning methods that builds on top of the decision trees by combining a large number of them in order to improve predictive accuracy and control overfitting \citep{Breiman2001}. Each tree in the ensemble is constructed from a bootstrap sample of the training data, and at each split a random subset of predictors is considered. This strategy reduces correlation among trees and increases the overall robustness of the model. The final prediction is obtained by aggregating the outputs of all trees. Random forests are non-parametric, can model complex non-linear relationships, and naturally provide measures of variable importance (intrinsic explainability).
 
 \paragraph{Hyperparameters of Random Forest}
 Several hyperparameters influence the behavior and generalization ability of random forests. In this project, the following were explored:
 \begin{itemize}
-    \item \texttt{n\_estimators}: the number of trees in the forest. Increasing this value generally improves performance but comes at the cost of higher computational requirements.
-    \item \texttt{max\_depth}: the maximum depth of each tree. Limiting tree depth helps control overfitting, while unlimited depth (\texttt{None}) allows trees to fully grow.
-    \item \texttt{min\_samples\_split}: the minimum number of samples required to split an internal node. Larger values result in shallower trees and may improve generalization.
-    \item \texttt{min\_samples\_leaf}: the minimum number of samples required to be at a leaf node. Increasing this value creates smoother decision boundaries by preventing overly specific leaves.
-    \item \texttt{max\_features}: the number of predictors to consider when searching for the best split. Common choices are the square root of the total number of features (\texttt{sqrt}) or the base-2 logarithm (\texttt{log2}), both of which promote diversity among trees.
+    \item \textbf{n\_estimators}: The number of trees in the forest. Increasing this value generally improves performance but comes at the cost of higher computational requirements.
+    \item \textbf{max\_depth}: The maximum depth of each tree. Limiting tree depth helps control overfitting, while unlimited depth (\texttt{None}) allows trees to fully grow.
+    \item \textbf{min\_samples\_split}: the minimum number of samples required to split an internal node. Larger values result in shallower trees and may improve generalization.
+    \item \textbf{min\_samples\_leaf}: The minimum number of samples required to be at a leaf node. Increasing this value creates smoother decision boundaries by preventing overly specific leaves.
+    \item \textbf{max\_features}: The number of predictors to consider when searching for the best split. Common choices are the square root of the total number of features (\texttt{sqrt}) or the base-2 logarithm (\texttt{log2}), both of which promote diversity among trees.
 \end{itemize}
 
 By tuning these hyperparameters, the trade-off between bias and variance can be adjusted to achieve an optimal balance between accuracy, robustness, and interpretability in the classification task.
 
-
-\subsection{Support Vector Machine}\label{subsec:method-svm}
-Support Vector Machines (SVMs) is a type of supervised machine learning algorithm used for classification problems. SVM's goal is to find the hyperplane that maximises the margin between classes \citep{Cortes1995}. The larger the margin, the lower the generalisation error of the classifier. The points that are closer to the decision hyperplane delimit the margin and are called the \texttt{support vectors}. When the problem is not linearly separable, the support vectors are the samples within the margin boundaries. In addition, SVM allows the usage of kernel functions to map the data-points into a higher dimensional space where the problem could be linearly spearable. The model often yields strong generalization, particularly in high-dimensional settings and when the boundary is close to linear.
-
-\paragraph{Hyperparameters of SVMs}
+\subsection{Support Vector Machine (SVM)}\label{subsec:method-svm}
+Support Vector Machines (SVMs) are supervised machine learning classifiers that aim at finding the optimal hyperplane that maximises the margin between classes \citep{Cortes1995}. The training samples that lie on or within the margin are the \texttt{support vectors}, these points alone determine the decision boundary. Non-linear decision surfaces are obtained via kernel functions, which implicitly map inputs to a higher-dimensional feature space where a linear separation may exist. In practice, SVMs often achieve strong generalisation, particularly in high-dimensional settings and when the underlying boundary is close to linear \citep{chang2011guide}.
 SVMs offer 2 main hyperparameters: the kernel function, and the regularisation parameter $C$. The kernel function $K(x,z)$ defines the feature mapping that maps the datapoints into another dimensional space. Typical kernels include the linear kernel $K(x,z)=x \cdot z$, the polynomial kernel $K(x,z)=(x \cdot z + c)^d$, and the radial basis function (RBF) kernel $K(x,z)=\exp\!\big(-\gamma \lVert x-z\rVert^2\big)$.
 
-The parameter $C$ trades a wider margin against training errors. Smaller $C$ values enforce stronger regularisation and larger values penalise margin violations more heavily. The scale parameter $\gamma$ (relevant for \texttt{rbf}/\texttt{poly}, among others kernel, and ignored by the linear kernel) sets the locality of the decision function. Larger $\gamma$ yields more complex, highly local boundaries, while smaller $\gamma$ enforces smoother, more global ones.
+\paragraph{Hyperparameters of SVMs}
+The main hyperparameters are:
+\begin{itemize}
+    \item \textbf{Kernel function} ($K$): Function that maps the input data to a higher dimensional space. Typical choices are the linear kernel $K(x,z)=x \cdot z$, the polynomial kernel $K(x,z)=(x \cdot z + c)^d$, and the radial basis function (RBF) kernel $K(x,z)=\exp\!\big(-\gamma \lVert x-z\rVert^2\big)$. Kernel choice controls model flexibility, and allows SVM tackle non-linear problems.
+    \item \textbf{Regularisation} ($C$): Controls the trade-off between a wider margin and training errors. Smaller $C$ imposes stronger regularisation (wider margins, higher bias), whereas larger $C$ penalises violations more heavily (narrower margins, lower bias but higher variance).
+    \item \textbf{Kernel scale} ($\gamma$): Relevant for non-linear kernels (e.g., RBF and polynomial). Larger $\gamma$ produces more local, complex decision boundaries, smaller $\gamma$ enforces smoother, more global boundaries.
+\end{itemize}
 
-\subsection{XGBoost}\label{subsec:method-baselines}
+By tuning these hyperparameters, the bias-variance profile can be adjusted to balance accuracy and robustness in the classification task.
+
+\subsection{Extreme Gradient Boosting (XGBoost)}\label{subsec:method-xgboost}
+Extreme Gradient Boosting (XGBoost) is an ensemble method based on gradient-boosted decision trees that builds a sequence of shallow trees, each one correcting the residual errors of the preceding ensemble \citep{Chen2016XGBoost}. Trees are added in an additive manner (boosting) and are fit by following the gradient of a differentiable loss. Compared with generic gradient boosting, XGBoost introduces explicit regularization on tree complexity, shrinkage (learning rate), and row/column subsampling, which together reduce variance and improve generalization. The method is efficient on tabular data, captures non-linear interactions, and offers robust handling of class imbalance and missing values via built-in mechanisms.
+
+\paragraph{Hyperparameters of XGBoost}
+In this project, the following hyperparameters were explored:
+\begin{itemize}
+    \item \textbf{n\_estimators}: Number of trees. More trees increase capacity and typically require a lower learning rate.
+    \item \textbf{max\_depth}: Maximum tree depth. Shallower trees control overfitting and often perform well on noisy biomechanical features.
+    \item \textbf{learning\_rate}: Shrinkage applied to each tree's contribution; smaller values generally improve generalization at the cost of more trees.
+    \item \textbf{subsample}: Fraction of training instances sampled per tree. Row subsampling lowers variance and decorrelates trees.
+    \item \textbf{colsample\_bytree}: Fraction of predictors sampled when growing each tree. Column subsampling mitigates collinearity and encourages diversity.
+    \item \textbf{gamma}: Minimum loss reduction required to make a split. Larger values prune weak splits and yield simpler trees.
+    \item \textbf{scale\_pos\_weight}: Gradient/Hessian scaling for the minority class to address class imbalance (common heuristic: $N_{\text{neg}}/N_{\text{pos}}$).
+    \item \textbf{max\_delta\_step}: Cap on the per-tree weight update that stabilizes logistic boosting under severe imbalance or separation.
+\end{itemize}
+By tuning these hyperparameters, the bias--variance trade-off was controlled through depth, shrinkage, and subsampling, while class imbalance was directly handled via \texttt{scale\_pos\_weight}, leading to a robust classifier for the injury-detection task.
+
 \subsection{Unilateral BiLSTM}\label{subsec:method-unilat-bilstm}
 Explain inversion of X and Y axis.
 \subsection{Bilateral BiLSTM}\label{subsec:method-bilat-bilstm}
