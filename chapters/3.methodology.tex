@@ -566,7 +566,7 @@ The splits of every partiion were stratified by injury status to preserve the cl
 During hyperparameter tuning in the tabular model pipeline, $k$-fold cross-validation was used with splits taken fro the training set to improve the reliability of model evaluation and to mitigate variance due to partitioning. Specifically, \texttt{k=5} folds were used. Splits were group-aware and stratified by the injury status label like teh training, test and validation set to prevent data leakage.
 
 \paragraph{Evaluation protocol}
-The Area Under the Receiver Operating Characteristic curve (\texttt{AUC ROC}) was used as the primary evaluation metric during hyperparameter tuning and model selection. This metric represents the area under the curve obtained by plotting the True Positive Rate (TPR) against the False Positive Rate (FPR) across all possible thresholds. Formally:  
+The Area Under the Receiver Operating Characteristic curve (\texttt{AUC ROC}) was used as the primary evaluation metric during hyperparameter tuning and model selection. This metric represents the area under the curve obtained by plotting the True Positive Rate (TPR) against the False Positive Rate (FPR) across all possible thresholds. Formally:
 
 \begin{equation}
     \mathrm{TPR}(t)=\frac{\mathrm{TP}(t)}{\mathrm{TP}(t)+\mathrm{FN}(t)},\quad
@@ -579,9 +579,9 @@ The Area Under the Receiver Operating Characteristic curve (\texttt{AUC ROC}) wa
     \frac{\mathrm{TPR}_{i+1}+\mathrm{TPR}_{i}}{2}.
 \end{equation}
 
-Here $TP(t)$, $TN(t)$, $FP(t)$, and $FN(t)$ represent the number of true positives, true negatives, false positives, and false negatives at a threshold $t$, respectively. $\mathrm{AUC}_{\mathrm{ROC}}$ was approximated using the trapezoidal rule on $m$ thresholds, typically corresponding to the unique scores returned by the model. Since \texttt{AUC ROC} is insensitive to class prevalence, it is suitable for comparing model performance across the slightly different class distributions that result from group-aware splits.  
+Here $TP(t)$, $TN(t)$, $FP(t)$, and $FN(t)$ represent the number of true positives, true negatives, false positives, and false negatives at a threshold $t$, respectively. $\mathrm{AUC}_{\mathrm{ROC}}$ was approximated using the trapezoidal rule on $m$ thresholds, typically corresponding to the unique scores returned by the model. Since \texttt{AUC ROC} is insensitive to class prevalence, it is suitable for comparing model performance across the slightly different class distributions that result from group-aware splits.
 
-The Area Under the Precision-Recall curve (\texttt{AUC PR}) and the macro-averaged F1-score (\texttt{F1-Macro}) were used as secondary metrics. Precision and recall are defined as:  
+The Area Under the Precision-Recall curve (\texttt{AUC PR}) and the macro-averaged F1-score (\texttt{F1-Macro}) were used as secondary metrics. Precision and recall are defined as:
 
 \begin{equation}
     \mathrm{Prec}(t)=\frac{\mathrm{TP}(t)}{\mathrm{TP}(t)+\mathrm{FP}(t)},\quad
@@ -594,10 +594,17 @@ The Area Under the Precision-Recall curve (\texttt{AUC PR}) and the macro-averag
 \end{equation}
 
 \begin{equation}
+    \mathrm{F1}=\frac{2 * TP}{2 * TP + FP + FN}
+\end{equation}
+
+\begin{equation}
     \mathrm{F1}_{\mathrm{macro}}=\frac{1}{K}\sum_{k=1}^{K}\mathrm{F1}_k.
 \end{equation}
 
 In these equations, $\mathrm{Prec}(t)$ and $\mathrm{Rec}(t)$ denote precision and recall at threshold $t$, $\mathrm{AUC}_{\mathrm{PR}}$ is computed with the trapezoidal rule on $m$ thresholds, and $K$ is the number of classes (two in this case: injured and uninjured). Unlike \texttt{AUC ROC}, both \texttt{AUC PR} and \texttt{F1-Macro} are sensitive to class prevalence. Therefore, they are not directly comparable across different pipelines (e.g., tabular versus deep learning), but they provide useful complementary insight when comparing runs of the same model or models within the same pipeline.
+
+Probabilistic classifiers such as Logistic Regression, Random Forest, and XGBoost, and calibrated SVMs output probabilities in the range $[0,1]$, where 1 indicates complete confidence that a sample belongs to the positive class. A default threshold of 0.5 is often used, but the optimal value depends on the metric of interest. In clinical contexts, thresholds are frequently set to minimise False Negatives.In this project, the objective was not clinical deployment but balanced model comparison. Therefore, thresholds were selected to maximise the macro-averaged F1-score (\texttt{F1-Macro}), which computes F1 independently for each class and averages them, penalising models that ignore the minority class. This choice ensured balanced performance across classes and provided a consistent basis for reporting precision, recall, and accuracy.
+
 
 \paragraph{Model comparison protocol}
 The secondary objective of the project is to assess whether any of the deep learning models significantly improves the performance of the best tabular model.
@@ -641,18 +648,17 @@ Several hyperparameters influence the behavior and generalization ability of ran
 By tuning these hyperparameters, the trade-off between bias and variance can be adjusted to achieve an optimal balance between accuracy, robustness, and interpretability in the classification task.
 
 \subsection{Support Vector Machine (SVM)}\label{subsec:method-svm}
-Support Vector Machines (SVMs) are supervised machine learning classifiers that aim at finding the optimal hyperplane that maximises the margin between classes \citep{Cortes1995}. The training samples that lie on or within the margin are the \texttt{support vectors}, these points alone determine the decision boundary. Non-linear decision surfaces are obtained via kernel functions, which implicitly map inputs to a higher-dimensional feature space where a linear separation may exist. In practice, SVMs often achieve strong generalisation, particularly in high-dimensional settings and when the underlying boundary is close to linear \citep{chang2011guide}.
-SVMs offer 2 main hyperparameters: the kernel function, and the regularisation parameter $C$. The kernel function $K(x,z)$ defines the feature mapping that maps the datapoints into another dimensional space. Typical kernels include the linear kernel $K(x,z)=x \cdot z$, the polynomial kernel $K(x,z)=(x \cdot z + c)^d$, and the radial basis function (RBF) kernel $K(x,z)=\exp\!\big(-\gamma \lVert x-z\rVert^2\big)$.
 
-\paragraph{Hyperparameters of SVMs}
-The main hyperparameters are:
+Support Vector Machines (SVMs) are supervised machine learning classifiers that aim to find the optimal hyperplane that maximises the margin between classes \citep{Cortes1995}. The training samples that lie on or within the margin are the \texttt{support vectors}; these points alone determine the decision boundary. Non-linear decision surfaces are obtained via kernel functions, which implicitly map inputs to a higher-dimensional feature space where a linear separation may exist. In practice, SVMs often achieve strong generalisation, particularly in high-dimensional settings and when the underlying boundary is close to linear \citep{chang2011guide}.Unlike probabilistic models, SVMs do not natively output class probabilities. Instead, probabilities are commonly estimated through \textit{Platt scaling}, which fits a sigmoid function to the decision values of the trained SVM \citep{Platt1999}. This calibration step provides probability estimates in the range $[0,1]$, enabling threshold-based decision making and the use of metrics such as AUC.SVMs offer two main hyperparameters: the kernel function and the regularisation parameter $C$. The kernel function $K(x,z)$ defines the feature mapping that projects the data points into another dimensional space. Typical kernels include the linear kernel $K(x,z)=x \cdot z$, the polynomial kernel $K(x,z)=(x \cdot z + c)^d$, and the radial basis function (RBF) kernel $K(x,z)=\exp\!\big(-\gamma \lVert x-z\rVert^2\big)$.\paragraph{Hyperparameters of SVMs} The main hyperparameters are:
+
 \begin{itemize}
-    \item \textbf{Kernel function} ($K$): Function that maps the input data to a higher dimensional space. Typical choices are the linear kernel $K(x,z)=x \cdot z$, the polynomial kernel $K(x,z)=(x \cdot z + c)^d$, and the radial basis function (RBF) kernel $K(x,z)=\exp\!\big(-\gamma \lVert x-z\rVert^2\big)$. Kernel choice controls model flexibility, and allows SVM tackle non-linear problems.
-    \item \textbf{Regularisation} ($C$): Controls the trade-off between a wider margin and training errors. Smaller $C$ imposes stronger regularisation (wider margins, higher bias), whereas larger $C$ penalises violations more heavily (narrower margins, lower bias but higher variance).
-    \item \textbf{Kernel scale} ($\gamma$): Relevant for non-linear kernels (e.g., RBF and polynomial). Larger $\gamma$ produces more local, complex decision boundaries, smaller $\gamma$ enforces smoother, more global boundaries.
+    \item \textbf{Kernel function} ($K$): Defines the feature mapping to a higher-dimensional space. Typical choices are the linear kernel $K(x,z)=x \cdot z$, the polynomial kernel $K(x,z)=(x \cdot z + c)^d$, and the radial basis function (RBF) kernel $K(x,z)=\exp\!\big(-\gamma \lVert x-z\rVert^2\big)$. Kernel choice controls model flexibility and allows SVMs to tackle non-linear problems.
+    \item \textbf{Regularisation parameter} ($C$): Controls the trade-off between maximising the margin and minimising training errors. Smaller $C$ imposes stronger regularisation (wider margins, higher bias), whereas larger $C$ penalises violations more heavily (narrower margins, lower bias but higher variance). 
+    \item \textbf{Kernel scale} ($\gamma$): Relevant for non-linear kernels (e.g., RBF and polynomial). Larger $\gamma$ produces more local and complex decision boundaries, whereas smaller $\gamma$ enforces smoother, more global boundaries.
 \end{itemize}
 
 By tuning these hyperparameters, the bias-variance profile can be adjusted to balance accuracy and robustness in the classification task.
+
 
 \subsection{Extreme Gradient Boosting (XGBoost)}\label{subsec:method-xgboost}
 Extreme Gradient Boosting (XGBoost) is an ensemble method based on gradient-boosted decision trees that builds a sequence of shallow trees, each one correcting the residual errors of the preceding ensemble \citep{Chen2016XGBoost}. Trees are added in an additive manner (boosting) and are fit by following the gradient of a differentiable loss. Compared with generic gradient boosting, XGBoost introduces explicit regularization on tree complexity, shrinkage (learning rate), and row/column subsampling, which together reduce variance and improve generalization. The method is efficient on tabular data, captures non-linear interactions, and offers robust handling of class imbalance and missing values via built-in mechanisms.
@@ -676,13 +682,13 @@ Explain inversion of X and Y axis.
 \subsection{Bilateral BiLSTM}\label{subsec:method-bilat-bilstm}
 With and without CNN.
 \subsection{MC-DCNN}\label{subsec:method-mc-dcnn}
+Architure from paper.
 
 \subsection{Hyperparameter tuning}\label{subsec:method-hyperparam-tuning}
-Explain train/test/validation set split.
-Explain cross validation for Hyperparameter tuning.
+The choice of hyperparameter search method was influenced by the differences in training cost between tabular and deep learning models. Tabular models are comparatively fast to train because they operate on a small set of descriptive variables and do not rely on iterative training across epochs. In contrast, deep learning models are slower because they are trained in epochs on large tensors, in this case the full time-series dataset (60 channels $\times$ 101 values $\times$ 1813 samples). As a result, within the same amount of time, a broader hyperparameter space can be explored for tabular models, making grid search a feasible option. For deep learning models, however, grid search was impractical, and an adaptive search strategy was required.
 
-Summary of hyperparameters per model and the final best hyperparams.
-Why do we think they are they best?
+Grid search is a search strategy in which a set of values is predefined for each hyperparameter, and models are trained and evaluated on all possible combinations of these values. Although computationally expensive, grid search provides a systematic way to explore the hyperparameter space and is effective when the number of parameters and candidate values is limited.In contrast, Hyperband is a probabilistic, resource-aware optimisation algorithm that adaptively allocates more resources to promising configurations while eliminating poorly performing ones early \citep{Li2017}. It combines random sampling of the hyperparameter space with successive halving, in which configurations are trained with increasing budgets (e.g., number of epochs) and only the best-performing candidates are promoted to later stages. This approach enables efficient exploration of wide hyperparameter spaces, which is particularly advantageous for deep learning models where training costs are high.For the tabular models, grid search was applied to exhaustively evaluate all combinations in the defined hyperparameter space. A five-fold stratified group cross-validation procedure was used within the training data to estimate model performance, thereby preserving the validation set for post-hyperparameter tuning steps such as operating threshold optimisation.For the deep learning models (MC-DCNN, bilateral LSTM, and unilateral LSTM), hyperparameter search was performed using the Hyperband implementation in \texttt{Keras Tuner} \citep{Li2017}. Each candidate configuration was evaluated on a held-out validation split using ROC-AUC as the objective, with early stopping.
+
 
 \subsection{Dataset configuration}\label{subsec:method-data-config}
 \begin{itemize}
@@ -693,44 +699,6 @@ Why do we think they are they best?
     \item Bilateral TS -> See 14.4 v7
     \item As individual channels -> See 17.7 v2
 \end{itemize}
-
-
-\section{Evaluation Protocol}\label{sec:method-evaluation-protocol}
-
-\begin{itemize}
-    \item The blueprint before we run anything.
-    \item Formulate research questions and hypotheses. -> All models perform the same (Reject hypothesis with p < 0.05)
-    \item Train, Test and Validation set split by sub\_id - group aware split to address potential data leakage. At the cost of not exactly respecting the injured/non-injured stratification. Still evry similar.
-    \item Establish the evaluation protocol, including:
-    \begin{itemize}
-        \item Primary and secondary metrics
-        \item Threshold rule for best threshold.
-    \end{itemize}
-    \item Specify significance tests to assess whether differences are meaningful: DeLong's test
-    \item Calculate 95\% confidence intervals for key metrics.
-    \item Justify the choices , but do not present any results yet...
-\end{itemize}
-
-% \subsection{Evaluation Metrics}\label{subsec:method-evaluation-metrics}
-% - AUC ROC + PR for class imbalance + Macro F1 score for threshold.
-
-\subsection{Training and Validation Strategy}\label{subsec:method-training-validation-strategy}
-
-\begin{itemize}
-    \item Train, test, validation split.
-    \item Group-aware split policy (runner-level), ensuring no cycle leakage across folds.
-    \item Class-imbalance diagnostics (AUC-PR baseline, prevalence).
-\end{itemize}
-
-\subsection{Hyperparameter Tuning}\label{subsec:method-hyperparameter-tuning}
-
-\begin{itemize}
-    \item Grid search,Hyperband tuner, ...
-    \item Group aware Cross-validation, nested cross-validation, ...
-    \item Early stoping and tunning strategy.
-\end{itemize}
-
-
 
 
 \section{Explainability}\label{sec:method-explainability}
