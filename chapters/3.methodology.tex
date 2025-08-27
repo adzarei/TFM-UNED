@@ -112,7 +112,7 @@ Only 33 of the 77 descriptive biomechanical variables are populated per side, th
     \end{tabular}
 \end{table}
 
-All descriptive variables follow the interpretations described in \citet{Bartlett2014}. Unless specified explicitly in the table, the units are degrees for angles and excursions, and degrees/s for joint velocities. Excursions are also commonly known as range of motion (ROM) in the literature. 
+All descriptive variables follow the interpretations described in \citet{Bartlett2014}. Unless specified explicitly in the table, the units are degrees for angles and excursions, and degrees/s for joint velocities. Excursions are also commonly known as range of motion (ROM) in the literature.
 % TODO: Explain important biomechanical concepts like dorsiflexion, eversion, etc...
 
 \subsection{Code Description}\label{subsec:method-code-description}
@@ -258,7 +258,7 @@ All columns in the metadata were inspected for implausible values. Table \ref{ta
 \end{table}
 
 
-\paragraph{Merging metadata and biomechanical variables} 
+\paragraph{Merging metadata and biomechanical variables}
 A surrogate key \texttt{id} was introduced to uniquely identify each sample across datasets, where one sample corresponds to a session. The surrogate key was defined as the concatenation of the subject identifier and the session filename in uppercase (e.g., \texttt{100001\_20110531T161051}). This column was then used as the join key to merge the metadata and biomechanical variables.
 % TODO: List all variables available? Maybe better on a Apendinx?
 
@@ -304,7 +304,7 @@ Categorical variables were converted into sparse one-hot encoded arrays, where e
 
 
 \paragraph{Statistical assessment of predictor-target associations}
-t-distributed Stochastic Neighbor Embedding (t-SNE) is a non-linear dimensionality reduction technique that projects high-dimensional data into a low-dimensional space while preserving local neighbourhood relationships \citep{JMLR:v9:vandermaaten08a}. In this project, t-SNE was applied as an exploratory tool to assess whether natural clustering exists in the data. Seven plots were generated with different values of the hyperparameter \texttt{perplexity}, and the plot that best reflected the data structure was chosen. The range of perplexity values proposed in \citet{JMLR:v9:vandermaaten08a} as typical was used.  
+t-distributed Stochastic Neighbor Embedding (t-SNE) is a non-linear dimensionality reduction technique that projects high-dimensional data into a low-dimensional space while preserving local neighbourhood relationships \citep{JMLR:v9:vandermaaten08a}. In this project, t-SNE was applied as an exploratory tool to assess whether natural clustering exists in the data. Seven plots were generated with different values of the hyperparameter \texttt{perplexity}, and the plot that best reflected the data structure was chosen. The range of perplexity values proposed in \citet{JMLR:v9:vandermaaten08a} as typical was used.
 
 \begin{figure}[ht]
     \centering
@@ -312,12 +312,12 @@ t-distributed Stochastic Neighbor Embedding (t-SNE) is a non-linear dimensionali
     \caption[2D t-SNE plot with perplexity 10]{2D t-SNE plot with perplexity 10. Injured samples appear in blue and uninjured samples in orange.\label{fig:met-tsne-injured}}
 \end{figure}
 
-Figure~\ref{fig:met-tsne-injured} shows the 2D t-SNE projection of the cleaned dataset. The embedding suggests that no strong natural groupings exist, as injured and uninjured samples overlap across most of the plot. A small cluster of uninjured samples is visible in the upper-central region, but the distance to neighbouring points is limited. This indicates that even the most distinct subgroup is not well separated and that class separation is more complex due to high similarity between classes. It should also be noted that the figure only displays the first two t-SNE components. Additional separation may exist in higher-dimensional representations.  
+Figure~\ref{fig:met-tsne-injured} shows the 2D t-SNE projection of the cleaned dataset. The embedding suggests that no strong natural groupings exist, as injured and uninjured samples overlap across most of the plot. A small cluster of uninjured samples is visible in the upper-central region, but the distance to neighbouring points is limited. This indicates that even the most distinct subgroup is not well separated and that class separation is more complex due to high similarity between classes. It should also be noted that the figure only displays the first two t-SNE components. Additional separation may exist in higher-dimensional representations.
 
-The plot also highlights differences in the relative density of the two classes: injured samples appear more frequently in the lower-left region, whereas uninjured samples are more common in the upper-centre. A separating line could be drawn such that more than 50\% of the uninjured samples fall on one side, suggesting that a simple linear classifier trained on the t-SNE components would perform slightly better than random chance. This indicates that some degree of class separation is present, although it remains weak.  
+The plot also highlights differences in the relative density of the two classes: injured samples appear more frequently in the lower-left region, whereas uninjured samples are more common in the upper-centre. A separating line could be drawn such that more than 50\% of the uninjured samples fall on one side, suggesting that a simple linear classifier trained on the t-SNE components would perform slightly better than random chance. This indicates that some degree of class separation is present, although it remains weak.
 
-To complement the visual inspection, statistical tests were performed to quantify the relationship between predictors and the target variable. Mutual information (MI) was computed for all variables, Pearson's correlation coefficient was calculated for numerical predictors, and independent-sample t-tests were applied to compare distributions of injured and uninjured groups. For categorical variables, Chi-squared tests were performed. Table~\ref{tab:met-top-vars-stat-test} shows the top-scoring predictors under each metric.  
- 
+To complement the visual inspection, statistical tests were performed to quantify the relationship between predictors and the target variable. Mutual information (MI) was computed for all variables, Pearson's correlation coefficient was calculated for numerical predictors, and independent-sample t-tests were applied to compare distributions of injured and uninjured groups. For categorical variables, Chi-squared tests were performed. Table~\ref{tab:met-top-vars-stat-test} shows the top-scoring predictors under each metric.
+
 \begin{table}[htbp]
     \centering
     \caption{Top predictors of injury status across statistical tests. \label{tab:met-top-vars-stat-test}}
@@ -419,17 +419,17 @@ The duration of the stance phase varies even withing a session, figure~\ref{fig:
 
 
 \subsection{Feature Engineering}\label{subsec:method-feature-engineering}
-High collinearity was observed within the tabular dataset, which is expected in the biomechanics domain since the variables we work with are usually describing the same movement or posture (e.g., stance time is inversely proportional to running speed and strongly related to stride length). A correlation matrix confirmed that several variables were highly correlated, and initial variance inflation factor (VIF) values were extremely high.  
+High collinearity was observed within the tabular dataset, which is expected in the biomechanics domain since the variables we work with are usually describing the same movement or posture (e.g., stance time is inversely proportional to running speed and strongly related to stride length). A correlation matrix confirmed that several variables were highly correlated, and initial variance inflation factor (VIF) values were extremely high.
 
-To reduce redundancy and at the same time generate more informative predictors, new features were engineered based on the symmetry of the lower limbs. For each left-right pair of variables, only the measurement from the dominant leg was retained. When the dominant leg was not reported or was marked as ambidextrous, the right side was selected by default, as it is the most common case in the dataset.  
+To reduce redundancy and at the same time generate more informative predictors, new features were engineered based on the symmetry of the lower limbs. For each left-right pair of variables, only the measurement from the dominant leg was retained. When the dominant leg was not reported or was marked as ambidextrous, the right side was selected by default, as it is the most common case in the dataset.
 
-In addition, to preserve information from the non-dominant side, new **difference variables** were created to capture asymmetries between the two legs. These were defined as:  
+In addition, to preserve information from the non-dominant side, new **difference variables** were created to capture asymmetries between the two legs. These were defined as:
 \begin{equation}
     x_{\mathrm{diff}} = x_{\mathrm{dom}} - x_{\mathrm{nondom}}
 \end{equation}
-where $x_{\mathrm{dom}}$ is the value for the dominant leg and $x_{\mathrm{nondom}}$ is the value for the non-dominant leg.  
+where $x_{\mathrm{dom}}$ is the value for the dominant leg and $x_{\mathrm{nondom}}$ is the value for the non-dominant leg.
 
-This feature engineering step not only reduced the dimensionality of the predictor set but also introduced meaningful asymmetry measures that may be biomechanically relevant for injury detection. After applying this transformation, VIF values decreased substantially: the number of variables with VIF $< 10$ increased from 10 to 32, and the remaining variables above this threshold showed much lower values than before.  
+This feature engineering step not only reduced the dimensionality of the predictor set but also introduced meaningful asymmetry measures that may be biomechanically relevant for injury detection. After applying this transformation, VIF values decreased substantially: the number of variables with VIF $< 10$ increased from 10 to 32, and the remaining variables above this threshold showed much lower values than before.
 
 \subsection{Feature Selection}\label{subsec:method-feature-selection}
 Two complementary methods were used, one per dataset type: (i) a filter-wrapper approach with Minimum Redundancy-Maximum Relevance (mRMR) to select best performing predictors for the tabular dataset, and (ii) a session-level summarisation of time-series curves to build compact, comparable representations for each joint angle and velocity.
@@ -502,7 +502,7 @@ The resulting representative curve provides a compact description of a runner's 
 
 $TODO ADD FIGURE of Curve registration with different algorithms.$
 
-Several algorithms are available for DTW estimation, each producing markedly different results. After visual inspection, the Rabiner-Juang step pattern \citep{Rabiner1993}, configured with family~$VI$ and subtype~$C$\footnote{A detailed description of available step patterns in DTW can be found in the documentation of the R version of the library: \url{https://search.r-project.org/CRAN/refmans/dtw/html/stepPattern.html}.}, was selected as the most stable option.  
+Several algorithms are available for DTW estimation, each producing markedly different results. After visual inspection, the Rabiner-Juang step pattern \citep{Rabiner1993}, configured with family~$VI$ and subtype~$C$\footnote{A detailed description of available step patterns in DTW can be found in the documentation of the R version of the library: \url{https://search.r-project.org/CRAN/refmans/dtw/html/stepPattern.html}.}, was selected as the most stable option.
 
 However, the iterative nature of the algorithm resulted in very poor processing performance. Executing DTW across the full set of curves required more than 30~days of computation on the available resources, even when parallelised across 8~cores. With this computational cost the approach is impractical within the resource constraints of the project. As an alternative, a simple mean curve was computed as a faster approximation. Although less precise, this approach produced results in line with project requirements. With additional time and computational resources, the DTW procedure could potentially be reformulated into a matrix-based optimisation problem, which would improve scalability and efficiency.
 
@@ -514,7 +514,62 @@ Overall, this two-pronged strategy reduced dimensionality and redundancy in the 
 
 \section{Modelling}\label{sec:method-models}
 
-\paragraph{Logistic Regression Model}
+\subsection{Data Partitioning and Evaluation Protocol}\label{subsec:method-eval-proto}
+In order to ensure a robust evaluation of the models and to avoid data leakage between training and testing phases, a group-aware splitting strategy was adopted at the subject level. This guarantees that all sessions from the same subject appear exclusively in one partition (train, validation, or test).
+
+This decision wsa motivated by the risk of data leakage due to a model learning specificities of a subject that can be used to inflate the validation and test score. By ensuring that all sessions of a subject fall on the same partition, overfitting is reduced.
+
+\paragraph{Train, validation, and test sets}
+The dataset was divided into three partitions:
+\begin{itemize}
+    \item \textbf{Training set}: used primarily for fitting the models.
+    \item \textbf{Validation set}: used primarily for optimal threshold detection and performance monitoring in deep learning models.
+    \item \textbf{Test set}: used exclusively for model evaluation. As an unbiased estimate of model performance.
+\end{itemize}
+
+The training set was used to fit the models. For the tabular models, part of the training set was used  within a cross-validation scheme during grid search in order to evaluate the performance of different hyperparameter configurations.
+
+The validation set was used to determine the optimal decision threshold for classification both for tabular and deep learning models. This ensured that the threshold calibration was unbiased.
+
+For the deep learning models, the training set was used exclusively to optimise model weights, while the validation set was used exclusively to monitor model performance during training. The validation loss guided early stopping and was used for model checkpointing.
+
+The final split proportions were set to \texttt{70\%} for training, \texttt{10\%} for validation, and \texttt{20\%} for testing for the tabular models, and \texttt{60\%} for training, \texttt{20\%} for validation, and \texttt{20\%} for testing.
+
+A bigger validation set ratio was choosen for the deep learning models because of the role it plays in that pipeline. Since it is used to monitor performance, we needed to make sure that the validation had enough samples to represent the population faithfully. On the tabular model pipeline, the validatioin set is only used to estimate the optimal threshold, something that can be done with less samples.
+
+The splits of every partiion were stratified by injury status to preserve the class distribution across partitions. Having a group-aware restriction makes the stratification task very hard. In this project we did a best effort to keep the class balance equal accross partitions. Table \ref{tab:met-data-splits} summarises the actual proportions and class distribution per partition and preprocessing pipeline.
+
+
+\begin{table}[htbp]
+    \centering
+    \caption[Train-Test-Validation Split and Class Distribution]{Summary of train, validation, and test splits with class distributions for tabular and deep learning model pipelines.}
+    \label{tab:met-data-splits}
+    \begin{tabular}{llcccc}
+    \hline
+    \textbf{Pipeline} & \textbf{Split} & \textbf{Samples} & \textbf{Proportion (\%)} & \textbf{Injured (\%)} & \textbf{Uninjured (\%)} \\
+    \hline
+    \multirow{3}{*}{Tabular}
+      & Train & 1254 & 69.2 & 64.0 & 36.0 \\
+      & Validation & 192 & 10.6 & 64.6 & 35.4 \\
+      & Test & 367 & 20.2 & 61.0 & 39.0 \\
+    \hline
+    \multirow{3}{*}{Deep Learning}
+      & Train & 1068 & 58.9 & 63.8 & 36.2 \\
+      & Validation & 378 & 20.8 & 65.1 & 34.9 \\
+      & Test & 367 & 20.2 & 61.0 & 39.0 \\
+    \hline
+    \end{tabular}
+\end{table}
+
+
+\paragraph{Cross-validation within training}
+Within the training set, a $k$-fold group-aware cross-validation procedure was employed to improve the reliability of model evaluation and to mitigate variance due to partitioning. Specifically, \texttt{k=5} folds were used, and splits were stratified by the injury status label while ensuring that all sessions from the same subject remained in the same fold.
+
+\paragraph{Evaluation protocol}
+Performance metrics were calculated on the validation folds during model selection and hyperparameter tuning. Once the best configuration was identified, the model was retrained on the entire training+validation data and finally evaluated once on the held-out test set. This protocol ensured that the reported test scores reflect generalisation to unseen subjects.
+
+
+\subsection{Logistic Regression Model}\label{subsec:method-log-reg}
 Logistic regression is a widely used statistical learning method for modeling the relationship between a binary dependent variable and one or more independent predictors. Unlike linear regression, which assumes a continuous outcome, logistic regression is designed for classification tasks where the target variable is categorical, typically taking values of 0 or 1. The model estimates the probability that a given input belongs to the positive class by applying the logistic function to a linear combination of the predictors. This transformation ensures that predicted probabilities are constrained within the interval $[0, 1]$, making the model interpretable in terms of likelihoods.
 
 Mathematically, the logistic regression model can be expressed as
@@ -540,7 +595,7 @@ The $\ell_{1}$ penalty (Lasso) enforces sparsity by driving some coefficients ex
 % \begin{equation}
 %     \mathcal{L}_{\text{reg}}(\mathbf{w}, b) = \mathcal{L}(\mathbf{w}, b) + \lambda R(\mathbf{w}),
 % \end{equation}
-% with $R(\mathbf{w}) = \|\mathbf{w}\|_{1}$ for $\ell_{1}$ or $R(\mathbf{w}) = \|\mathbf{w}\|_{2}^{2}$ for $\ell_{2}$. In the \texttt{scikit-learn} implementation, $\lambda$ is parameterized as $1/C$.  
+% with $R(\mathbf{w}) = \|\mathbf{w}\|_{1}$ for $\ell_{1}$ or $R(\mathbf{w}) = \|\mathbf{w}\|_{2}^{2}$ for $\ell_{2}$. In the \texttt{scikit-learn} implementation, $\lambda$ is parameterized as $1/C$.
 
 
 \subsection{Random Forest}\label{subsec:method-baselines}
