@@ -687,7 +687,82 @@ Architure from paper.
 \subsection{Hyperparameter tuning}\label{subsec:method-hyperparam-tuning}
 The choice of hyperparameter search method was influenced by the differences in training cost between tabular and deep learning models. Tabular models are comparatively fast to train because they operate on a small set of descriptive variables and do not rely on iterative training across epochs. In contrast, deep learning models are slower because they are trained in epochs on large tensors, in this case the full time-series dataset (60 channels $\times$ 101 values $\times$ 1813 samples). As a result, within the same amount of time, a broader hyperparameter space can be explored for tabular models, making grid search a feasible option. For deep learning models, however, grid search was impractical, and an adaptive search strategy was required.
 
-Grid search is a search strategy in which a set of values is predefined for each hyperparameter, and models are trained and evaluated on all possible combinations of these values. Although computationally expensive, grid search provides a systematic way to explore the hyperparameter space and is effective when the number of parameters and candidate values is limited.In contrast, Hyperband is a probabilistic, resource-aware optimisation algorithm that adaptively allocates more resources to promising configurations while eliminating poorly performing ones early \citep{Li2017}. It combines random sampling of the hyperparameter space with successive halving, in which configurations are trained with increasing budgets (e.g., number of epochs) and only the best-performing candidates are promoted to later stages. This approach enables efficient exploration of wide hyperparameter spaces, which is particularly advantageous for deep learning models where training costs are high.For the tabular models, grid search was applied to exhaustively evaluate all combinations in the defined hyperparameter space. A five-fold stratified group cross-validation procedure was used within the training data to estimate model performance, thereby preserving the validation set for post-hyperparameter tuning steps such as operating threshold optimisation.For the deep learning models (MC-DCNN, bilateral LSTM, and unilateral LSTM), hyperparameter search was performed using the Hyperband implementation in \texttt{Keras Tuner} \citep{Li2017}. Each candidate configuration was evaluated on a held-out validation split using ROC-AUC as the objective, with early stopping.
+Grid search is a search strategy in which a set of values is predefined for each hyperparameter, and models are trained and evaluated on all possible combinations of these values. Although computationally expensive, grid search provides a systematic way to explore the hyperparameter space and is effective when the number of parameters and candidate values is limited.
+
+In contrast, Hyperband is a probabilistic, resource-aware optimisation algorithm that adaptively allocates more resources to promising configurations while eliminating poorly performing ones early \citep{Li2017}. It combines random sampling of the hyperparameter space with successive halving, in which configurations are trained with increasing budgets (e.g., number of epochs) and only the best-performing candidates are promoted to later stages. This approach enables efficient exploration of wide hyperparameter spaces, which is particularly advantageous for deep learning models where training costs are high.
+
+For the tabular models, grid search was applied to exhaustively evaluate all combinations in the defined hyperparameter space. A five-fold stratified group cross-validation procedure was used within the training data to estimate model performance, thereby preserving the validation set for post-hyperparameter tuning steps such as operating threshold optimisation.For the deep learning models (MC-DCNN, bilateral LSTM, and unilateral LSTM), hyperparameter search was performed using the Hyperband implementation in \texttt{Keras Tuner} \citep{Li2017}. Each candidate configuration was evaluated on a held-out validation split using ROC-AUC as the objective, with early stopping.
+
+\paragraph{Hyperparameter Ranges and Best Values}
+
+The following summarizes the hyperparameter search spaces and the best-performing values identified for each model:
+
+\begin{itemize}
+    \item \textbf{Logistic Regression}
+    \begin{itemize}
+        \item $C$: $10^{[-3,3]}$ (best: $0.1$)
+        \item Penalty: \{l1, l2\} (best: l1)
+        \item Solver: \{liblinear\} (best: liblinear)
+    \end{itemize}
+    \item \textbf{Random Forest}
+    \begin{itemize}
+        \item $n_{\text{estimators}}$: \{100, 200, 300\} (best: 200)
+        \item max\_depth: \{None, 10, 20\} (best: None)
+        \item min\_samples\_split: \{2, 5, 10, 16\} (best: 2)
+        \item min\_samples\_leaf: \{2, 5, 8\} (best: 2)
+        \item max\_features: \{$\sqrt{\phantom{a}}$, $\log_2$\} (best: $\sqrt{\phantom{a}}$)
+    \end{itemize}
+    \item \textbf{XGBoost}
+    \begin{itemize}
+        \item $n_{\text{estimators}}$: \{100, 200, 500\} (best: 500)
+        \item max\_depth: \{3, 6, 9\} (best: 6)
+        \item learning\_rate: \{0.005, 0.01, 0.1\} (best: 0.005)
+        \item subsample: \{0.8, 1.0\} (best: 0.8)
+        \item colsample\_bytree: \{0.8, 1.0\} (best: 1.0)
+        \item $\gamma$: \{0, 1, 5\} (best: 1)
+        \item scale\_pos\_weight: $=$ neg\_pos\_ratio (best: $\approx 1.78$)
+    \end{itemize}
+    \item \textbf{Support Vector Machine}
+    \begin{itemize}
+        \item $C$: \{0.1, 1, 10\} (best: 1)
+        \item Kernel: \{rbf, linear, poly\} (best: rbf)
+        \item $\gamma$: \{scale, 0.1, 0.01\} (best: 0.01)
+    \end{itemize}
+    \item \textbf{Deep CNN}
+    \begin{itemize}
+        \item activation\_combo: \{sigmoid\_relu\} (best: sigmoid\_relu)
+        \item $k_1$: \{5, 7\} (best: 5)
+        \item $f_{1/\text{ch}}$: \{8, 12\} (best: 8)
+        \item pool1: \{2, 3\} (best: 2)
+        \item hidden: \{256, 512, 768\} (best: 768)
+        \item fc\_dropout: \{0.0, 0.2, 0.4\} (best: 0.2)
+        \item learning\_rate: \{2e$-$4, 4e$-$4, 8e$-$4\} (best: $4\times10^{-4}$)
+        \item weight\_decay: \{1e$-$5, 3e$-$5, 1e$-$4\} (best: $1\times10^{-5}$)
+    \end{itemize}
+    \item \textbf{Bilateral Two-Tower LSTM}
+    \begin{itemize}
+        \item lstm\_units: \{48, 64, 96\} (best: 48)
+        \item lstm\_dropout: \{0.15, 0.20, 0.25, 0.30, 0.35\} (best: 0.15)
+        \item head\_hidden: \{48, 64, 96\} (best: 48)
+        \item head\_units: \{48, 64, 96\} (best: 96)
+        \item head\_dropout: \{0.20, 0.25, 0.30, 0.35, 0.40\} (best: 0.35)
+        \item learning\_rate: [1e$-$4, 5e$-$4] (best: $\approx 5\times10^{-4}$)
+        \item weight\_decay: [1e$-$5, 3e$-$4] (best: $\approx 1.1\times10^{-5}$)
+        \item multiscale\_conv: \{True, False\} (best: False)
+        \item single\_kernel: \{7, 15, 21, 31, 41, 51\} (best: 51)
+    \end{itemize}
+    \item \textbf{Unilateral LSTM}
+    \begin{itemize}
+        \item head\_units: \{32, 64\} (best: 64)
+        \item head\_dropout: \{0.0, 0.2, 0.4\} (best: 0.2)
+        \item lstm\_units: \{64, 128\} (best: 128)
+        \item lstm\_dropout: \{0.0, 0.2, 0.4\} (best: 0.0)
+    \end{itemize}
+\end{itemize}
+
+\noindent
+See the supplementary material and code repository for the full search grids and additional details.
+    
 
 
 \subsection{Dataset configuration}\label{subsec:method-data-config}
