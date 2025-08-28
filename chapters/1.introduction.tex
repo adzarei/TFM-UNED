@@ -1,97 +1,56 @@
 \chapter{Introduction}\label{chap:introduction}
-%Motion analysis is the systematic study of human movement, and it is a key component of many fields, including biomecanics, medicine and sports science.
-%Kinematics is the study of the motion of objects without considering the forces causing the motion.
--- To populate after objectives.
+% %Motion analysis is the systematic study of human movement, and it is a key component of many fields, including biomecanics, medicine and sports science.
+% %Kinematics is the study of the motion of objects without considering the forces causing the motion.
+% -- To populate after objectives.
 
-Can we detect running injuries using kinematic data? -> Lots of research exists that relates injuries to training load, physiological factors that require logitudinal data to be collected during a long period of time
+% Can we detect running injuries using kinematic data? -> Lots of research exists that relates injuries to training load, physiological factors that require logitudinal data to be collected during a long period of time
 
-Lots of research into injury risk prediction, but not much into injury detection.
-% Research in the domain of ML for injury risk prediction in sports has grown steadily over the last 10 years (https://bjsm.bmj.com/content/59/7/491)
+% Lots of research into injury risk prediction, but not much into injury detection.
+% % Research in the domain of ML for injury risk prediction in sports has grown steadily over the last 10 years (https://bjsm.bmj.com/content/59/7/491)
 
 
-Proof that Machine learning has been used successfully in the field of biomechanics 
+Running is one of the most popular forms of physical activity worldwide. However, it is also associated with a high incidence of injuries, which are common among both recreational and competitive runners \citep{vanGent2007}. These injuries often lead to pain, reduced performance, and time away from training or competition.
+
+Early detection of running-related injuries is critical \citep{Mamom2023}. Timely identification of injury onset can enable medical intervention before a minor condition progresses into a chronic or even career-threatening disability. In this sense, accurate and early detection methods could substantially improve rehabilitation outcomes and reduce the long-term burden of injuries on athletes.  
+
+While considerable research has focused on injury prevention and the identification of risk factors, injury detection itself remains an underexplored area in comparison. Previous research exists \citep{Mamom2023}, but compared to prevention-oriented studies, detection-oriented approaches have received significantly less attention, despite their potential for direct clinical and performance impact. Bridging this gap represents an opportunity for research with both scientific and societal relevance.  
+
+% Do i have papaers to support "or even contradictory associations"?
+One of the central challenges in this domain is the inconsistency of findings regarding the relationship between kinematic data and injury status. Previous studies have reported inconclusive associations, making it difficult to establish universal biomechanical markers of injury \citep{Peterson2022, Malisoux2024, Guan2022}. This lack of consensus highlights the need for state-of-the art analytical approaches that can integrate complex biomechanical signals and reveal hidden patterns.  
+
+Recent advances in marker-based motion capture and machine learning have made it feasible to analyse large-scale gait datasets, offering new opportunities for detailed biomechanical analysis \citep{Harris2022}. At the same time, machine learning techniques have demonstrated strong potential in extracting meaningful patterns from such datasets, making them valuable tools for injury-related research \citep{Kokkotis2022}. In particular, deep learning methods have shown promising results in related applications, suggesting their suitability for detecting injuries directly from time-series kinematic data \citep{Sadr2025}.  
 
 
 \section{Motivation}\label{sec:intro-motivation}
--- Why? Why are we here?
--- Narrative of the problem
--- Real-world problem (running injuries), impact/costs, current practical gap.
--- My personal interest in the topic?
--- Lack of conclusive research, lack of variety of techniques, etc...
+
+For these reasons, this thesis investigates whether running injuries can be detected effectively using both classical machine learning and deep learning models applied to kinematic and biometric data. In addition, the use of model interpretability techniques is explored to enhance transparency and provide biomechanical insights, ensuring that the findings contribute not only to predictive performance but also to understanding the underlying mechanisms of injury.
+
+This project also stems from the author's interest, both as a runner and as a computer scientist, in combining biomechanics and artificial intelligence to address a tangible real-world challenge where explainability adds practical value.
 
 \section{Context and Collaboration}\label{sec:intro-context}
--- Collaboration with Javier, ...
--- Source paper: what it proposes, what you adopt, what you don't.
-    -- What data is available, what are we taking?
-
+This work was carried out in collaboration with Dr. Javier Gámez Payá, professor at the Faculty of Physiotherapy of the European University of Valencia (UEV), and builds upon the publicly available dataset released by \citet{Ferber2024}. The source paper provides a comprehensive pipeline for recording and preprocessing treadmill running and walking sessions for 1798 subjects. We adopt the dataset and MATLAB preprocessing routines but develop a Python-based workflow for data extraction, analysis, and modelling tailored to injury detection. Only running sessions are considered, and the input dataset is limited to kinematic, descriptive biomechanical and biometric variables.
 
 \section{Objectives an Scope}\label{sec:intro-objectives-scope}
-Objectives:\\
+% Objectives:\\
 
-% O1: The primary objective is to evaluate 4 classical ML models trained on the biomechanical features provided in the running-injury dataset (N=1402 runners) to classify injury status (injured vs. non-injured), and determine whether any achieves AUC-ROC > 0.7.\\
+% % O1: The primary objective is to evaluate 4 classical ML models trained on the biomechanical features provided in the running-injury dataset (N=1402 runners) to classify injury status (injured vs. non-injured), and determine whether any achieves AUC-ROC > 0.7.\\
 
-O1: The primary objective is to evaluate 4 Machine Learning models trained on engineered biomechanical features for binary injury status classification (injured vs. non-injured), and determine whether any achieve AUC-ROC > 0.7.\\
+% O1: The primary objective is to evaluate 4 Machine Learning models trained on engineered biomechanical features for binary injury status classification (injured vs. non-injured), and determine whether any achieve AUC-ROC > 0.7.\\
 
-O2: Assess whether advanced deep learning models (Unilateral LSTM, Bilateral LSTM, MC-DCNN) trained on time-series kinematic data significantly outperforms the best baseline by $\Delta$AUC-ROC > 0.05 (95\% CI, p $\le$ 0.05).\\
+% O2: Assess whether advanced deep learning models (Unilateral LSTM, Bilateral LSTM, MC-DCNN) trained on time-series kinematic data significantly outperforms the best baseline by $\Delta$AUC-ROC > 0.05 (95\% CI, p $\le$ 0.05).\\
 
-O3: Apply post-hoc interpretability techniques (SHAP and saliency maps) to identify key kinematic features that contribute most to injury detection.
-
-% TODO: Add a business description
+% O3: Apply post-hoc interpretability techniques (SHAP and saliency maps) to identify key kinematic features that contribute most to injury detection.
+The project pursues the following objectives:
+\begin{itemize}
+    \item[O1] Evaluate classical machine-learning models trained on engineered biomechanical features for binary injury status classification (injured vs. non-injured) and determine whether any achieve AUC-ROC $> 0.7$.
+    \item[O2] Assess whether advanced deep learning models trained on time-series kinematic data outperform the best baseline by $\Delta$AUC-ROC $> 0.05$ (95\% CI, $p \le 0.05$).
+    \item[O3] Apply post-hoc interpretability techniques (SHAP and saliency maps) to identify key kinematic features that contribute most to injury detection.
+\end{itemize}
+The scope of the study is restricted to binary injury status detection. It does not attempt to model injury severity, specific injury types, or long-term risk.
+% TODO: Add a business description.
 
 \section{Work Plan}\label{sec:intro-work-plan}
-% 4 phase project:
-%     - Data Preparation
-%     - Modelling
-%     - Model interpretation
-
-% Phase 1:
-% - Data acquisition and Preparation
-%     - Source paper data
-%     - Preprocessing in matlab
-%     - Data extraction into JSONs, folders, etc... Errors
-%     - Implementation of library to work with the data, both sides.
-%     - Data quality and checks -> We keep X side of the story. What sessions have been discarded during data acquisition?
-
-% - Exploratory Data Analysis
-%     - Data Exploration and visualisation; Distributions, magnitudes, time-series visualisation
-%     - Curation of tabular and timeseries data:
-%         - Outlier detection and removal
-%     - Feature engineering:
-%         - TimeSeries
-%             - Segmentation into stance phase and normalisation
-%         - Tabular:
-%             - Study of natural clustering t-SNE and PCA.
-%             - Statistical tests - Study of correlation, mutual information, t-test and chisquared
-%             - Assumption: Lots of very related features: Collinearity analysis
-%             - extract Dominant Leg features
-%     -Feature Selection:
-%         - MRMR to extract top 40 features
-%         - Select a representant Curve for all the segments of a trial: Curve Registration and Mean Curve.
-
-% Phase 2:
-% - Machine Learning modelling
-%     - Establish evaluation process: performance metrics, threshold selection process
-%     - Train classical ML models on handcrafted features
-%     - Hyper parameter tuning, group aware CV.
-%     - Analyse the results.
-
-% - Advanced Modelling:
-%     - Implementation of Deep Learning models: Unilateral CNN-LSTM, Billateral-CNN-LSTM, Multimodal-Billateral-CNN-LSTM and MC-DCNN
-%     - Hyper parameter tuning for models
-%     - Analyse the results
-
-% - Compare:
-%     - Compare the models to see if there is a statistically significant difference on the primary evaluation metric (ROC\_AUC)
-%     - Analyse the results and discuss the outcomes
-
-% Phase 3:
-% - Model interpretation:
-%     - Calculate feature importance for classical models via importance permutation.
-%     - Generate Saliency maps for the Deep Learning model
-%     - Analyse intrinsic featuer importance + permutation feature importance and Saliency maps to extract conclusive insights.
-%         - What features are most important when detecting injury?
-%         - What part of the stance phase is more important when detecting injury?
-
+The project is structured in three phases summarised below.
 \subsection{Phase 1: Data preparation and exploratory analysis}
 \begin{itemize}
     \item \textbf{Data acquisition and preprocessing}
@@ -147,4 +106,4 @@ O3: Apply post-hoc interpretability techniques (SHAP and saliency maps) to ident
 \end{itemize}
 
 \section{Document Structure}\label{sec:intro-structure}
-The document is structured in 4 chapters. The first chapter sets the context and frames the injury detection problem. Chapter 2, summarises the current state of the field of Machine learning applied to biomechanics with a focus on the problem and delves deeper into the challenges, limitation that exists, setting this project appart from what currently exists. In Chapter 3, the source paper (\cite{Ferber2024}) and its assets are presented together with the preprocessing and Exploratory Data Analysis (EDA). Then we continue with the implementation, training and evaluation of the models. To close the chapter Post-hoc explanability techniques are applied and key insights summarised. In Chapter 4, the results are presented and discussed. To conclude, in Chapter 5, we reflect on the results, derive conclusions and present limitation and future lines of work.
+This thesis is organised in five chapters. The first chapter sets the context and frames the injury detection problem. Chapter~\ref{chap:state-of-the-art} summarises the current state of the field of Machine learning applied to biomechanics and highlights the challenges that motivate this study. Chapter~\ref{chap:materials-methods} presents the dataset of \citet{Ferber2024}, describes the preprocessing pipeline, and details the modelling and evaluation procedures. Chapter~\ref{chap:results-discussion} reports and discusses the experimental results, including model interpretability analyses. Finally, Chapter~\ref{chap:conclusions} summarises the findings, outlines limitations, and proposes directions for future research.

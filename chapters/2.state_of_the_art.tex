@@ -22,7 +22,23 @@
 
 \cite{Malisoux2024} Gait asymmetry was not associated with higher injury risk for investigated spatiotemporal and kinetic variables. No between-limb differences were observed in runners having sustained an injury.
 
+The body of the runners adapts to injuries making it difficult to detect injury. Each person may adapt differently.
+% https://pubmed.ncbi.nlm.nih.gov/31261019/ -> 46% of experienced male distance runners with no history of tendon pain had at least one abnormal tendon on ultrasound imaging and didn't know.
 
+Sensors and placements: You need a lot of sensors to get meanigful data. MoCap for instance, we need 3-5 cameras, calibration, etc\dots
+This is expensive
+this requires speciallised equipement
+Takes time to prepare, and if done wrong, whole data nust be discarded.
+other exampels Ground forces sensors.
+
+
+COmputation costs: lots of data, highli dimensional.
+
+Standardization and Collaboration
+Addressing the research gap requires coordinated efforts to establish standardized data collection protocols, uniform injury definitions, and shared databases for algorithm development and validation. At the moment there is little data shared, \citet{Ferber2024} tries to address this by promoting the datasets as a golden standard.
+
+
+Studies usually use longitudinal data or prospective cohort designs to follow athletes over time and correlate baseline biomechanical measures with subsequent injury occurrence.(10.1123/jab.2018-0203, https://pubmed.ncbi.nlm.nih.gov/29846979/, https://pubmed.ncbi.nlm.nih.gov/38196940/)
 
 \section{Data Science in Biomechanics}\label{sec:sota-data-science}
 -- Data collection, preprocessing, feature engineering, model training, evaluation, etc...
@@ -36,23 +52,43 @@
 -- Tabular, Timeseries data. Marker data, GRF, kinematics,....
 -- PRevious work specific for the injury detection
 
-\cite{Harris2022} Machine Learning in biomechanics. What techniques are used and results. Also motivaiton and impact.
 \cite{Dibbern2025} Explainable AI and SHAP values....
+
+\cite{Harris2022} Machine Learning in biomechanics. What techniques are used and results. Also motivaiton and impact.
+% We identified six key applications of machine learning using gait data:
+% 1) Gait analysis where analyzing techniques and certain biomechanical analysis factors are improved by utilizing artificial intelligence algorithms
+% 2) Health and Wellness, with applications in gait monitoring for abnormal gait detection, recognition of human activities, fall detection and sports performance
+% 3) Human Pose Tracking using one-person or multi-person tracking and localization systems such as OpenPose, Simultaneous Localization and Mapping (SLAM), etc
+%  4) Gait-based biometrics with applications in person identification, authentication, and re-identification as well as gender and age recognition
+% 5) “Smart gait” applications ranging from smart socks, shoes, and other wearables to smart homes and smart retail stores that incorporate continuous monitoring and control systems and
+% 6) Animation that reconstructs human motion utilizing gait data, simulation and machine learning techniques.
+
+\citep{Simon2004}
+Costs: The establishment of a gait laboratory requires equipment purchases that average \$300,000 excluding facility
+
+Are alterations in running biomechanics associated with running injuries? A systematic review with meta-analysis - PMC
+Limited Association Between Biomechanics and Injury Status
+https://pmc.ncbi.nlm.nih.gov/articles/PMC10480598/
+Multiple systematic reviews have questioned the strength of the relationship between running biomechanics and injury status. Lopes et al. (2023) conducted a comprehensive systematic review examining whether alterations in running biomechanics are associated with running injuries, analyzing 82 studies with 5,465 runners. Their meta-analysis found that peak hip adduction angle was the sole biomechanical variable significantly associated with running injury, being higher in injured runners. However, this result was heavily influenced by studies from the same research group, indicating weak overall evidence.
+
+
+Inconsistent asssociation between assymetry and injury. \citep{Guan2022}
+
 
 \section{Source Paper}\label{sec:sota-source-paper}
 % Critical Review
-This projects build uppon the work done in \citet{Ferber2024}. This paper addressed the lack of benchmark datasets for quantitative biomechanical gait analysis by providing a dataset of 1798 healthy and injured subjects.
--- The value that the paper brings to the community amnd why it is important + effect on community.
--- What could be improved?
--- Better clarity on injury definition
--- Consistency on markers (not all subjects have the same marker data.)
--- Clean dataset and drop noise sessions
--- 
--- Limitations, assumptions, etc...
+% This projects build uppon the work done in \citet{Ferber2024}. This paper addressed the lack of benchmark datasets for quantitative biomechanical gait analysis by providing a dataset of 1798 healthy and injured subjects.
+% -- The value that the paper brings to the community amnd why it is important + effect on community.
+% -- What could be improved?
+% -- Better clarity on injury definition
+% -- Consistency on markers (not all subjects have the same marker data.)
+% -- Clean dataset and drop noise sessions
+% -- 
+% -- Limitations, assumptions, etc...
 
 \section{Takeaways}\label{sec:sota-methodological-takeaways}
--- short decisions your methodology inherits from the SoTA.
--- Models, techniques, normalization, etc...
--- Why these tequeniques have been choosen?
+% -- short decisions your methodology inherits from the SoTA.
+% -- Models, techniques, normalization, etc...
+% -- Why these tequeniques have been choosen?
 % Why are we going to do the things that we are going to do in the next chapter.
 % Encourage what we will see in the next chapter based on what we found in SOTA and ahy it matters.
