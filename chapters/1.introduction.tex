@@ -26,12 +26,6 @@ Proof that Machine learning has been used successfully in the field of biomechan
 
 
 \section{Objectives an Scope}\label{sec:intro-objectives-scope}
-% -- concise, measurable, and testable
-% -- Scope, limits, and assumptions
-% -- What does the source study not cover? What is out of scope for us?
-%     - Longitudinal analysis
-%     - Follow-up on subjects to track evolution of the injury.
-%     - Temporal information about the injury (chronic, not chronic, recent, coping, etc...)
 Objectives:\\
 
 % O1: The primary objective is to evaluate 4 classical ML models trained on the biomechanical features provided in the running-injury dataset (N=1402 runners) to classify injury status (injured vs. non-injured), and determine whether any achieves AUC-ROC > 0.7.\\
@@ -42,7 +36,7 @@ O2: Assess whether advanced deep learning models (Unilateral LSTM, Bilateral LST
 
 O3: Apply post-hoc interpretability techniques (SHAP and saliency maps) to identify key kinematic features that contribute most to injury detection.
 
-% TODO: Add a businesst description
+% TODO: Add a business description
 
 \section{Work Plan}\label{sec:intro-work-plan}
 % 4 phase project:
@@ -59,7 +53,7 @@ O3: Apply post-hoc interpretability techniques (SHAP and saliency maps) to ident
 %     - Data quality and checks -> We keep X side of the story. What sessions have been discarded during data acquisition?
 
 % - Exploratory Data Analysis
-%     - Data Exploration and visualisation; Distributions, magnitudes, ts visualisation
+%     - Data Exploration and visualisation; Distributions, magnitudes, time-series visualisation
 %     - Curation of tabular and timeseries data:
 %         - Outlier detection and removal
 %     - Feature engineering:
@@ -86,20 +80,17 @@ O3: Apply post-hoc interpretability techniques (SHAP and saliency maps) to ident
 %     - Hyper parameter tuning for models
 %     - Analyse the results
 
-% - Compare comparision:
-%     - Compare the models using DeLongs test on the primary evaluation metric (ROC\_AUC)
+% - Compare:
+%     - Compare the models to see if there is a statistically significant difference on the primary evaluation metric (ROC\_AUC)
 %     - Analyse the results and discuss the outcomes
 
 % Phase 3:
 % - Model interpretation:
-%     - Calculate SHAP values for the best performing model of both categories.
-%     - Generate Saliency maps for the best performing Deep Learning model
-%     - Analyse SHAP values and Saliency maps to extract conclusive insights.
+%     - Calculate feature importance for classical models via importance permutation.
+%     - Generate Saliency maps for the Deep Learning model
+%     - Analyse intrinsic featuer importance + permutation feature importance and Saliency maps to extract conclusive insights.
 %         - What features are most important when detecting injury?
 %         - What part of the stance phase is more important when detecting injury?
-
-<DRAFT>
-This project is organized into three phases that span data preparation, modeling and comparative evaluation, and interpretation.
 
 \subsection{Phase 1: Data preparation and exploratory analysis}
 \begin{itemize}
