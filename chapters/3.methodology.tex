@@ -20,7 +20,7 @@ During the recording of the sessions of all 1798 subjects the 'core' and 'cluste
     \begin{centering}
     \includegraphics[width=0.5\columnwidth]{images/billateral_marker_position.png}
     \par\end{centering}
-    \caption{Position of markers on the subjects. Grey markers correspond to core set of markers set, black to additional set and white to the clusters set.}
+    \caption{Position of markers on the subjects. Grey markers correspond to core set of markers set, black to additional set and white to the clusters set. Source: \citet{Ferber2024}}
     \label{fig:marker_position}
 \end{figure}
 
@@ -64,6 +64,7 @@ As described above, the dataset contains two complementary components: (i) sessi
 It must be noted that \texttt{Joints} and \texttt{Neutral} coordinates do not represent the true anatomical centres, only the centres of the markers on the skin of the subject.
 Only 33 of the 77 descriptive biomechanical variables are populated per side, the rest all contain 0 for all values of all sessions, this totals 66 populated descriptive variables in total. Table \ref{tab:met-desc-variable-init} describes the variable set per side.
 
+% TODO: Breakdown into one table per group and analyse that group individually....
 \begin{table}[ht]
     \centering
     \caption[Populated Descriptive Variables Summary]{Summary of the Descriptive Biomechanical Variables that are populated\label{tab:met-desc-variable-init}}
@@ -297,11 +298,12 @@ Seven columns contain injury data: primary injury data (\texttt{SpecInjury}, \te
 The source paper does not precise clearly what logic did they use for a subject to be counted as uninjured, but we have decided to use the information coming from \texttt{SpecInjury} and \texttt{SpecInjury2} because it is medically diagnosed by a medical practitioner. So if any of these two variables has a value other than \texttt{"no\_injury"}, we will flag the runner as injured during the session. The distribution of injured vs uninjured sessions is 63.5\% to 36.5\%.
 
 
-\paragraph{Variable standardisation for training}
+\paragraph{Variable standardisation for training}\label{para:met-var-standarisation}
 To prepare the variables for training, numerical values were standardised using the Z-score $Z = (X - \mu) / \sigma$. This procedure centres the data around a mean of 0 and scales it to a standard deviation of 1. Standardisation reduces bias when working with variables of different magnitudes and is required for models such as Logistic Regression and Support Vector Machine (SVM).
 
 Categorical variables were converted into sparse one-hot encoded arrays, where each category value is represented as a separate column and encoded with a 1 or 0 to indicate its presence. To mitigate perfect collinearity, where one variable can be predicted exactly from another, reducing the reliability of coefficient estimates and hindering interpretability, the column corresponding to the value \texttt{unknown} was dropped for each categorical variable.
 
+It is important to note that any normalisation and imputed values where obtained from the training set only. This ensures that no data leakage from the test and validation set is passed down to the model.
 
 \paragraph{Statistical assessment of predictor-target associations}
 t-distributed Stochastic Neighbor Embedding (t-SNE) is a non-linear dimensionality reduction technique that projects high-dimensional data into a low-dimensional space while preserving local neighbourhood relationships \citep{JMLR:v9:vandermaaten08a}. In this project, t-SNE was applied as an exploratory tool to assess whether natural clustering exists in the data. Seven plots were generated with different values of the hyperparameter \texttt{perplexity}, and the plot that best reflected the data structure was chosen. The range of perplexity values proposed in \citet{JMLR:v9:vandermaaten08a} as typical was used.
@@ -408,7 +410,7 @@ Table \ref{tab:met-ts-vars} lists all time-series variables available per sessio
     \end{tabular}
 \end{table}
 
-The duration of the stance phase varies even withing a session, figure~\ref{fig:met-hist-segments} shows the distribution of segment duration within a session, which ranges from 62 to 67 frames. To be able to compare segments pairly, it is standard practice to normalise biomechanical kinematic data to 101 data points \citep{Crane2010,FuentesJimnez2025}, representing the percentage of the stance phase from 0\% to 100\% inclusive. When normalising the segments, linear interpolation is used.
+The duration of the stance phase varies even within a session, figure~\ref{fig:met-hist-segments} shows the distribution of segment duration within a session, which ranges from 62 to 67 frames. To be able to compare segments fairly, it is standard practice to normalise biomechanical kinematic data to 101 data points \citep{Crane2010,FuentesJimnez2025}, representing the percentage of the stance phase from 0\% to 100\% inclusive. When normalising the segments, linear interpolation is used.
 
 \begin{figure}[ht]
     \centering
@@ -416,18 +418,24 @@ The duration of the stance phase varies even withing a session, figure~\ref{fig:
     \caption[Histogram of Segment Lengths for a session]{Histogram of Segment Lengths for the Left Knee Angle of session 100001\_20110531T161051.\label{fig:met-hist-segments}}
 \end{figure}
 
-
-
 \subsection{Feature Engineering}\label{subsec:method-feature-engineering}
 High collinearity was observed within the tabular dataset, which is expected in the biomechanics domain since the variables we work with are usually describing the same movement or posture (e.g., stance time is inversely proportional to running speed and strongly related to stride length). A correlation matrix confirmed that several variables were highly correlated, and initial variance inflation factor (VIF) values were extremely high.
 
-To reduce redundancy and at the same time generate more informative predictors, new features were engineered based on the symmetry of the lower limbs. For each left-right pair of variables, only the measurement from the dominant leg was retained. When the dominant leg was not reported or was marked as ambidextrous, the right side was selected by default, as it is the most common case in the dataset.
+To reduce redundancy and at the same time generate more informative predictors, new features were engineered based on the symmetry of the lower limbs. For each left-right pair of variables, only the measurement from the dominant leg was retained (i.e. for a right dominant leg runner, pelvis\_peak\_drop\_angle\_left was dropped and pelvis\_peak\_drop\_angle\_right was renamed to dom\_leg\_pelvis\_peak\_drop\_angle). When the dominant leg was not reported or was marked as ambidextrous, the right side was selected by default, as it is the most common case in the dataset.
 
 In addition, to preserve information from the non-dominant side, new **difference variables** were created to capture asymmetries between the two legs. These were defined as:
 \begin{equation}
     x_{\mathrm{diff}} = x_{\mathrm{dom}} - x_{\mathrm{nondom}}
 \end{equation}
-where $x_{\mathrm{dom}}$ is the value for the dominant leg and $x_{\mathrm{nondom}}$ is the value for the non-dominant leg.
+where $x_{\mathrm{dom}}$ is the value for the dominant leg and $x_{\mathrm{nondom}}$ is the value for the non-dominant leg. The new variables were named with the following convention: dom\_leg\_diff\_\$VariableName i.e. dom\_leg\_diff\_step\_width for the difference between step\_width\_right and step\_width\_left.
+
+Interestingly, the step width was found to be symmetrical across all sessions. This variable was computed in \texttt{gait\_steps.m}, and the observed symmetry is likely a result of the estimation process applied to the marker data. The feature \texttt{dom\_leg\_diff\_step\_width} was therefore dropped from the dataset, as it contained only zeros.  
+
+As a result, the biomechanical variable set was reduced from 80 variables (40 per side) to 79 variables: 40 for the dominant side and 39 asymmetry variables.  
+
+The set of biometric and demographic variables was also reduced. Only variables with less than 5\% missing values were retained, which led to the removal of activity and experience-related variables. The variables preserved were \texttt{Age}, \texttt{height}, \texttt{weight}, \texttt{gender}.  
+
+Finally, since \texttt{DominantLeg} was already incorporated into the dataset through the symmetry features, this variable was removed. After feature engineering, the final variable set contained 83 variables: 79 biomechanical and 4 biometric/demographic.
 
 This feature engineering step not only reduced the dimensionality of the predictor set but also introduced meaningful asymmetry measures that may be biomechanically relevant for injury detection. After applying this transformation, VIF values decreased substantially: the number of variables with VIF $< 10$ increased from 10 to 32, and the remaining variables above this threshold showed much lower values than before.
 
@@ -449,7 +457,11 @@ In practice, the MRMR implementation from \texttt{feature\_engine} python packag
     \caption[Tabular Features by MRMR relative relevance]{Tabular Features by MRMR relative relevance and, in red, the relevance cut-off value. Featured below that threshold were dropped.\label{fig:met-mrm-feat-sel}}
 \end{figure}
 
-The top 40 features were selected reducing the dataset by 53\%. Figure \ref{fig:met-mrm-feat-sel} shows the relative relevance of each feature and the cut-off value used.
+All 83 variables were standardised following the steps outlined in paragraph~\ref{para:met-var-standarisation}, which means that all columns were z-score normalised, missing values were replaces with the median of the column, \texttt{gender}, the only categorical column left, was encoded into \texttt{gender_male} and \texttt{gender_female}. This elevated the variable count to 84.
+
+All 84 columns were considered by the MRMR algorithm, and the top 40 were selected reducing the dataset by 52\%. Figure \ref{fig:met-mrm-feat-sel} shows the relative relevance of each feature and the cut-off value used.
+
+Later in this document, in subsection \ref{subsec:method-data-config}, the different dataset configuration are detailed and discussed.
 
 \paragraph{Time-series curves: session-level summarisation}
 \citet{Chau2005} acknowledges that inter-sample variation of the gait cycle is common across a sample of single-gait cycles and highlights that poor summarisation when combining multiple cycles into one can lead to the cancellation of critical shape characteristics and landmarks. Moreover it proposes the Curve Registration technique \citep{Ramsay1998} as an effective way to maintain key curve features after summarisation.
