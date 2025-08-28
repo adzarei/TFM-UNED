@@ -183,8 +183,6 @@ In addition to the time-series data, the script also generates the a of 33 descr
 \end{figure}
 
 
-% TODO: End with a summary of the tabular and time-series data that we have extracted?
-
 \section{Exploratory Data Analysis (EDA)}\label{sec:method-eda}
 As discussed on the previous section, we have two main types of data available:
 
@@ -662,10 +660,131 @@ By tuning these hyperparameters, the bias--variance trade-off was controlled thr
 
 \subsection{Unilateral BiLSTM}\label{subsec:method-unilat-bilstm}
 Explain inversion of X and Y axis.
+% LSTM V1:
+% Layer 0 - Input:
+% Each trial (Session) is a tensor of shape (101, 48) Maybe 54 if we include hip.
+% So input is (Batch, 101, 48)
+
+% Layer 1 - Normalization:
+% Put all 48 channels on a comparable scale so LSTM does not waste capacity in offsets/units.
+% Important so that channels do not dominate just because of the units. Makes the model focus on the shapes and dynamics.
+% Normalize with the Z-Score per channel.
+% Optionally, remove the trial mean
+
+
+% Layer 2 - First Temporal Encode:
+% BiLSTM (64 units, return_sequences=True)
+% Since each trial goes from TD to TO, that means that the time is not circular.
+% (If circular, add 2 channels: Sin an Cos)
+
+% Since there is a temporal component, we want to make this explicit to the model to that it can use it in the decision gates instead of having to derive it from other variables.
+% Our data corresponds to the stance face only, this means that it is not cyclic, it has a hard start and end., For this scenario, a linear phase hint is a good idea.
+% We add one extra channel:
+
+
+% T = 101
+% T = 0, 1, …, 100.
+% Pt = t / (T -1) = 0, 0.01, 0.02, …, 0.99, 1
+% P(0) = 0
+% P(50) = 0.5
+% P(100) = 1
+
+% But wait, in our dataset our left and right side stance phases start at t=0, but in reality they happen at different moments in time. We are losing inter-limb coordination cues.
+% If we would feed the model as it is, we would be introducing a fake synchronisation between both sides.
+% We have two options:
+% 1- UNilateral Trials -> Treat left and right as two different sessions adding Pt
+% 2 - Two tower siamese model -> Train two sequences, one per each side each with it’s own Pt.
+
+% We choose to start with the simplest approach: 1
+% If needed we can reuse the architecture of 1 into two later.
+
+% Unilateral Trial:
+% Split tensor by left and right from (101, 48) to (101, 24) and then add Pt, so (101, 25)
+% When running the model, we should run both sides and combine the probabilities.
+
+% WE NEED TO START THE MODEL AGAIN:
+
+% LSTM V2 - Unilateral:
+% Layer 0 - Input:
+% Each trial (Session) is a tensor of shape (101, 25)
+% Add Pt as 25th feature.
+
+% Layer 1 - Normalization:
+% Normalize with the Z-Score per channel.
+% Remove the trial set mean (Save it and use the same for validation and Test)
+
+% Layer 2 - Temporal Encoder:
+% BiLSTM(64, return_sequence=true). Since it is bidirectional, the feature space increases to 64x2 = 128 Shape (101, 128)
+% Add Stabilizers:
+% dropout~=0.2 -> Zeros that fraction of activations during training to reduce overfitting -> Explained
+% gradient clipping to 1.0
+
+% Layer 3 - Temporal Encoder (Moved to next version)
+% BiLSTM(32, return_sequence=true)
+% Output (101, 64)
+% This second smaller BiLSTM will help refine the patterns from the first while keeping the time resolution
+% Note: It can bring overfit since we have a short wave (101 points)
+% Recommended only if underfitting is detected:
+% Training loss stays hi and plateaus
+% Training AUC-PR is low, and prediction probabilities are very close to 0.5 not confident.
+
+
+
+% ROT:
+% Underfitting = Low Training performance
+% Overfitting = High Training but low validation performance
+
+% Layer 4 - Summary:
+% GlobalAvgPool1D + GlobalMaxPool1D
+% Mean ≈ “how much overall”, Max ≈ “did it spike” → complementary signals.
+% example: if an ankle inversion burst at ~10% stance is predictive, max will catch it even if it’s brief; if the whole stance shows elevated knee valgus features, mean will reflect that.
+
+
+% Layer 5 -  Dense Head: 
+% Small regularized
+% Dense(32) -> ReLu  (Non linear mixing of pooled features)
+% Dropout(0.3) -- Stronger to prevent overfitting
+% Optional( LayerNorm/BatchNorm if unstable training)
+% Dense(1) -> Sigmoid to get a probability
+
 \subsection{Bilateral BiLSTM}\label{subsec:method-bilat-bilstm}
 With and without CNN.
+% LSTM V3 - BiLateral:
+% Why:
+% Here’s why:
+% Your label is session-level (injured=1), not leg-specific.
+%  The prediction should consider both legs at once. A bilateral head learns how to fuse sides instead of you hand-picking mean/max after the fact.
+
+
+% Left/right waveforms can be mirrored or even sign-inverted.
+%  A symmetry-aware merge (e.g., using [L,R,|L ⁣− ⁣R|,L ⁣⋅ ⁣R] is robust to those inversions and captures asymmetry directly—often the thing that correlates with injury.
+
+
+% Your trials were rephased per leg (stance only).
+%  True cross-leg time alignment is unreliable. Processing each side separately with a shared encoder avoids assuming synchrony; you compare embeddings, not raw timepoints.
+
+
+% Shared weights = strong inductive bias + fewer params.
+%  The same encoder sees left and right, so it learns leg-agnostic gait features and generalizes better with the data you have.
+
+
+% Built-in invariances you actually want.
+%  With the merge features above (and optional sign canonicalization), the model won’t overfit to “left vs right” quirks; it focuses on patterns and differences between legs.
+
+
+% Better handling of unilateral injuries.
+%  If only one side shows pathologic patterns, the bilateral head can up-weight that side (via the merge features) instead of a blunt post-hoc max/mean.
+
+
+% Cleaner evaluation & fewer plumbing bugs.
+%  One model → one probability P(injured)P(\text{injured})P(injured). No more side-specific orientation flips or manual fusion mistakes.
+
+
+% Diagnostics & interpretability.
+%  You get per-side embeddings and an explicit |L-R| channel—handy for analyzing what asymmetries the model used.
 \subsection{MC-DCNN}\label{subsec:method-mc-dcnn}
-Architure from paper.
+Architure from paper. -> https://drive.google.com/file/d/162jLdyKmxU4A8ynMr8qCI0xFSIsSHDfC/view?usp=sharing
+
 
 \subsection{Hyperparameter tuning}\label{subsec:method-hyperparam-tuning}
 The choice of hyperparameter search method was influenced by the differences in training cost between tabular and deep learning models. Tabular models are comparatively fast to train because they operate on a small set of descriptive variables and do not rely on iterative training across epochs. In contrast, deep learning models are slower because they are trained in epochs on large tensors, in this case the full time-series dataset (60 channels $\times$ 101 values $\times$ 1813 samples). As a result, within the same amount of time, a broader hyperparameter space can be explored for tabular models, making grid search a feasible option. For deep learning models, however, grid search was impractical, and an adaptive search strategy was required.
@@ -763,23 +882,77 @@ The following summarizes the hyperparameter search spaces and the best-performin
 See the supplementary material and code repository for the full search grids and additional details.
 
 \section{Explainability}\label{sec:method-explainability}
-<Draft> This project would have been set up differently if the sole goal had been to build and deploy an injury detection model. In that case, explainability would mostly be used just to debug the model, and the focus would shift toward making data collection easier, choosing an efficient architecture, and reducing resource use. In our case, though, explainability is central: a deep learning model with an AUC-ROC of 0.7 doesn't add much value if it remains a black box.
+Explainability maps model behaviour onto domain knowledge so that complex decisions become transparent and human-interpretable. Some algorithms expose parameters or structures that can be interpreted directly (\emph{intrinsic} explainability), but more complex or non-linear models typically require \emph{post-hoc} methods.
 
-To get the most out of this work, we used both intrinsic methods and Explainable AI (XAI) techniques, as in \cite{FuentesJimnez2025}, to make the model's decisions more transparent.
+\subsection{Intrinsic explainability}\label{subsec:method-intrinsic-explainability}
+\paragraph{Tree ensembles (Random Forest, XGBoost).}
+For tree-based models, intrinsic importance scores are available from the training process. In Random Forests, importance is computed as the total decrease in node impurity attributable to splits on each feature, aggregated across all trees \citep{Breiman2001}. In this project, \emph{Gini} impurity was used.
 
-\subsection{Intrinsic Explainability}\label{subsec:method-intrinsic-explainability}
-\begin{itemize}
-    \item Random Forest, linear regression, etc...
-    \item What they are and how are they calcualted
-    \item How much can we trust them
-\end{itemize}
+Similarly, in gradient-boosted trees such as XGBoost, importance can be defined as \emph{gain} (reduction in training loss from splits using the feature), \emph{weight} (number of times the feature is used in splits), \emph{cover} (average number of samples affected by such splits), among others \citep{chen2016xgboost}. In this project, \emph{gain} was used as the importance metric. As with Random Forests, these quantities are accumulated during training and are readily available for aggregation.
 
-\subsection{Post-hoc Explainability}\label{subsec:method-posthoc-explainability}
-\begin{itemize}
-    \item SHAPs, Saliency maps, feature permutation?
-    \item What they are and how are they calcualted
-    \item How much can we trust them
-\end{itemize}
+\paragraph{Linear models (logistic regression, linear SVM).}
+Linear models can be represented mathematically as $f(X) = \beta_0 + \beta_1X$. Where the weight of vector $\beta_1$ provides an intrinsic attribution to feature importance. The larger the magnitude of the feature component in $\beta$, the stronger the association between feature and the decision boundary. For logistic regression, the model is linear in the logit function, and the coefficients of $\beta$ can be directly interpreted in terms of feature contributions to the log-odds of the positive class. For a linear SVM, the vector of weights defining the separating hyperplane plays an analogous role, with the absolute value of each weight reflecting the relative importance of the corresponding feature. In both cases, $\beta$ can therefore be interpreted as an intrinsic attribution of feature importance.
 
-% \section{Reproducibility Assets}\label{sec:method-reproducibility}
-% -- code repository structure, libraries, etc...
+\paragraph{Reliability of instrinsic metrics.}
+It is important to note that impurity-based importances are biased toward features with many unique values (or higher variance) and can be distorted by collinearity. Linear coefficients are sensitive to feature scaling and multicollinearity. For that reason, permutation importance has been used in the project as a post-hoc explainability measure to complement intrinsic metrics.
+
+\subsection{Post-hoc explainability}\label{subsec:method-posthoc-explainability}
+This study employed two complementary post-hoc methods: \emph{permutation importance} for global, model-agnostic assessment on tabular models, and \emph{gradient-based saliency maps} for local attributions in deep learning models.
+
+\paragraph{Permutation importance.}  
+
+Permutation importance \citep{Breiman2001,Fisher2018} is a model-agnostic technique that quantifies the contribution of each feature, globally, by measuring the change in model performance when its values are randomly permuted. For a given feature $j$, the values of the $j$-th column in the dataset $D$ are permuted, randomly, $K$ times, breaking the relationship between the feature and the target while preserving the marginal distribution. On each iteration $k$, the model score $s_{k,j}$ is computed on the permuted dataset.  
+
+The importance of feature $j$ is defined as the difference between the baseline score $s$ (obtained on the original dataset) and the average score across the $K$ permutations:  
+\[
+i_j = s - \frac{1}{K}\sum_{k=1}^{K} s_{k,j}.
+\]  
+
+A feature is considered important if shuffling its values leads to a degradation in model performance (i.e., lower score or higher error). Features with little or no impact on the score when permuted are considered less informative.
+
+
+\paragraph{Gradient-based saliency maps.}  
+
+Gradient-based saliency maps \citep{Selvaraju2017} are local interpretability methods that estimate the importance of each input feature by analysing how sensitive the model's output is to changes in that input. For a given input sample and a model output, the gradient is the partial derivative of the output with respect to the input sample.
+
+The magnitude of this gradient indicates how much the prediction would change in response to small perturbations in feature. Larger magnitudes correspond to higher local importance, as the model's decision is more sensitive to changes in that feature. Unlike permutation importance, which provides a global view, gradient-based saliency maps offer local, instance-specific attributions.
+
+
+\paragraph{Reliability of post-hoc methods.}
+Both gradient-based saliency maps and permutation importance provide valuable insights but are subject to important caveats. Gradient-based saliency maps are highly sensitive to model architecture, input scaling, and local non-linearities, which can produce noisy or unstable attributions and limit their reliability as standalone explanations. In contrast, permutation importance is more stable and model-agnostic, but it can underestimate the relevance of correlated features, since shuffling one predictor may have little effect when others provide overlapping information \citep{molnar2025}.
+
+
+% \section{Explainability}\label{sec:method-explainability}
+% Explainability makes complex AI decisions transparent and trustworthy. Helps improve the field of biomechanincs by treanslating the learnings of the model into some thing interpretable by humands. Some modesl have internal out of the box parameters that can be interpreted easily, but others, usually those that are more complex, don't.
+
+% \subsection{Intrinsic Explainability}\label{subsec:method-intrinsic-explainability}
+% \begin{itemize}
+%     \item Random Forest, XGboost via feature_importance_
+%     \item Linear models: Logistic regression and SVM with Linear Kernel
+%     \item Models wihtout intrisic, need to use post-hoc methods.
+%     \item What they are and how are they calcualted
+%     \item How much can we trust them
+% \end{itemize}
+
+% \subsection{Post-hoc Explainability}\label{subsec:method-posthoc-explainability}
+% \begin{itemize}
+%     \item permutation importance is model-agnostic (it can be used with any predictive model that outputs a score), but gradient-based saliency maps are not, they require a differentiable model.
+%     \item But we will only use permutation with tabular models.
+%     \item permutation importance for a global view
+%     \item Saliency maps for a local view -> Only use on deeplearning models because it 
+%     \item SHAPs, Saliency maps, feature permutation?
+%     \item What they are and how are they calcualted
+%     \item How much can we trust them
+% \end{itemize}
+
+
+% \subsection{Post-hoc Explainability}\label{subsec:method-posthoc-explainability}
+% \begin{itemize}
+%     \item permutation importance is model-agnostic (it can be used with any predictive model that outputs a score), but gradient-based saliency maps are not, they require a differentiable model.
+%     \item But we will only use permutation with tabular models.
+%     \item permutation importance for a global view
+%     \item Saliency maps for a local view -> Only use on deeplearning models because it 
+%     \item SHAPs, Saliency maps, feature permutation?
+%     \item What they are and how are they calcualted
+%     \item How much can we trust them
+% \end{itemize}

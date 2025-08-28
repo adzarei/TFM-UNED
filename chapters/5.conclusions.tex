@@ -5,6 +5,7 @@
 ... baseline models remain a robust choice for injury status classification on this dataset.
 
 \section{Limitations}\label{sec:conc-limitations}
+- Normalised Time-series we have lost inter-limb coordination cues. For the model it looks like both legs move at the same time. If there is critical informaiton hiden in how the body reacts when both sides of the body work together, this is lost. A different appraoch would have been to encode a temporal variable that would go from start of one side to the end of the other, the challenges: What is both sides are not simetric? (btw also lost due to segmentation and normalisation), etc..
 
 \subsection{Data limitations (sample, biases, missingness)}\label{sec:limitations-data}
 
