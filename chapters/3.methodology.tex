@@ -711,9 +711,43 @@ For the tabular models, grid search was applied to exhaustively evaluate all com
 
 For the deep learning models (MC-DCNN, bilateral LSTM, and unilateral LSTM), hyperparameter search was performed using the Hyperband implementation in \texttt{Keras Tuner} \citep{Li2018Hyperband}. Each candidate configuration was evaluated on a held-out validation split using ROC-AUC as the objective, with early stopping.
 
+\subsection{Dataset configuration}\label{subsec:method-data-config}
+We have already discussed the differences in cost between the tabular and deep learning models and how this affected the hyperparameter tuning process. Cost also had an impact on the chosen data configurations. The relative low training cost of tabular models allowed us to try more data configurations with the same resources. For each data configuration, the full hyperparameter tuning process needs to be performed, as even the smallest nuances on the structure of the data can have an impact on the performance of different models and its configuration.
+
+With the reduced training cost, we allowed ourselves to train thee dataset configuraiton:
+
+\begin{itemize}
+    \item \textbf{Baseline}: Original set of 80 biomechanical variables plus 4 biometric/demographic. Table~\ref{tab:baseline_features} contains the full list of variables.
+    \item \textbf{Dominant Leg based}: Dominant Leg based features as described in the feature engineering subsection\ref{subsec:method-feature-engineering}. Table~\ref{tab:domleg_features} contains the full list of variables.
+    \item \textbf{Top 40 Dominant Leg based}: Top 40 features from the Dominant Leg based dataset, selected by mRMR algorith as described in the feature selection subsection\ref{subsec:method-feature-selection}. Table~\ref{tab:top40_features} contains the full list of variables.
+\end{itemize}
+
+It is important to note that all data configurations were normalised following the same protocol as described in subsection~\ref{para:met-var-standarisation}. In appendix~\ref{chap:appendix-1-datasets}, tables with the full list of variable and their descriptions can be found.
+
+For deep learning models, only one data configuration was used: The 60 timeseries that combine joint angles and joint angular velocities\ref{subsec:method-ts-dataset}. Each of these \glspl{channel} was normalised following the procedure in XXX subsection\ref{} and a representative curve was computed as described in subsection YYYY\ref{}. As a result, 60 channels with a single stance curve normalised to 101 points was used.
+
+This base data configuraiton was then adapted to the architecture of each of the models. For \textbf{Unilateral BiLSTM}, left and right channels where separated and combined into a single 30 channel dataset with double the amount of samples. Before combining them, the X and Y axis of the left side were inverted, otherwise the model would have seen two inverse representations of the same channel that would have made learning more difficult. In addition, a linear phase channel was added to encode the percentage of the stance phase in the data. This artificial channel was build as a linear vector in range $[0, 101]$ with increments of $1$. This resulted in a tensor of $(N, 101, 31)$, where N is the number of sessions (1068 for the trainset).
+
+For \textbf{Bilateral BiLSTM}, left and right channels where also separated and, for each side, a linear phase was also added. The model has two inputs as it processes left and right through a different "tower" and then combines the learned information at the end. This resulted in two input tensors with shape $(N, 101, 31)$ each.
+
+Lastly, for \textbf{Bilateral BiLSTM}, not like for the previous models, the 60 channels were used without splitting or adding a linear phase channel. This resulted in a single input tensor with shape $(N, 101, 60)$.
+
+% TODO the channel list table is missing....
+$TODO-ADD-TABLE-WITH-CHANNELS$
+
+\begin{itemize}
+    \item Tabular models with Base data -> See 14.6
+    \item Tabular models with all dominant features ->  See 24.8
+    \item Tabular models with 40 most important features -> See 14.7
+    \item Unilateral TS with inversion -> See 17.2
+    \item Bilateral TS -> See 14.4 v7
+    \item As individual channels -> See 17.7 v2
+\end{itemize}
+
 \paragraph{Hyperparameter Ranges and Best Values}
 
 The following summarizes the hyperparameter search spaces and the best-performing values identified for each model:
+%TODO: Add hyperparameter table by model and data configuration.
 % \begin{table}[ht]
 %     \centering
 %     \caption{Hyperparameter search spaces and best values for each model}
@@ -772,18 +806,6 @@ The following summarizes the hyperparameter search spaces and the best-performin
 
 \noindent
 See the supplementary material and code repository for the full search grids and additional details.
-    
-
-
-\subsection{Dataset configuration}\label{subsec:method-data-config}
-\begin{itemize}
-    \item Classical models with Base data -> See 14.6
-    \item Classical models with all dominant features ->  See 24.8
-    \item Classical models with 40 most important features -> See 14.7
-    \item Unilateral TS with inversion -> See 17.2
-    \item Bilateral TS -> See 14.4 v7
-    \item As individual channels -> See 17.7 v2
-\end{itemize}
 
 
 \section{Explainability}\label{sec:method-explainability}
