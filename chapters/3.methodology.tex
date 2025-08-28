@@ -424,7 +424,7 @@ In practice, the MRMR implementation from \texttt{feature\_engine} python packag
     \caption[Tabular Features by MRMR relative relevance]{Tabular Features by MRMR relative relevance and, in red, the relevance cut-off value. Featured below that threshold were dropped.\label{fig:met-mrm-feat-sel}}
 \end{figure}
 
-All 83 variables were standardised following the steps outlined in paragraph~\ref{para:met-var-standarisation}, which means that all columns were z-score normalised, missing values were replaces with the median of the column, \texttt{gender}, the only categorical column left, was encoded into \texttt{gender_male} and \texttt{gender_female}. This elevated the variable count to 84.
+All 83 variables were standardised following the steps outlined in paragraph~\ref{para:met-var-standarisation}, which means that all columns were z-score normalised, missing values were replaces with the median of the column, \texttt{gender}, the only categorical column left, was encoded into \texttt{gender\_male} and \texttt{gender\_female}. This elevated the variable count to 84.
 
 All 84 columns were considered by the MRMR algorithm, and the top 40 were selected reducing the dataset by 52\%. Figure \ref{fig:met-mrm-feat-sel} shows the relative relevance of each feature and the cut-off value used.
 
@@ -630,7 +630,7 @@ By tuning these hyperparameters, the trade-off between bias and variance can be 
 
 Support Vector Machines (SVMs) are supervised machine learning classifiers that aim to find the optimal hyperplane that maximises the margin between classes \citep{Cortes1995}. The training samples that lie on or within the margin are the \texttt{support vectors}; these points alone determine the decision boundary. Non-linear decision surfaces are obtained via kernel functions, which implicitly map inputs to a higher-dimensional feature space where a linear separation may exist. In practice, SVMs often achieve strong generalisation, particularly in high-dimensional settings and when the underlying boundary is close to linear \citep{chang2011guide}.
 
-Unlike probabilistic models, SVMs do not natively output class probabilities. Instead, probabilities are commonly estimated through \textit{Platt scaling}, which fits a sigmoid function to the decision values of the trained SVM \citep{Platt1999}. This calibration step provides probability estimates in the range $[0,1]$, enabling threshold-based decision making and the use of metrics such as AUC.
+Unlike probabilistic models, SVMs do not natively output class probabilities. Instead, probabilities are commonly estimated through \textit{Platt scaling}, which fits a sigmoid function to the decision values of the trained SVM. This calibration step provides probability estimates in the range $[0,1]$, enabling threshold-based decision making and the use of metrics such as AUC.
 
 SVMs offer two main hyperparameters: the kernel function and the regularisation parameter $C$. The kernel function $K(x,z)$ defines the feature mapping that projects the data points into another dimensional space. Typical kernels include the linear kernel $K(x,z)=x \cdot z$, the polynomial kernel $K(x,z)=(x \cdot z + c)^d$, and the radial basis function (RBF) kernel $K(x,z)=\exp\!\big(-\gamma \lVert x-z\rVert^2\big)$.\paragraph{Hyperparameters of SVMs} The main hyperparameters are:
 
