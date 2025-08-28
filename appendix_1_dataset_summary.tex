@@ -2,6 +2,36 @@
 
 In this appendix we list the variables set discussed in the rest of the document.
 
+\begin{table}[htbp]
+    \centering
+    \caption[List of 60 time-series channels]{List of 60 time-series channels per session. Each channel corresponds to a specific joint, measurement type (angle or velocity), and axis (X, Y, Z) for left (L) and right (R) sides. \label{tab:met-ts-vars}}
+    \begin{tabular}{lll}
+    \hline
+    \textbf{X-axis Channel} & \textbf{Y-axis Channel} & \textbf{Z-axis Channel} \\
+    \hline
+    L\_ankle\_angle\_X      & L\_ankle\_angle\_Y      & L\_ankle\_angle\_Z \\
+    L\_ankle\_velocity\_X   & L\_ankle\_velocity\_Y   & L\_ankle\_velocity\_Z \\
+    L\_foot\_angle\_X       & L\_foot\_angle\_Y       & L\_foot\_angle\_Z \\
+    L\_foot\_velocity\_X    & L\_foot\_velocity\_Y    & L\_foot\_velocity\_Z \\
+    L\_hip\_angle\_X        & L\_hip\_angle\_Y        & L\_hip\_angle\_Z \\
+    L\_hip\_velocity\_X     & L\_hip\_velocity\_Y     & L\_hip\_velocity\_Z \\
+    L\_knee\_angle\_X       & L\_knee\_angle\_Y       & L\_knee\_angle\_Z \\
+    L\_knee\_velocity\_X    & L\_knee\_velocity\_Y    & L\_knee\_velocity\_Z \\
+    R\_ankle\_angle\_X      & R\_ankle\_angle\_Y      & R\_ankle\_angle\_Z \\
+    R\_ankle\_velocity\_X   & R\_ankle\_velocity\_Y   & R\_ankle\_velocity\_Z \\
+    R\_foot\_angle\_X       & R\_foot\_angle\_Y       & R\_foot\_angle\_Z \\
+    R\_foot\_velocity\_X    & R\_foot\_velocity\_Y    & R\_foot\_velocity\_Z \\
+    R\_hip\_angle\_X        & R\_hip\_angle\_Y        & R\_hip\_angle\_Z \\
+    R\_hip\_velocity\_X     & R\_hip\_velocity\_Y     & R\_hip\_velocity\_Z \\
+    R\_knee\_angle\_X       & R\_knee\_angle\_Y       & R\_knee\_angle\_Z \\
+    R\_knee\_velocity\_X    & R\_knee\_velocity\_Y    & R\_knee\_velocity\_Z \\
+    L\_pelvis\_angle\_X     & L\_pelvis\_angle\_Y     & L\_pelvis\_angle\_Z \\
+    L\_pelvis\_velocity\_X  & L\_pelvis\_velocity\_Y  & L\_pelvis\_velocity\_Z \\
+    R\_pelvis\_angle\_X     & R\_pelvis\_angle\_Y     & R\_pelvis\_angle\_Z \\
+    R\_pelvis\_velocity\_X  & R\_pelvis\_velocity\_Y  & R\_pelvis\_velocity\_Z \\
+    \hline
+    \end{tabular}
+\end{table}
 
 
 \begin{longtable}{@{}l p{0.62\textwidth} l@{}}
@@ -19,97 +49,97 @@ In this appendix we list the variables set discussed in the rest of the document
     \endfoot
     \bottomrule
     \endlastfoot
-    \texttt{\detokenize{step_width_left}} & & \\
-    \texttt{\detokenize{step_width_right}} & & \\
-    \texttt{\detokenize{stride_rate_left}} & & \\
-    \texttt{\detokenize{stride_rate_right}} & & \\
-    \texttt{\detokenize{stride_length_left}} & & \\
-    \texttt{\detokenize{stride_length_right}} & & \\
-    \texttt{\detokenize{swing_time_left}} & & \\
-    \texttt{\detokenize{swing_time_right}} & & \\
-    \texttt{\detokenize{stance_time_left}} & & \\
-    \texttt{\detokenize{stance_time_right}} & & \\
-    \texttt{\detokenize{pelvis_peak_drop_angle_left}} & & \\
-    \texttt{\detokenize{pelvis_peak_drop_angle_right}} & & \\
-    \texttt{\detokenize{pelvis_drop_excursion_left}} & & \\
-    \texttt{\detokenize{pelvis_drop_excursion_right}} & & \\
-    \texttt{\detokenize{ankle_df_peak_angle_left}} & & \\
-    \texttt{\detokenize{ankle_df_peak_angle_right}} & & \\
-    \texttt{\detokenize{ankle_eve_peak_angle_left}} & & \\
-    \texttt{\detokenize{ankle_eve_peak_angle_right}} & & \\
-    \texttt{\detokenize{ankle_eve_percent_stance_left}} & & \\
-    \texttt{\detokenize{ankle_eve_percent_stance_right}} & & \\
-    \texttt{\detokenize{ankle_eve_excursion_left}} & & \\
-    \texttt{\detokenize{ankle_eve_excursion_right}} & & \\
-    \texttt{\detokenize{ankle_rot_peak_angle_left}} & & \\
-    \texttt{\detokenize{ankle_rot_peak_angle_right}} & & \\
-    \texttt{\detokenize{ankle_rot_excursion_left}} & & \\
-    \texttt{\detokenize{ankle_rot_excursion_right}} & & \\
-    \texttt{\detokenize{knee_flex_peak_angle_left}} & & \\
-    \texttt{\detokenize{knee_flex_peak_angle_right}} & & \\
-    \texttt{\detokenize{knee_add_peak_angle_left}} & & \\
-    \texttt{\detokenize{knee_add_peak_angle_right}} & & \\
-    \texttt{\detokenize{knee_add_excursion_left}} & & \\
-    \texttt{\detokenize{knee_add_excursion_right}} & & \\
-    \texttt{\detokenize{knee_abd_peak_angle_left}} & & \\
-    \texttt{\detokenize{knee_abd_peak_angle_right}} & & \\
-    \texttt{\detokenize{knee_abd_excursion_left}} & & \\
-    \texttt{\detokenize{knee_abd_excursion_right}} & & \\
-    \texttt{\detokenize{knee_rot_peak_angle_left}} & & \\
-    \texttt{\detokenize{knee_rot_peak_angle_right}} & & \\
-    \texttt{\detokenize{knee_rot_excursion_left}} & & \\
-    \texttt{\detokenize{knee_rot_excursion_right}} & & \\
-    \texttt{\detokenize{hip_ext_peak_angle_left}} & & \\
-    \texttt{\detokenize{hip_ext_peak_angle_right}} & & \\
-    \texttt{\detokenize{hip_add_peak_angle_left}} & & \\
-    \texttt{\detokenize{hip_add_peak_angle_right}} & & \\
-    \texttt{\detokenize{hip_add_excursion_left}} & & \\
-    \texttt{\detokenize{hip_add_excursion_right}} & & \\
-    \texttt{\detokenize{hip_rot_peak_angle_left}} & & \\
-    \texttt{\detokenize{hip_rot_peak_angle_right}} & & \\
-    \texttt{\detokenize{hip_rot_excursion_left}} & & \\
-    \texttt{\detokenize{hip_rot_excursion_right}} & & \\
-    \texttt{\detokenize{foot_prog_angle_left}} & & \\
-    \texttt{\detokenize{foot_prog_angle_right}} & & \\
-    \texttt{\detokenize{foot_ang_at_hs_left}} & & \\
-    \texttt{\detokenize{foot_ang_at_hs_right}} & & \\
-    \texttt{\detokenize{mhw_exc_from_to_left}} & & \\
-    \texttt{\detokenize{mhw_exc_from_to_right}} & & \\
-    \texttt{\detokenize{ankle_eve_peak_vel_left}} & & \\
-    \texttt{\detokenize{ankle_eve_peak_vel_right}} & & \\
-    \texttt{\detokenize{ankle_rot_peak_vel_left}} & & \\
-    \texttt{\detokenize{ankle_rot_peak_vel_right}} & & \\
-    \texttt{\detokenize{knee_abd_peak_vel_left}} & & \\
-    \texttt{\detokenize{knee_abd_peak_vel_right}} & & \\
-    \texttt{\detokenize{knee_add_peak_vel_left}} & & \\
-    \texttt{\detokenize{knee_add_peak_vel_right}} & & \\
-    \texttt{\detokenize{hip_abd_peak_vel_left}} & & \\
-    \texttt{\detokenize{hip_abd_peak_vel_right}} & & \\
-    \texttt{\detokenize{knee_rot_peak_vel_left}} & & \\
-    \texttt{\detokenize{knee_rot_peak_vel_right}} & & \\
-    \texttt{\detokenize{hip_rot_peak_vel_left}} & & \\
-    \texttt{\detokenize{hip_rot_peak_vel_right}} & & \\
-    \texttt{\detokenize{pronation_onset_left}} & & \\
-    \texttt{\detokenize{pronation_onset_right}} & & \\
-    \texttt{\detokenize{supination_timing_left}} & & \\
-    \texttt{\detokenize{supination_timing_right}} & & \\
-    \texttt{\detokenize{hip_add_peak_vel_left}} & & \\
-    \texttt{\detokenize{hip_add_peak_vel_right}} & & \\
-    \texttt{\detokenize{pelvic_drop_peak_vel_left}} & & \\
-    \texttt{\detokenize{pelvic_drop_peak_vel_right}} & & \\
-    \texttt{\detokenize{vertical_oscillation_left}} & & \\
-    \texttt{\detokenize{vertical_oscillation_right}} & & \\
-    \texttt{\detokenize{age}} & & \\
-    \texttt{\detokenize{height}} & & \\
-    \texttt{\detokenize{weight}} & & \\
-    \texttt{\detokenize{gender_female}} & & \\
-    \texttt{\detokenize{gender_male}} & & \\
-    \texttt{\detokenize{dominantleg_left}} & & \\
-    \texttt{\detokenize{dominantleg_right}} & & \\
+    \texttt{\detokenize{step_width_left}} & Mean step width during left steps (mediolateral distance between foot placements). & m \\
+    \texttt{\detokenize{step_width_right}} & Mean step width during right steps (mediolateral distance between foot placements). & m \\
+    \texttt{\detokenize{stride_rate_left}} & Average stride rate for left steps. & steps/min \\
+    \texttt{\detokenize{stride_rate_right}} & Average stride rate for right steps. & steps/min \\
+    \texttt{\detokenize{stride_length_left}} & Average stride length for left steps (anterior–posterior distance). & m \\
+    \texttt{\detokenize{stride_length_right}} & Average stride length for right steps (anterior–posterior distance). & m \\
+    \texttt{\detokenize{swing_time_left}} & Duration of swing phase for the left limb. & s \\
+    \texttt{\detokenize{swing_time_right}} & Duration of swing phase for the right limb. & s \\
+    \texttt{\detokenize{stance_time_left}} & Duration of stance phase for the left limb. & s \\
+    \texttt{\detokenize{stance_time_right}} & Duration of stance phase for the right limb. & s \\
+    \texttt{\detokenize{pelvis_peak_drop_angle_left}} & Peak pelvic obliquity (contralateral drop) during left stance (frontal plane). & ° \\
+    \texttt{\detokenize{pelvis_peak_drop_angle_right}} & Peak pelvic obliquity (contralateral drop) during right stance (frontal plane). & ° \\
+    \texttt{\detokenize{pelvis_drop_excursion_left}} & Pelvic obliquity range of motion during left stance (frontal plane). & ° \\
+    \texttt{\detokenize{pelvis_drop_excursion_right}} & Pelvic obliquity range of motion during right stance (frontal plane). & ° \\
+    \texttt{\detokenize{ankle_df_peak_angle_left}} & Peak ankle dorsiflexion angle for the left limb (sagittal plane). & ° \\
+    \texttt{\detokenize{ankle_df_peak_angle_right}} & Peak ankle dorsiflexion angle for the right limb (sagittal plane). & ° \\
+    \texttt{\detokenize{ankle_eve_peak_angle_left}} & Peak ankle eversion angle for the left limb (frontal plane). & ° \\
+    \texttt{\detokenize{ankle_eve_peak_angle_right}} & Peak ankle eversion angle for the right limb (frontal plane). & ° \\
+    \texttt{\detokenize{ankle_eve_percent_stance_left}} & Timing of peak ankle eversion during left stance, as percent of stance. & \% stance \\
+    \texttt{\detokenize{ankle_eve_percent_stance_right}} & Timing of peak ankle eversion during right stance, as percent of stance. & \% stance \\
+    \texttt{\detokenize{ankle_eve_excursion_left}} & Ankle inversion–eversion range of motion for the left limb (frontal plane). & ° \\
+    \texttt{\detokenize{ankle_eve_excursion_right}} & Ankle inversion–eversion range of motion for the right limb (frontal plane). & ° \\
+    \texttt{\detokenize{ankle_rot_peak_angle_left}} & Peak ankle axial rotation (internal/external) for the left limb (transverse plane). & ° \\
+    \texttt{\detokenize{ankle_rot_peak_angle_right}} & Peak ankle axial rotation (internal/external) for the right limb (transverse plane). & ° \\
+    \texttt{\detokenize{ankle_rot_excursion_left}} & Ankle axial rotation range of motion for the left limb (transverse plane). & ° \\
+    \texttt{\detokenize{ankle_rot_excursion_right}} & Ankle axial rotation range of motion for the right limb (transverse plane). & ° \\
+    \texttt{\detokenize{knee_flex_peak_angle_left}} & Peak knee flexion angle for the left limb (sagittal plane). & ° \\
+    \texttt{\detokenize{knee_flex_peak_angle_right}} & Peak knee flexion angle for the right limb (sagittal plane). & ° \\
+    \texttt{\detokenize{knee_add_peak_angle_left}} & Peak knee adduction angle for the left limb (frontal plane). & ° \\
+    \texttt{\detokenize{knee_add_peak_angle_right}} & Peak knee adduction angle for the right limb (frontal plane). & ° \\
+    \texttt{\detokenize{knee_add_excursion_left}} & Knee adduction–abduction range of motion for the left limb (frontal plane). & ° \\
+    \texttt{\detokenize{knee_add_excursion_right}} & Knee adduction–abduction range of motion for the right limb (frontal plane). & ° \\
+    \texttt{\detokenize{knee_abd_peak_angle_left}} & Peak knee abduction angle for the left limb (frontal plane). & ° \\
+    \texttt{\detokenize{knee_abd_peak_angle_right}} & Peak knee abduction angle for the right limb (frontal plane). & ° \\
+    \texttt{\detokenize{knee_abd_excursion_left}} & Knee abduction–adduction range of motion for the left limb (frontal plane). & ° \\
+    \texttt{\detokenize{knee_abd_excursion_right}} & Knee abduction–adduction range of motion for the right limb (frontal plane). & ° \\
+    \texttt{\detokenize{knee_rot_peak_angle_left}} & Peak knee axial rotation (internal/external) for the left limb (transverse plane). & ° \\
+    \texttt{\detokenize{knee_rot_peak_angle_right}} & Peak knee axial rotation (internal/external) for the right limb (transverse plane). & ° \\
+    \texttt{\detokenize{knee_rot_excursion_left}} & Knee axial rotation range of motion for the left limb (transverse plane). & ° \\
+    \texttt{\detokenize{knee_rot_excursion_right}} & Knee axial rotation range of motion for the right limb (transverse plane). & ° \\
+    \texttt{\detokenize{hip_ext_peak_angle_left}} & Peak hip extension angle for the left limb (sagittal plane). & ° \\
+    \texttt{\detokenize{hip_ext_peak_angle_right}} & Peak hip extension angle for the right limb (sagittal plane). & ° \\
+    \texttt{\detokenize{hip_add_peak_angle_left}} & Peak hip adduction angle for the left limb (frontal plane). & ° \\
+    \texttt{\detokenize{hip_add_peak_angle_right}} & Peak hip adduction angle for the right limb (frontal plane). & ° \\
+    \texttt{\detokenize{hip_add_excursion_left}} & Hip adduction–abduction range of motion for the left limb (frontal plane). & ° \\
+    \texttt{\detokenize{hip_add_excursion_right}} & Hip adduction–abduction range of motion for the right limb (frontal plane). & ° \\
+    \texttt{\detokenize{hip_rot_peak_angle_left}} & Peak hip axial rotation (internal/external) for the left limb (transverse plane). & ° \\
+    \texttt{\detokenize{hip_rot_peak_angle_right}} & Peak hip axial rotation (internal/external) for the right limb (transverse plane). & ° \\
+    \texttt{\detokenize{hip_rot_excursion_left}} & Hip axial rotation range of motion for the left limb (transverse plane). & ° \\
+    \texttt{\detokenize{hip_rot_excursion_right}} & Hip axial rotation range of motion for the right limb (transverse plane). & ° \\
+    \texttt{\detokenize{foot_prog_angle_left}} & Mean foot progression angle relative to lab (toe-out +, toe-in −), left. & ° \\
+    \texttt{\detokenize{foot_prog_angle_right}} & Mean foot progression angle relative to lab (toe-out +, toe-in −), right. & ° \\
+    \texttt{\detokenize{foot_ang_at_hs_left}} & Foot pitch angle at heel strike (sagittal), left. & ° \\
+    \texttt{\detokenize{foot_ang_at_hs_right}} & Foot pitch angle at heel strike (sagittal), right. & ° \\
+    \texttt{\detokenize{mhw_exc_from_to_left}} & Medial heel whip excursion from toe-off to peak whip, left (transverse). & ° \\
+    \texttt{\detokenize{mhw_exc_from_to_right}} & Medial heel whip excursion from toe-off to peak whip, right (transverse). & ° \\
+    \texttt{\detokenize{ankle_eve_peak_vel_left}} & Peak ankle eversion angular velocity, left. & °/s \\
+    \texttt{\detokenize{ankle_eve_peak_vel_right}} & Peak ankle eversion angular velocity, right. & °/s \\
+    \texttt{\detokenize{ankle_rot_peak_vel_left}} & Peak ankle axial rotation angular velocity, left. & °/s \\
+    \texttt{\detokenize{ankle_rot_peak_vel_right}} & Peak ankle axial rotation angular velocity, right. & °/s \\
+    \texttt{\detokenize{knee_abd_peak_vel_left}} & Peak knee abduction angular velocity, left. & °/s \\
+    \texttt{\detokenize{knee_abd_peak_vel_right}} & Peak knee abduction angular velocity, right. & °/s \\
+    \texttt{\detokenize{knee_add_peak_vel_left}} & Peak knee adduction angular velocity, left. & °/s \\
+    \texttt{\detokenize{knee_add_peak_vel_right}} & Peak knee adduction angular velocity, right. & °/s \\
+    \texttt{\detokenize{hip_abd_peak_vel_left}} & Peak hip abduction angular velocity, left. & °/s \\
+    \texttt{\detokenize{hip_abd_peak_vel_right}} & Peak hip abduction angular velocity, right. & °/s \\
+    \texttt{\detokenize{knee_rot_peak_vel_left}} & Peak knee axial rotation angular velocity, left. & °/s \\
+    \texttt{\detokenize{knee_rot_peak_vel_right}} & Peak knee axial rotation angular velocity, right. & °/s \\
+    \texttt{\detokenize{hip_rot_peak_vel_left}} & Peak hip axial rotation angular velocity, left. & °/s \\
+    \texttt{\detokenize{hip_rot_peak_vel_right}} & Peak hip axial rotation angular velocity, right. & °/s \\
+    \texttt{\detokenize{pronation_onset_left}} & Gait cycle percentage when rearfoot pronation begins, left. & \% gait cycle \\
+    \texttt{\detokenize{pronation_onset_right}} & Gait cycle percentage when rearfoot pronation begins, right. & \% gait cycle \\
+    \texttt{\detokenize{supination_timing_left}} & Gait cycle percentage when rearfoot supination begins, left. & \% gait cycle \\
+    \texttt{\detokenize{supination_timing_right}} & Gait cycle percentage when rearfoot supination begins, right. & \% gait cycle \\
+    \texttt{\detokenize{hip_add_peak_vel_left}} & Peak hip adduction angular velocity, left. & °/s \\
+    \texttt{\detokenize{hip_add_peak_vel_right}} & Peak hip adduction angular velocity, right. & °/s \\
+    \texttt{\detokenize{pelvic_drop_peak_vel_left}} & Peak pelvic obliquity (drop) angular velocity, left stance. & °/s \\
+    \texttt{\detokenize{pelvic_drop_peak_vel_right}} & Peak pelvic obliquity (drop) angular velocity, right stance. & °/s \\
+    \texttt{\detokenize{vertical_oscillation_left}} & Vertical oscillation amplitude during left stance. & mm \\
+    \texttt{\detokenize{vertical_oscillation_right}} & Vertical oscillation amplitude during right stance. & mm \\
+    \texttt{\detokenize{age}} & Subject age. & years \\
+    \texttt{\detokenize{height}} & Body height. & cm \\
+    \texttt{\detokenize{weight}} & Body weight. & kg \\
+    \texttt{\detokenize{gender_female}} & Indicator: female (1) or not (0). & 0/1 \\
+    \texttt{\detokenize{gender_male}} & Indicator: male (1) or not (0). & 0/1 \\
+    \texttt{\detokenize{dominantleg_left}} & Indicator: dominant leg is left (1) or not (0). & 0/1 \\
+    \texttt{\detokenize{dominantleg_right}} & Indicator: dominant leg is right (1) or not (0). & 0/1 \\
 \end{longtable}
 
 \begin{longtable}{@{}l p{0.62\textwidth} l@{}}
-    \caption{Dominant Leg derived feature dictionary}\label{tab:domleg_features}\\
+    \caption{Dominant leg derived feature dictionary}\label{tab:domleg_features}\\
     \toprule
     \textbf{Variable} & \textbf{Description} & \textbf{Units} \\
     \midrule
@@ -123,91 +153,92 @@ In this appendix we list the variables set discussed in the rest of the document
     \endfoot
     \bottomrule
     \endlastfoot
-    \texttt{\detokenize{age}} & & \\
-    \texttt{\detokenize{height}} & & \\
-    \texttt{\detokenize{weight}} & & \\
-    \texttt{\detokenize{dom_leg_ankle_df_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_diff_ankle_df_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_ankle_eve_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_diff_ankle_eve_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_ankle_eve_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_diff_ankle_eve_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_ankle_eve_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_diff_ankle_eve_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_ankle_eve_percent_stance}} & & \\
-    \texttt{\detokenize{dom_leg_diff_ankle_eve_percent_stance}} & & \\
-    \texttt{\detokenize{dom_leg_ankle_rot_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_diff_ankle_rot_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_ankle_rot_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_diff_ankle_rot_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_ankle_rot_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_diff_ankle_rot_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_foot_ang_at_hs}} & & \\
-    \texttt{\detokenize{dom_leg_diff_foot_ang_at_hs}} & & \\
-    \texttt{\detokenize{dom_leg_foot_prog_angle}} & & \\
-    \texttt{\detokenize{dom_leg_diff_foot_prog_angle}} & & \\
-    \texttt{\detokenize{dom_leg_hip_abd_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_diff_hip_abd_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_hip_add_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_diff_hip_add_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_hip_add_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_diff_hip_add_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_hip_add_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_diff_hip_add_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_hip_ext_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_diff_hip_ext_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_hip_rot_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_diff_hip_rot_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_hip_rot_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_diff_hip_rot_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_hip_rot_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_diff_hip_rot_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_knee_abd_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_diff_knee_abd_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_knee_abd_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_diff_knee_abd_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_knee_abd_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_diff_knee_abd_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_knee_add_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_diff_knee_add_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_knee_add_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_diff_knee_add_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_knee_add_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_diff_knee_add_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_knee_flex_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_diff_knee_flex_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_knee_rot_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_diff_knee_rot_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_knee_rot_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_diff_knee_rot_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_knee_rot_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_diff_knee_rot_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_mhw_exc_from_to}} & & \\
-    \texttt{\detokenize{dom_leg_diff_mhw_exc_from_to}} & & \\
-    \texttt{\detokenize{dom_leg_pelvic_drop_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_diff_pelvic_drop_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_pelvis_drop_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_diff_pelvis_drop_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_pelvis_peak_drop_angle}} & & \\
-    \texttt{\detokenize{dom_leg_diff_pelvis_peak_drop_angle}} & & \\
-    \texttt{\detokenize{dom_leg_pronation_onset}} & & \\
-    \texttt{\detokenize{dom_leg_diff_pronation_onset}} & & \\
-    \texttt{\detokenize{dom_leg_stance_time}} & & \\
-    \texttt{\detokenize{dom_leg_diff_stance_time}} & & \\
-    \texttt{\detokenize{dom_leg_step_width}} & & \\
-    \texttt{\detokenize{dom_leg_stride_length}} & & \\
-    \texttt{\detokenize{dom_leg_diff_stride_length}} & & \\
-    \texttt{\detokenize{dom_leg_stride_rate}} & & \\
-    \texttt{\detokenize{dom_leg_diff_stride_rate}} & & \\
-    \texttt{\detokenize{dom_leg_supination_timing}} & & \\
-    \texttt{\detokenize{dom_leg_diff_supination_timing}} & & \\
-    \texttt{\detokenize{dom_leg_swing_time}} & & \\
-    \texttt{\detokenize{dom_leg_diff_swing_time}} & & \\
-    \texttt{\detokenize{dom_leg_vertical_oscillation}} & & \\
-    \texttt{\detokenize{dom_leg_diff_vertical_oscillation}} & & \\
-    \texttt{\detokenize{gender_female}} & & \\
-    \texttt{\detokenize{gender_male}} & & \\
+    \texttt{\detokenize{age}} & Subject age. & years \\
+    \texttt{\detokenize{height}} & Body height. & cm \\
+    \texttt{\detokenize{weight}} & Body weight. & kg \\
+    \texttt{\detokenize{dom_leg_ankle_df_peak_angle}} & Peak ankle dorsiflexion angle, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_ankle_df_peak_angle}} & Difference in peak ankle dorsiflexion (dominant minus non-dominant). & ° \\
+    \texttt{\detokenize{dom_leg_ankle_eve_excursion}} & Ankle inversion–eversion ROM, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_ankle_eve_excursion}} & Difference in ankle inversion–eversion ROM (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_ankle_eve_peak_angle}} & Peak ankle eversion angle, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_ankle_eve_peak_angle}} & Difference in peak ankle eversion (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_ankle_eve_peak_vel}} & Peak ankle eversion angular velocity, dominant limb. & °/s \\
+    \texttt{\detokenize{dom_leg_diff_ankle_eve_peak_vel}} & Difference in peak ankle eversion velocity (dom − non-dom). & °/s \\
+    \texttt{\detokenize{dom_leg_ankle_eve_percent_stance}} & Timing of peak ankle eversion in stance, dominant limb. & \% stance \\
+    \texttt{\detokenize{dom_leg_diff_ankle_eve_percent_stance}} & Difference in timing of peak eversion in stance (dom − non-dom). & \% stance \\
+    \texttt{\detokenize{dom_leg_ankle_rot_excursion}} & Ankle axial rotation ROM, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_ankle_rot_excursion}} & Difference in ankle axial rotation ROM (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_ankle_rot_peak_angle}} & Peak ankle axial rotation (internal/external), dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_ankle_rot_peak_angle}} & Difference in peak ankle axial rotation (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_ankle_rot_peak_vel}} & Peak ankle axial rotation angular velocity, dominant limb. & °/s \\
+    \texttt{\detokenize{dom_leg_diff_ankle_rot_peak_vel}} & Difference in peak ankle axial rotation velocity (dom − non-dom). & °/s \\
+    \texttt{\detokenize{dom_leg_foot_ang_at_hs}} & Foot pitch angle at heel strike, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_foot_ang_at_hs}} & Difference in foot pitch at heel strike (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_foot_prog_angle}} & Mean foot progression angle relative to lab, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_foot_prog_angle}} & Difference in foot progression angle (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_hip_abd_peak_vel}} & Peak hip abduction angular velocity, dominant limb. & °/s \\
+    \texttt{\detokenize{dom_leg_diff_hip_abd_peak_vel}} & Difference in peak hip abduction velocity (dom − non-dom). & °/s \\
+    \texttt{\detokenize{dom_leg_hip_add_excursion}} & Hip adduction–abduction ROM, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_hip_add_excursion}} & Difference in hip adduction–abduction ROM (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_hip_add_peak_angle}} & Peak hip adduction angle, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_hip_add_peak_angle}} & Difference in peak hip adduction (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_hip_add_peak_vel}} & Peak hip adduction angular velocity, dominant limb. & °/s \\
+    \texttt{\detokenize{dom_leg_diff_hip_add_peak_vel}} & Difference in peak hip adduction velocity (dom − non-dom). & °/s \\
+    \texttt{\detokenize{dom_leg_hip_ext_peak_angle}} & Peak hip extension angle, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_hip_ext_peak_angle}} & Difference in peak hip extension (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_hip_rot_excursion}} & Hip axial rotation ROM, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_hip_rot_excursion}} & Difference in hip axial rotation ROM (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_hip_rot_peak_angle}} & Peak hip axial rotation, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_hip_rot_peak_angle}} & Difference in peak hip axial rotation (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_hip_rot_peak_vel}} & Peak hip axial rotation angular velocity, dominant limb. & °/s \\
+    \texttt{\detokenize{dom_leg_diff_hip_rot_peak_vel}} & Difference in peak hip axial rotation velocity (dom − non-dom). & °/s \\
+    \texttt{\detokenize{dom_leg_knee_abd_excursion}} & Knee abduction–adduction ROM, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_knee_abd_excursion}} & Difference in knee abduction–adduction ROM (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_knee_abd_peak_angle}} & Peak knee abduction angle, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_knee_abd_peak_angle}} & Difference in peak knee abduction (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_knee_abd_peak_vel}} & Peak knee abduction angular velocity, dominant limb. & °/s \\
+    \texttt{\detokenize{dom_leg_diff_knee_abd_peak_vel}} & Difference in peak knee abduction velocity (dom − non-dom). & °/s \\
+    \texttt{\detokenize{dom_leg_knee_add_excursion}} & Knee adduction–abduction ROM, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_knee_add_excursion}} & Difference in knee adduction–abduction ROM (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_knee_add_peak_angle}} & Peak knee adduction angle, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_knee_add_peak_angle}} & Difference in peak knee adduction (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_knee_add_peak_vel}} & Peak knee adduction angular velocity, dominant limb. & °/s \\
+    \texttt{\detokenize{dom_leg_diff_knee_add_peak_vel}} & Difference in peak knee adduction velocity (dom − non-dom). & °/s \\
+    \texttt{\detokenize{dom_leg_knee_flex_peak_angle}} & Peak knee flexion angle, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_knee_flex_peak_angle}} & Difference in peak knee flexion (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_knee_rot_excursion}} & Knee axial rotation ROM, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_knee_rot_excursion}} & Difference in knee axial rotation ROM (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_knee_rot_peak_angle}} & Peak knee axial rotation, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_knee_rot_peak_angle}} & Difference in peak knee axial rotation (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_knee_rot_peak_vel}} & Peak knee axial rotation angular velocity, dominant limb. & °/s \\
+    \texttt{\detokenize{dom_leg_diff_knee_rot_peak_vel}} & Difference in peak knee axial rotation velocity (dom − non-dom). & °/s \\
+    \texttt{\detokenize{dom_leg_mhw_exc_from_to}} & Medial heel whip excursion from toe-off to peak whip, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_mhw_exc_from_to}} & Difference in medial heel whip excursion (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_pelvic_drop_peak_vel}} & Peak pelvic obliquity (drop) angular velocity, dominant stance. & °/s \\
+    \texttt{\detokenize{dom_leg_diff_pelvic_drop_peak_vel}} & Difference in pelvic drop peak velocity (dom − non-dom). & °/s \\
+    \texttt{\detokenize{dom_leg_pelvis_drop_excursion}} & Pelvic obliquity ROM during dominant stance. & ° \\
+    \texttt{\detokenize{dom_leg_diff_pelvis_drop_excursion}} & Difference in pelvic obliquity ROM (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_pelvis_peak_drop_angle}} & Peak pelvic drop angle during dominant stance. & ° \\
+    \texttt{\detokenize{dom_leg_diff_pelvis_peak_drop_angle}} & Difference in pelvic peak drop angle (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_pronation_onset}} & Gait cycle percentage when rearfoot pronation begins, dominant limb. & \% gait cycle \\
+    \texttt{\detokenize{dom_leg_diff_pronation_onset}} & Difference in pronation onset timing (dom − non-dom). & \% gait cycle \\
+    \texttt{\detokenize{dom_leg_stance_time}} & Duration of stance phase, dominant limb. & s \\
+    \texttt{\detokenize{dom_leg_diff_stance_time}} & Difference in stance time (dom − non-dom). & s \\
+    \texttt{\detokenize{dom_leg_step_width}} & Mean step width measured for steps of dominant limb. & m \\
+    \texttt{\detokenize{dom_leg_stride_length}} & Mean stride length for dominant limb strides. & m \\
+    \texttt{\detokenize{dom_leg_diff_stride_length}} & Difference in stride length (dom − non-dom). & m \\
+    \texttt{\detokenize{dom_leg_stride_rate}} & Stride rate for dominant limb strides. & steps/min \\
+    \texttt{\detokenize{dom_leg_diff_stride_rate}} & Difference in stride rate (dom − non-dom). & steps/min \\
+    \texttt{\detokenize{dom_leg_supination_timing}} & Gait cycle percentage when rearfoot supination begins, dominant limb. & \% gait cycle \\
+    \texttt{\detokenize{dom_leg_diff_supination_timing}} & Difference in supination onset timing (dom − non-dom). & \% gait cycle \\
+    \texttt{\detokenize{dom_leg_swing_time}} & Duration of swing phase, dominant limb. & s \\
+    \texttt{\detokenize{dom_leg_diff_swing_time}} & Difference in swing time (dom − non-dom). & s \\
+    \texttt{\detokenize{dom_leg_vertical_oscillation}} & Vertical oscillation amplitude during dominant stance. & mm \\
+    \texttt{\detokenize{dom_leg_diff_vertical_oscillation}} & Difference in vertical oscillation (dom − non-dom). & mm \\
+    \texttt{\detokenize{gender_female}} & Indicator: female (1) or not (0). & 0/1 \\
+    \texttt{\detokenize{gender_male}} & Indicator: male (1) or not (0). & 0/1 \\
 \end{longtable}
+
 
 \begin{longtable}{@{}l p{0.62\textwidth} l@{}}
     \caption{Top 40 selected feature dictionary}\label{tab:top40_features}\\
@@ -224,44 +255,44 @@ In this appendix we list the variables set discussed in the rest of the document
     \endfoot
     \bottomrule
     \endlastfoot
-    \texttt{\detokenize{age}} & & \\
-    \texttt{\detokenize{weight}} & & \\
-    \texttt{\detokenize{dom_leg_ankle_df_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_ankle_eve_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_diff_ankle_eve_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_ankle_eve_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_diff_ankle_eve_percent_stance}} & & \\
-    \texttt{\detokenize{dom_leg_ankle_rot_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_diff_ankle_rot_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_ankle_rot_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_foot_ang_at_hs}} & & \\
-    \texttt{\detokenize{dom_leg_diff_foot_ang_at_hs}} & & \\
-    \texttt{\detokenize{dom_leg_hip_add_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_hip_add_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_diff_hip_add_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_hip_add_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_diff_hip_add_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_hip_ext_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_diff_hip_ext_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_hip_rot_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_diff_hip_rot_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_diff_knee_add_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_diff_knee_add_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_knee_flex_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_diff_knee_rot_excursion}} & & \\
-    \texttt{\detokenize{dom_leg_knee_rot_peak_angle}} & & \\
-    \texttt{\detokenize{dom_leg_diff_knee_rot_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_mhw_exc_from_to}} & & \\
-    \texttt{\detokenize{dom_leg_diff_mhw_exc_from_to}} & & \\
-    \texttt{\detokenize{dom_leg_pelvic_drop_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_diff_pelvic_drop_peak_vel}} & & \\
-    \texttt{\detokenize{dom_leg_pelvis_peak_drop_angle}} & & \\
-    \texttt{\detokenize{dom_leg_diff_pelvis_peak_drop_angle}} & & \\
-    \texttt{\detokenize{dom_leg_stance_time}} & & \\
-    \texttt{\detokenize{dom_leg_step_width}} & & \\
-    \texttt{\detokenize{dom_leg_stride_length}} & & \\
-    \texttt{\detokenize{dom_leg_stride_rate}} & & \\
-    \texttt{\detokenize{dom_leg_supination_timing}} & & \\
-    \texttt{\detokenize{dom_leg_swing_time}} & & \\
-    \texttt{\detokenize{dom_leg_diff_vertical_oscillation}} & & \\
-    \end{longtable}
+    \texttt{\detokenize{age}} & Subject age. & years \\
+    \texttt{\detokenize{weight}} & Body weight. & kg \\
+    \texttt{\detokenize{dom_leg_ankle_df_peak_angle}} & Peak ankle dorsiflexion angle, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_ankle_eve_peak_angle}} & Peak ankle eversion angle, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_ankle_eve_peak_angle}} & Difference in peak ankle eversion (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_ankle_eve_peak_vel}} & Peak ankle eversion angular velocity, dominant limb. & °/s \\
+    \texttt{\detokenize{dom_leg_diff_ankle_eve_percent_stance}} & Difference in timing of peak eversion in stance (dom − non-dom). & \% stance \\
+    \texttt{\detokenize{dom_leg_ankle_rot_excursion}} & Ankle axial rotation ROM, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_ankle_rot_excursion}} & Difference in ankle axial rotation ROM (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_ankle_rot_peak_vel}} & Peak ankle axial rotation angular velocity, dominant limb. & °/s \\
+    \texttt{\detokenize{dom_leg_foot_ang_at_hs}} & Foot pitch angle at heel strike, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_foot_ang_at_hs}} & Difference in foot pitch at heel strike (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_hip_add_excursion}} & Hip adduction–abduction ROM, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_hip_add_peak_angle}} & Peak hip adduction angle, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_hip_add_peak_angle}} & Difference in peak hip adduction (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_hip_add_peak_vel}} & Peak hip adduction angular velocity, dominant limb. & °/s \\
+    \texttt{\detokenize{dom_leg_diff_hip_add_peak_vel}} & Difference in peak hip adduction velocity (dom − non-dom). & °/s \\
+    \texttt{\detokenize{dom_leg_hip_ext_peak_angle}} & Peak hip extension angle, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_hip_ext_peak_angle}} & Difference in peak hip extension (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_hip_rot_excursion}} & Hip axial rotation ROM, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_hip_rot_peak_vel}} & Difference in peak hip axial rotation velocity (dom − non-dom). & °/s \\
+    \texttt{\detokenize{dom_leg_diff_knee_add_excursion}} & Difference in knee adduction–abduction ROM (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_diff_knee_add_peak_vel}} & Difference in peak knee adduction velocity (dom − non-dom). & °/s \\
+    \texttt{\detokenize{dom_leg_knee_flex_peak_angle}} & Peak knee flexion angle, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_knee_rot_excursion}} & Difference in knee axial rotation ROM (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_knee_rot_peak_angle}} & Peak knee axial rotation, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_knee_rot_peak_vel}} & Difference in peak knee axial rotation velocity (dom − non-dom). & °/s \\
+    \texttt{\detokenize{dom_leg_mhw_exc_from_to}} & Medial heel whip excursion from toe-off to peak whip, dominant limb. & ° \\
+    \texttt{\detokenize{dom_leg_diff_mhw_exc_from_to}} & Difference in medial heel whip excursion (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_pelvic_drop_peak_vel}} & Peak pelvic obliquity (drop) angular velocity, dominant stance. & °/s \\
+    \texttt{\detokenize{dom_leg_diff_pelvic_drop_peak_vel}} & Difference in pelvic drop peak velocity (dom − non-dom). & °/s \\
+    \texttt{\detokenize{dom_leg_pelvis_peak_drop_angle}} & Peak pelvic drop angle during dominant stance. & ° \\
+    \texttt{\detokenize{dom_leg_diff_pelvis_peak_drop_angle}} & Difference in pelvic peak drop angle (dom − non-dom). & ° \\
+    \texttt{\detokenize{dom_leg_stance_time}} & Duration of stance phase, dominant limb. & s \\
+    \texttt{\detokenize{dom_leg_step_width}} & Mean step width measured for steps of dominant limb. & m \\
+    \texttt{\detokenize{dom_leg_stride_length}} & Mean stride length for dominant limb strides. & m \\
+    \texttt{\detokenize{dom_leg_stride_rate}} & Stride rate for dominant limb strides. & steps/min \\
+    \texttt{\detokenize{dom_leg_supination_timing}} & Gait cycle percentage when rearfoot supination begins, dominant limb. & \% gait cycle \\
+    \texttt{\detokenize{dom_leg_swing_time}} & Duration of swing phase, dominant limb. & s \\
+    \texttt{\detokenize{dom_leg_diff_vertical_oscillation}} & Difference in vertical oscillation amplitude (dom − non-dom). & mm \\
+\end{longtable}

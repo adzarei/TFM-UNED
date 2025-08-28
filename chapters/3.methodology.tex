@@ -375,40 +375,7 @@ Following the procedure described in the source paper \citep{Ferber2024} and lat
 
 It should be noted that the stance phases of the right and left sides overlap whenever both feet are in contact with the ground. For this reason, different events were used to segment the two sides. Specifically, the events \texttt{L\_TD} and \texttt{L\_TO} were used for left-side joints, while \texttt{R\_TD} and \texttt{R\_TO} were used for right-side joints.
 
-The pelvis was treated as a special case, since it is not side-specific. For this joint, two groups of segments were created: one aligned with the left stance phase and one aligned with the right stance phase. This segmentation procedure was applied to both angles and angular velocities.
-
-Table \ref{tab:met-ts-vars} lists all time-series variables available per session, which add up to 60 in total.
-
-\begin{table}[htbp]
-    \centering
-    \caption[List of 60 time-series channels]{List of 60 time-series channels per session. Each channel corresponds to a specific joint, measurement type (angle or velocity), and axis (X, Y, Z) for left (L) and right (R) sides. \label{tab:met-ts-vars}}
-    \begin{tabular}{lll}
-    \hline
-    \textbf{X-axis Channel} & \textbf{Y-axis Channel} & \textbf{Z-axis Channel} \\
-    \hline
-    L\_ankle\_angle\_X      & L\_ankle\_angle\_Y      & L\_ankle\_angle\_Z \\
-    L\_ankle\_velocity\_X   & L\_ankle\_velocity\_Y   & L\_ankle\_velocity\_Z \\
-    L\_foot\_angle\_X       & L\_foot\_angle\_Y       & L\_foot\_angle\_Z \\
-    L\_foot\_velocity\_X    & L\_foot\_velocity\_Y    & L\_foot\_velocity\_Z \\
-    L\_hip\_angle\_X        & L\_hip\_angle\_Y        & L\_hip\_angle\_Z \\
-    L\_hip\_velocity\_X     & L\_hip\_velocity\_Y     & L\_hip\_velocity\_Z \\
-    L\_knee\_angle\_X       & L\_knee\_angle\_Y       & L\_knee\_angle\_Z \\
-    L\_knee\_velocity\_X    & L\_knee\_velocity\_Y    & L\_knee\_velocity\_Z \\
-    R\_ankle\_angle\_X      & R\_ankle\_angle\_Y      & R\_ankle\_angle\_Z \\
-    R\_ankle\_velocity\_X   & R\_ankle\_velocity\_Y   & R\_ankle\_velocity\_Z \\
-    R\_foot\_angle\_X       & R\_foot\_angle\_Y       & R\_foot\_angle\_Z \\
-    R\_foot\_velocity\_X    & R\_foot\_velocity\_Y    & R\_foot\_velocity\_Z \\
-    R\_hip\_angle\_X        & R\_hip\_angle\_Y        & R\_hip\_angle\_Z \\
-    R\_hip\_velocity\_X     & R\_hip\_velocity\_Y     & R\_hip\_velocity\_Z \\
-    R\_knee\_angle\_X       & R\_knee\_angle\_Y       & R\_knee\_angle\_Z \\
-    R\_knee\_velocity\_X    & R\_knee\_velocity\_Y    & R\_knee\_velocity\_Z \\
-    L\_pelvis\_angle\_X     & L\_pelvis\_angle\_Y     & L\_pelvis\_angle\_Z \\
-    L\_pelvis\_velocity\_X  & L\_pelvis\_velocity\_Y  & L\_pelvis\_velocity\_Z \\
-    R\_pelvis\_angle\_X     & R\_pelvis\_angle\_Y     & R\_pelvis\_angle\_Z \\
-    R\_pelvis\_velocity\_X  & R\_pelvis\_velocity\_Y  & R\_pelvis\_velocity\_Z \\
-    \hline
-    \end{tabular}
-\end{table}
+The pelvis was treated as a special case, since it is not side-specific. For this joint, two groups of segments were created: one aligned with the left stance phase and one aligned with the right stance phase. This segmentation procedure was applied to both angles and angular velocities. Table \ref{tab:met-ts-vars} lists all time-series variables available per session, which add up to 60 in total.
 
 The duration of the stance phase varies even within a session, figure~\ref{fig:met-hist-segments} shows the distribution of segment duration within a session, which ranges from 62 to 67 frames. To be able to compare segments fairly, it is standard practice to normalise biomechanical kinematic data to 101 data points \citep{Crane2010,FuentesJimnez2025}, representing the percentage of the stance phase from 0\% to 100\% inclusive. When normalising the segments, linear interpolation is used.
 
@@ -724,25 +691,13 @@ With the reduced training cost, we allowed ourselves to train thee dataset confi
 
 It is important to note that all data configurations were normalised following the same protocol as described in subsection~\ref{para:met-var-standarisation}. In appendix~\ref{chap:appendix-1-datasets}, tables with the full list of variable and their descriptions can be found.
 
-For deep learning models, only one data configuration was used: The 60 timeseries that combine joint angles and joint angular velocities\ref{subsec:method-ts-dataset}. Each of these \glspl{channel} was normalised following the procedure in XXX subsection\ref{} and a representative curve was computed as described in subsection YYYY\ref{}. As a result, 60 channels with a single stance curve normalised to 101 points was used.
+For deep learning models, only one data configuration was used: The 60 timeseries that combine joint angles and joint angular velocities\ref{subsec:method-ts-dataset}. Each of these \glspl{channel} was normalised following the procedure described in the time-series dataset subsection\ref{subsec:method-ts-dataset} and a representative curve was computed as described in the feature selection subsection\ref{subsec:method-feature-selection}. As a result, 60 channels with a single stance curve normalised to 101 points was used. Table~\ref{tab:met-ts-vars} contains the full list of variables.
 
 This base data configuraiton was then adapted to the architecture of each of the models. For \textbf{Unilateral BiLSTM}, left and right channels where separated and combined into a single 30 channel dataset with double the amount of samples. Before combining them, the X and Y axis of the left side were inverted, otherwise the model would have seen two inverse representations of the same channel that would have made learning more difficult. In addition, a linear phase channel was added to encode the percentage of the stance phase in the data. This artificial channel was build as a linear vector in range $[0, 101]$ with increments of $1$. This resulted in a tensor of $(N, 101, 31)$, where N is the number of sessions (1068 for the trainset).
 
 For \textbf{Bilateral BiLSTM}, left and right channels where also separated and, for each side, a linear phase was also added. The model has two inputs as it processes left and right through a different "tower" and then combines the learned information at the end. This resulted in two input tensors with shape $(N, 101, 31)$ each.
 
 Lastly, for \textbf{Bilateral BiLSTM}, not like for the previous models, the 60 channels were used without splitting or adding a linear phase channel. This resulted in a single input tensor with shape $(N, 101, 60)$.
-
-% TODO the channel list table is missing....
-$TODO-ADD-TABLE-WITH-CHANNELS$
-
-\begin{itemize}
-    \item Tabular models with Base data -> See 14.6
-    \item Tabular models with all dominant features ->  See 24.8
-    \item Tabular models with 40 most important features -> See 14.7
-    \item Unilateral TS with inversion -> See 17.2
-    \item Bilateral TS -> See 14.4 v7
-    \item As individual channels -> See 17.7 v2
-\end{itemize}
 
 \paragraph{Hyperparameter Ranges and Best Values}
 
@@ -806,7 +761,6 @@ The following summarizes the hyperparameter search spaces and the best-performin
 
 \noindent
 See the supplementary material and code repository for the full search grids and additional details.
-
 
 \section{Explainability}\label{sec:method-explainability}
 <Draft> This project would have been set up differently if the sole goal had been to build and deploy an injury detection model. In that case, explainability would mostly be used just to debug the model, and the focus would shift toward making data collection easier, choosing an efficient architecture, and reducing resource use. In our case, though, explainability is central: a deep learning model with an AUC-ROC of 0.7 doesn't add much value if it remains a black box.
