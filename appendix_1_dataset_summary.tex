@@ -34,7 +34,9 @@ In this appendix we list the variables set discussed in the rest of the document
 \end{table}
 
 
-\begin{longtable}{@{}l p{0.62\textwidth} l@{}}
+{\small
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}p{0.30\textwidth} p{0.60\textwidth} p{0.10\textwidth}@{}}
     \caption{Baseline feature dictionary}\label{tab:baseline_features}\\
     \toprule
     \textbf{Variable} & \textbf{Description} & \textbf{Units} \\
@@ -137,8 +139,11 @@ In this appendix we list the variables set discussed in the rest of the document
     \texttt{dominantleg\_left} & Indicator: dominant leg is left (1) or not (0). & 0/1 \\
     \texttt{dominantleg\_right} & Indicator: dominant leg is right (1) or not (0). & 0/1 \\
 \end{longtable}
+}
 
-\begin{longtable}{@{}l p{0.62\textwidth} l@{}}
+{\small
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}p{0.30\textwidth} p{0.60\textwidth} p{0.10\textwidth}@{}}
     \caption{Dominant leg derived feature dictionary}\label{tab:domleg_features}\\
     \toprule
     \textbf{Variable} & \textbf{Description} & \textbf{Units} \\
@@ -238,9 +243,12 @@ In this appendix we list the variables set discussed in the rest of the document
     \texttt{gender\_female} & Indicator: female (1) or not (0). & 0/1 \\
     \texttt{gender\_male} & Indicator: male (1) or not (0). & 0/1 \\
 \end{longtable}
+}
 
 
-\begin{longtable}{@{}l p{0.62\textwidth} l@{}}
+{\small
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}p{0.30\textwidth} p{0.60\textwidth} p{0.10\textwidth}@{}}
     \caption{Top 40 selected feature dictionary}\label{tab:top40_features}\\
     \toprule
     \textbf{Variable} & \textbf{Description} & \textbf{Units} \\
@@ -296,3 +304,4 @@ In this appendix we list the variables set discussed in the rest of the document
     \texttt{dom\_leg\_swing\_time} & Duration of swing phase, dominant limb. & s \\
     \texttt{dom\_leg\_diff\_vertical\_oscillation} & Difference in vertical oscillation amplitude (dominant minus non-dominant). & mm \\
 \end{longtable}
+}
